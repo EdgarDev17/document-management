@@ -100,7 +100,7 @@ namespace ConferenceAPI.Controllers
 
 
         [HttpPost("Imagen")]
-        public ActionResult<IResponse> SessionEnd([FromBody] ImageUserRequest data)
+        public ActionResult<IResponse> Imagen([FromBody] ImageUserRequest data)
         {
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {
@@ -117,15 +117,24 @@ namespace ConferenceAPI.Controllers
             {
                var result =_userBL.imagen(data.Image,data.ImageExtension,user.UserID);
 
-                if (result == 1)
+                if (result == 1 || result==2)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
                     return Ok(response);
                 }
+            
+                else if(result == 0)
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                    return Conflict(response);
+                }
                 else
                 {
-                    var response = new GenericApiRespons { HttpCode = 404, Message = "Something went wrong" };
-                    return NotFound(response);
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
                 }
 
 

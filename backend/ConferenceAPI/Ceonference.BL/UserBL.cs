@@ -308,6 +308,14 @@ namespace Conference.BL
 
             return result;
         }
+
+
+        public UserPerfilEN GetUserProfile(int userID)
+        {
+            UserPerfilEN user = new UserPerfilEN();
+            user=_userDAL.GetUserProfile(userID);
+            return user;
+        }
     }
 
 }

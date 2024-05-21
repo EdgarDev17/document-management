@@ -297,8 +297,8 @@ namespace Conference.DAL
                                 Directory.CreateDirectory(directory);
                             }
 
-                            ruta = Path.Combine(directory, filename);
-                            newImg.Save(ruta);
+                            ruta = Path.Combine(directory);
+                           // newImg.Save(ruta);
 
                             using (var connection = _connection.Cnn)
                             {
@@ -309,15 +309,35 @@ namespace Conference.DAL
                                 parameters.Add("@p_url", ruta);
                                 parameters.Add("@p_name", filename);
                                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
+                                parameters.Add("@PictureFile", dbType: DbType.String, direction: ParameterDirection.Output);
                                 connection.Execute("sp_register_imagens", parameters, commandType: CommandType.StoredProcedure);
 
                                 response = parameters.Get<int>("@result");
+                                string oldFileName = parameters.Get<string>("@PictureFile");
 
 
-                                if (response==1)
+                                if (response == 1)
                                 {
+                                    ruta = Path.Combine(directory, filename);
                                     newImg.Save(ruta);
+
+                                }
+                                else if(response == 2)
+                                {
+                                    // Construir la ruta completa del archivo antiguo
+                                    string oldFilePath = Path.Combine(directory, oldFileName);
+
+                                    // Eliminar el archivo antiguo si existe
+                                    if (File.Exists(oldFilePath))
+                                    {
+                                        File.Delete(oldFilePath);
+                                    }
+
+                                    // Guardar el nuevo archivo
+                                    newImg.Save(ruta);
+
+
+
                                 }
                             }
                         }
@@ -352,6 +372,49 @@ namespace Conference.DAL
             return bitmap;
         }
 
+        //rEGRASAR LOS DATOS DEL USUARIO 
+
+        public UserPerfilEN GetUserProfile(int userId)
+        {
+            UserPerfilEN user = null;
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+
+                user = _connection.Cnn.Query<UserPerfilEN>("sp_user_perfil", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+
+
+                if (user != null && !string.IsNullOrEmpty(user.profilePictureUrl))
+                {
+                    user.imagenBase = ConvertFileToBase64(user.profilePictureUrl, user.profilePictureFile);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+                InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return user!;
+        }
+
+        private string ConvertFileToBase64(string filePath,string filename)
+        {
+
+            string FilePath = Path.Combine(filePath,filename);
+            if (File.Exists(FilePath))
+            {
+                byte[] fileBytes = File.ReadAllBytes(FilePath);
+                return Convert.ToBase64String(fileBytes);
+            }
+            return null!; 
+        }
 
         ////Registrar imagen de perfil de usuario
 
