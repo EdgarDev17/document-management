@@ -43,6 +43,12 @@ builder.Services.AddScoped<UserDAL>();
 // Registra la clase UserBL para inyección de dependencias
 builder.Services.AddScoped<UserBL>();
 
+// Registra la clase conferenceDAL para inyección de dependencias
+builder.Services.AddScoped<conferenceDAL>();
+
+// Registra la clase  ConferenceBL para inyección de dependencias
+builder.Services.AddScoped<ConferenceBL>();
+
 
 
 var app = builder.Build();
