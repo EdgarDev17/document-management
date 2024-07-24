@@ -76,7 +76,7 @@ namespace Conference.DAL
                 //Console.WriteLine("Error: " + ex.Message);
 
                 _connection.Cnn.Close();
-                InsertErrorLogSession("Error en egisterConference en conferenceDAL en  sp_registration_conference BD", ex.Message, userID);
+                InsertErrorLogSession("Error en registerConference en conferenceDAL en  sp_registration_conference BD", ex.Message, userID);
             }
             finally
             {
