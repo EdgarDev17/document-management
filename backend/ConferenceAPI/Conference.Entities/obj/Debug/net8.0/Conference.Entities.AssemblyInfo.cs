@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Conference.Entities")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b6abc28abdf66dde8fa1591e1d049644e147946")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4430dd83940564d1fc98693ffb0fe6d3f5d6d1f8")]
 [assembly: System.Reflection.AssemblyProductAttribute("Conference.Entities")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Conference.Entities")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

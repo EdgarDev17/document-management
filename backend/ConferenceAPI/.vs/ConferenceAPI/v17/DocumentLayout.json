@@ -3,28 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\userbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\userbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\certificatebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\certificatebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conference.dal\\conferencedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|solutionrelative:conference.dal\\conferencedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conference.dal\\certificatedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|solutionrelative:conference.dal\\certificatedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conferenceapi\\controllers\\registerusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|solutionrelative:conferenceapi\\controllers\\registerusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conferenceapi\\controllers\\conferencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|solutionrelative:conferenceapi\\controllers\\conferencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conferenceapi\\controllers\\certificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|solutionrelative:conferenceapi\\controllers\\certificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conferenceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|solutionrelative:conferenceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\conferencebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\conferencebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,84 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserBL.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\UserBL.cs",
-              "RelativeDocumentMoniker": "Ceonference.BL\\UserBL.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\UserBL.cs",
-              "RelativeToolTip": "Ceonference.BL\\UserBL.cs",
-              "ViewState": "AQIAAK0AAAAAAAAAAAAIwA0AAAAsAAAA",
+              "DocumentIndex": 1,
+              "Title": "CertificateDAL.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\CertificateDAL.cs",
+              "RelativeDocumentMoniker": "Conference.DAL\\CertificateDAL.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\CertificateDAL.cs",
+              "RelativeToolTip": "Conference.DAL\\CertificateDAL.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAAAAAB4AAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:51:13.05Z",
+              "WhenOpened": "2024-07-27T23:31:43.937Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "conferenceDAL.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\conferenceDAL.cs",
-              "RelativeDocumentMoniker": "Conference.DAL\\conferenceDAL.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\conferenceDAL.cs",
-              "RelativeToolTip": "Conference.DAL\\conferenceDAL.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "DocumentIndex": 0,
+              "Title": "CertificateBL.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\CertificateBL.cs",
+              "RelativeDocumentMoniker": "Ceonference.BL\\CertificateBL.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\CertificateBL.cs",
+              "RelativeToolTip": "Ceonference.BL\\CertificateBL.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAQwCAAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:51:10.369Z",
+              "WhenOpened": "2024-07-27T23:31:39.794Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "RegisterUserController.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\RegisterUserController.cs",
-              "RelativeDocumentMoniker": "ConferenceAPI\\Controllers\\RegisterUserController.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\RegisterUserController.cs",
-              "RelativeToolTip": "ConferenceAPI\\Controllers\\RegisterUserController.cs",
-              "ViewState": "AQIAAHEAAAAAAAAAAAAIwAAAAAAAAAAA",
+              "Title": "ConferenceBL.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\ConferenceBL.cs",
+              "RelativeDocumentMoniker": "Ceonference.BL\\ConferenceBL.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\ConferenceBL.cs",
+              "RelativeToolTip": "Ceonference.BL\\ConferenceBL.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAgwBYAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:50:55.824Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ConferenceController.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\ConferenceController.cs",
-              "RelativeDocumentMoniker": "ConferenceAPI\\Controllers\\ConferenceController.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\ConferenceController.cs",
-              "RelativeToolTip": "ConferenceAPI\\Controllers\\ConferenceController.cs",
-              "ViewState": "AQIAAGUAAAAAAAAAAAAwwBEAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:50:44.992Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CertificateController.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\CertificateController.cs",
-              "RelativeDocumentMoniker": "ConferenceAPI\\Controllers\\CertificateController.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\CertificateController.cs",
-              "RelativeToolTip": "ConferenceAPI\\Controllers\\CertificateController.cs",
-              "ViewState": "AQIAADIAAAAAAAAAAAAwwAkAAAAfAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:50:32.397Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Program.cs",
-              "RelativeDocumentMoniker": "ConferenceAPI\\Program.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Program.cs",
-              "RelativeToolTip": "ConferenceAPI\\Program.cs",
-              "ViewState": "AQIAACQAAAAAAAAAAAAAADIAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T04:44:41.353Z",
+              "WhenOpened": "2024-07-27T23:29:56.522Z",
               "EditorCaption": ""
             }
           ]

@@ -3,6 +3,7 @@
 using Conference.BL;
 using Conference.BL.Utils;
 using Conference.DAL;
+using Microsoft.Win32;
 using Volo.Abp.Data;
 using ConnectionStrings = Conference.DAL.ConnectionStrings;
 
@@ -52,6 +53,8 @@ builder.Services.AddScoped<ConferenceBL>();
 // Registra la clase  CertificateDAL para inyección de dependencias
 builder.Services.AddScoped<CertificateDAL>();
 
+// Registra la clase  CertificateBL para inyección de dependencias
+builder.Services.AddScoped<CertificateBL>();
 
 
 var app = builder.Build();
