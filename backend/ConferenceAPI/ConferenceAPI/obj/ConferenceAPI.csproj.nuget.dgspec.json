@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\wilber\\Videos\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj": {}
+    "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj": {
+    "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj",
+        "projectUniqueName": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj",
         "projectName": "Conference.BL",
-        "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj",
-        "packagesPath": "C:\\Users\\wilber\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\obj\\",
+        "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj",
+        "packagesPath": "C:\\Users\\Dimas\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\wilber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dimas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,17 +22,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj": {
-                "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj"
+              "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj": {
+                "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj"
               },
-              "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
-                "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
+              "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
+                "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
               }
             }
           }
@@ -56,6 +57,10 @@
               "target": "Package",
               "version": "[4.6.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2022.12.1, )"
+            },
             "jose-jwt": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -77,21 +82,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj": {
+    "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj",
+        "projectUniqueName": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj",
         "projectName": "Conference.DAL",
-        "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj",
-        "packagesPath": "C:\\Users\\wilber\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.DAL\\obj\\",
+        "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\Conference.DAL.csproj",
+        "packagesPath": "C:\\Users\\Dimas\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\wilber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dimas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -99,14 +104,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
-                "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
+              "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
+                "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
               }
             }
           }
@@ -171,21 +177,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
+    "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
+        "projectUniqueName": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
         "projectName": "Conference.Entities",
-        "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
-        "packagesPath": "C:\\Users\\wilber\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\obj\\",
+        "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
+        "packagesPath": "C:\\Users\\Dimas\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\wilber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dimas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -193,6 +199,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -231,21 +238,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\wilber\\Videos\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj": {
+    "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj",
         "projectName": "ConferenceAPI",
-        "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj",
-        "packagesPath": "C:\\Users\\wilber\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\ConferenceAPI\\obj\\",
+        "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\ConferenceAPI.csproj",
+        "packagesPath": "C:\\Users\\Dimas\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\wilber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dimas\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -253,17 +260,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj": {
-                "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj"
+              "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj": {
+                "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Conference.BL.csproj"
               },
-              "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
-                "projectPath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
+              "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj": {
+                "projectPath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj"
               }
             }
           }
@@ -283,6 +291,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2022.12.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -311,7 +323,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

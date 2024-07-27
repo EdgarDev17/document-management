@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "33M9DFveOgyQT3LyAQAhOwUEIvRkeCco5dHxwC9to4fC+zf3SQ2d6M8pczqwWE6+MuHh1LFR5j9ONFPg+Fev6w==",
+  "dgSpecHash": "rxRDxSMWQPM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\wilber\\Videos\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
+  "projectFilePath": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\Conference.Entities.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
