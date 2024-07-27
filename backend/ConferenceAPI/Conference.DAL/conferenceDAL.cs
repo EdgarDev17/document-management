@@ -44,10 +44,11 @@ namespace Conference.DAL
 
         //Registrar una conferencia 
 
-        public int RegisterConference(int userID, int RollID, string nameInstitution, string webSiteInstitution, string contactPhoneInstitution, string nameConference,
+        public (int result, int conferenceID) RegisterConference(int userID, int RollID, string nameInstitution, string webSiteInstitution, string contactPhoneInstitution, string nameConference,
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
         {
             int result = 0;
+            int conferenceID = 0;
             try
             {
                 _connection.Cnn.Open();
@@ -66,10 +67,11 @@ namespace Conference.DAL
                 parameters.Add("@p_areaID", areaID);
                 parameters.Add("@p_documentAttempt", docuementAttempt);
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
+                parameters.Add("@conferenceID", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 _connection.Cnn.Execute("sp_registration_conference", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
+                conferenceID = parameters.Get<int>("@conferenceID");
             }
             catch (Exception ex)
             {
@@ -83,8 +85,169 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
 
+            return (result, conferenceID);
+        }
+
+        //Registrar una conferencia topics
+
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@ p_Name", name);
+                parameters.Add("@p_Description", description);
+                parameters.Add("@p_Location", location);
+                parameters.Add("@p_StartHour ", startHour);
+                parameters.Add("@p_StartEnd", startEnd);
+                parameters.Add("@p_conferenceID", conferenceId);
+                parameters.Add("@p_userID", userId);
+
+                //  parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                _connection.Cnn.Execute("sp_insert_temp_conferencetopics", parameters, commandType: CommandType.StoredProcedure);
+
+                // result = parameters.Get<int>("@result");
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+                result = 1;
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en registerConferenceTopics en conferenceDAL en sp_insert_temp_conferencetopics BD", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
             return result;
         }
+
+        //actualizar una conferencia topics
+
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_TopicsID", topicsID);
+                parameters.Add("@ p_Name", name);
+                parameters.Add("@p_Description", description);
+                parameters.Add("@p_Location", location);
+                parameters.Add("@p_StartHour ", startHour);
+                parameters.Add("@p_StartEnd", startEnd);
+                parameters.Add("@p_conferenceID", conferenceId);
+                parameters.Add("@p_userID", userId);
+
+                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_update_temp_conferencetopics", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+              
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en actualizarConferenceTopics en conferenceDAL en  sp_update_temp_conferencetopics BD", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+
+        //eliminar una conferencia topics
+
+        public int DeleteConferenceTopics( int topicsID,int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_TopicsID", topicsID);
+            
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_delete_temp_conferencetopics", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en eliminarConferenceTopics en conferenceDAL en sp_delete_temp_conferencetopics ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+
+        //mover una conferencia topics
+
+        public int MoveConferenceTopics(int conferenceID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_conferenceID", conferenceID);
+                parameters.Add("@p_userID", userId);
+
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_Move_Topics", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en moveConferenceTopics en conferenceDAL en sp_Move_Topics ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
 
         //Agregar un log  espeficifico de un sessionID
 
@@ -111,5 +274,29 @@ namespace Conference.DAL
             }
         }
 
+        //listar topics de conferencia
+
+        public List<TopicsEN> GetTopics(int userID, int conferenceID)
+        {
+            List<TopicsEN> areas = new List<TopicsEN>();
+            try
+            {
+                _connection.Cnn.Open();
+
+                areas = _connection.Cnn.Query<TopicsEN>("sp_list_temp_conferencetopics", commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_conferenceID",conferenceID);
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_list_temp_conferencetopics", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return areas;
+        }
     }
 }
