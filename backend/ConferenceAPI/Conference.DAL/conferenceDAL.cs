@@ -99,10 +99,10 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
 
-                parameters.Add("@ p_Name", name);
+                parameters.Add("@p_Name", name);
                 parameters.Add("@p_Description", description);
                 parameters.Add("@p_Location", location);
-                parameters.Add("@p_StartHour ", startHour);
+                parameters.Add("@p_StartHour", startHour);
                 parameters.Add("@p_StartEnd", startEnd);
                 parameters.Add("@p_conferenceID", conferenceId);
                 parameters.Add("@p_userID", userId);
@@ -139,10 +139,10 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_TopicsID", topicsID);
-                parameters.Add("@ p_Name", name);
+                parameters.Add("@p_Name", name);
                 parameters.Add("@p_Description", description);
                 parameters.Add("@p_Location", location);
-                parameters.Add("@p_StartHour ", startHour);
+                parameters.Add("@p_StartHour", startHour);
                 parameters.Add("@p_StartEnd", startEnd);
                 parameters.Add("@p_conferenceID", conferenceId);
                 parameters.Add("@p_userID", userId);
@@ -281,14 +281,15 @@ namespace Conference.DAL
             List<TopicsEN> areas = new List<TopicsEN>();
             try
             {
+                var parameters = new DynamicParameters();
                 _connection.Cnn.Open();
-
-                areas = _connection.Cnn.Query<TopicsEN>("sp_list_temp_conferencetopics", commandType: CommandType.StoredProcedure).AsList();
+                parameters.Add("@p_conferenceID", conferenceID);
+                areas = _connection.Cnn.Query<TopicsEN>("sp_list_temp_conferencetopics", parameters, commandType: CommandType.StoredProcedure).AsList();
             }
             catch (Exception ex)
             {
-                var parameters = new DynamicParameters();
-                parameters.Add("@p_conferenceID",conferenceID);
+               
+               
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_list_temp_conferencetopics", ex.Message, userID);
             }

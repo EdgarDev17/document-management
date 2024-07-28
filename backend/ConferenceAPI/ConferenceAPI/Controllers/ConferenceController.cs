@@ -237,7 +237,7 @@ namespace ConferenceAPI.Controllers
             }
         }
 
-        [HttpDelete("DeleteConferenceTopics")]
+        [HttpPost("DeleteConferenceTopics")]
         // (Summary = "Deletes an existing conference", Description = "Requires Authorization-Token in the header")
         public ActionResult<IResponse> DeleteConferenceTopics([FromBody] ConferenceTopics data)
         {
@@ -255,12 +255,12 @@ namespace ConferenceAPI.Controllers
             if (user != null)
             {
                 var result = _conferenceBL.DeleteConferenceTopics(data.topicsID, user.UserID);
-                if (result == 0)
+                if (result == 1)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
                     return Ok(response);
                 }
-                else if (result == 1)
+                else if (result == 0)
                 {
                     var response = new GenericApiRespons { HttpCode = 404, Message = "Conference not found" };
                     return NotFound(response);
