@@ -68,7 +68,7 @@ namespace Conference.DAL
                 parameters.Add("@p_documentAttempt", docuementAttempt);
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@conferenceID", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                _connection.Cnn.Execute("sp_registration_conference", parameters, commandType: CommandType.StoredProcedure);
+                _connection.Cnn.Execute("sp_registration_conferences", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
                 conferenceID = parameters.Get<int>("@conferenceID");
@@ -298,6 +298,137 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
             return areas;
+        }
+
+        //listar conferencias de manera geral 
+
+        public List<ConferencesDetailsEN> get_conferences_general(int userID)
+        {
+            List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+              
+                conferences= _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conferences_general",  commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_get_conferences_general", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+
+
+        //listar conferencias de manera especifico por conferenceID
+
+        public List<ConferencesDetailsEN> get_conferences_specific(int conferenceID,int userID)
+        {
+            List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_conferenceID", conferenceID);
+                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conference_details", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_get_conference_details`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+
+        //listar conferencias de manera especifico por usuario
+
+        public List<ConferencesDetailsEN> get_conferences_specific_by_user( int userID)
+        {
+            List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_userID", userID);
+                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conference_details_by_user", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_get_conference_details`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+
+        //listar topics de conferencias por conferenceID
+
+        public List<ListTopicsEN> get_ListTopicsByConferenceID(int conferenceID,int userID)
+        {
+            List<ListTopicsEN> topics = new List<ListTopicsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_conferenceID", conferenceID);
+                topics = _connection.Cnn.Query<ListTopicsEN>("sp_ListTopicsByConferenceID", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_ListTopicsByConferenceID", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return topics;
+        }
+
+        //listar topics de conferencias por TopicsID
+
+        public List<ListTopicsEN> get_ListTopicsByTopicsID(int topicsID, int userID)
+        {
+            List<ListTopicsEN> topics = new List<ListTopicsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_topicsID", topicsID);
+                topics = _connection.Cnn.Query<ListTopicsEN>("sp_ListTopicsByTopicsID", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_ListTopicsByTopicsID", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return topics;
         }
     }
 }

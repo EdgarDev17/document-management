@@ -72,7 +72,38 @@ namespace Conference.BL
             Topics = _conferenceDAL.GetTopics(userID, conferenceID);
             return Topics;
         }
+        public List<ConferencesDetailsEN> get_conferences_general(int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_general(userID);
+            return conference;
+        }
+        public List<ConferencesDetailsEN> get_conferences_specific(int conferenceID, int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_specific(conferenceID,userID);
+            return conference;
+        }
 
+        public List<ConferencesDetailsEN> get_conferences_specific_by_user(int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_specific_by_user( userID);
+            return conference;
+        }
+
+        public List<ListTopicsEN> get_ListTopicsByConferenceID(int conferenceID,int userID)
+        {
+            List<ListTopicsEN> conference = new List<ListTopicsEN>();
+            conference = _conferenceDAL.get_ListTopicsByConferenceID(conferenceID,userID);
+            return conference;
+        }
+        public List<ListTopicsEN> get_ListTopicsByTopicsID(int TopicsID, int userID)
+        {
+            List<ListTopicsEN> conference = new List<ListTopicsEN>();
+            conference = _conferenceDAL.get_ListTopicsByTopicsID(TopicsID, userID);
+            return conference;
+        }
 
         public int MoveConferenceTopics(int conferenceID, int userId)
         {

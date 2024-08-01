@@ -12,4 +12,9 @@
         public int topicsID { get; set; }
 
     }
+    public class ConferenceTopicstopicsID
+    {
+        public int topicsID { get; set; }
+    }
+    
 }
