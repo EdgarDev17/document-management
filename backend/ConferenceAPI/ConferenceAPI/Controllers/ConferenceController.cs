@@ -572,5 +572,99 @@ namespace ConferenceAPI.Controllers
             });
 
         }
+
+        [HttpPost("ConferenceAssignUserTopic")]
+        // (Summary = "Registers a new conference", Description = "Requires Authorization-Token in the header")
+        public ActionResult<IResponse> ConferenceAssignUserTopic([FromBody] ConferenceAssignUserTopic data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+
+
+            if (user != null)
+            {
+                var (result, message) = _conferenceBL.RegisterAssignUserTopic(data.UserID, data.TopicsID, data.RolID);
+                if (result == 1)
+                {
+                    var response = new GenericApiRespons { HttpCode = 200, Message = message };
+                    return Ok(response);
+                }
+
+                else if (result == 0)
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = message };
+                    return Conflict(response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+            [HttpGet]
+            [Route("GetConferenceUsersDetails")]
+            public ActionResult<IResponse> GetConferenceUsersDetails(int conferenceID)
+            {
+
+                if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+                {
+                    return BadRequest(new GenericApiRespons
+                    {
+                        HttpCode = 400,
+                        Message = "Authorization-Token must be provided"
+                    });
+                }
+
+                var user = _userBL.VerifyPersonAuthentication(token);
+                if (user != null)
+                {
+
+                    List<ConferencesDatailsUser> User = _conferenceBL.GetConferenceUsersDetails(conferenceID, user.UserID);
+
+
+
+                    if (User != null)
+                    {
+                        return Ok(new { UserConference = User });
+                    }
+                    else
+                    {
+                        var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                        return Conflict(response);
+                    }
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+
+            }
+
+
+
+        
     }
 }

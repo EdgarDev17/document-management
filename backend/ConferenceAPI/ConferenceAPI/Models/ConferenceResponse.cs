@@ -10,6 +10,7 @@ namespace ConferenceAPI.Models
 
     public class ConferenceDetailsResponse : IResponse
     {
-        public List<ConferencesDetailsEN>? Conference { get; set; }
+        public List<ConferencesDetailsEN>? 
+            Conference { get; set; }
     }
 }

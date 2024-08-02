@@ -430,5 +430,68 @@ namespace Conference.DAL
             }
             return topics;
         }
+
+        //Registrar una conferencia 
+
+        public (int result, string message) RegisterAssignUserTopic(int userID,int TopicsID, int RollID)
+        {
+            int result = 0;
+            string message = string.Empty;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userID);
+                parameters.Add("@p_RollID", RollID);
+                parameters.Add("@p_TopicsID", TopicsID);
+             
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@message", dbType: DbType.String,size:255, direction: ParameterDirection.Output);
+                _connection.Cnn.Execute("sp_assign_user_topic", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+                message = parameters.Get<string>("@message");
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en registerConference en conferenceDAL en  sp_assign_user_topic BD", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return (result, message);
+        }
+
+        //listar usuarios de la conferencias por conferencID
+
+        public List<ConferencesDatailsUser> GetConferenceUsersDetails(int conferenceID, int userID)
+        {
+            List<ConferencesDatailsUser> Users = new List<ConferencesDatailsUser>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_topicsID", conferenceID);
+                Users= _connection.Cnn.Query<ConferencesDatailsUser>("GetConferenceUsersDetails", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  GetConferenceUsersDetails", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return Users;
+        }
     }
 }

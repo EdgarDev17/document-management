@@ -16,5 +16,13 @@
     {
         public int topicsID { get; set; }
     }
-    
+
+    public class ConferenceAssignUserTopic
+        
+    {
+        public int UserID { get; set; }
+        public int TopicsID { get; set; }
+        public int RolID { get; set; }
+    }
+
 }
