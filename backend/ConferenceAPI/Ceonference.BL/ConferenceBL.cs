@@ -29,7 +29,7 @@ namespace Conference.BL
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
         {
 
-            
+
 
             var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, nameInstitution, webSiteInstitution, contactPhoneInstitution, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
             return (result, conferenceID);
@@ -41,12 +41,12 @@ namespace Conference.BL
 
             int result = 0;
 
-            result = _conferenceDAL.RegisterConferenceTopics( name,  description,  location,  startHour,  startEnd,  conferenceId,  userId);
+            result = _conferenceDAL.RegisterConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId);
             return result;
 
         }
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId,int topicsID)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID)
         {
 
             int result = 0;
@@ -66,13 +66,44 @@ namespace Conference.BL
 
         }
 
-        public List<TopicsEN> GetTopics(int userID,int conferenceID)
+        public List<TopicsEN> GetTopics(int userID, int conferenceID)
         {
             List<TopicsEN> Topics = new List<TopicsEN>();
             Topics = _conferenceDAL.GetTopics(userID, conferenceID);
             return Topics;
         }
+        public List<ConferencesDetailsEN> get_conferences_general(int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_general(userID);
+            return conference;
+        }
+        public List<ConferencesDetailsEN> get_conferences_specific(int conferenceID, int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_specific(conferenceID, userID);
+            return conference;
+        }
 
+        public List<ConferencesDetailsEN> get_conferences_specific_by_user(int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.get_conferences_specific_by_user(userID);
+            return conference;
+        }
+
+        public List<ListTopicsEN> get_ListTopicsByConferenceID(int conferenceID, int userID)
+        {
+            List<ListTopicsEN> conference = new List<ListTopicsEN>();
+            conference = _conferenceDAL.get_ListTopicsByConferenceID(conferenceID, userID);
+            return conference;
+        }
+        public List<ListTopicsEN> get_ListTopicsByTopicsID(int TopicsID, int userID)
+        {
+            List<ListTopicsEN> conference = new List<ListTopicsEN>();
+            conference = _conferenceDAL.get_ListTopicsByTopicsID(TopicsID, userID);
+            return conference;
+        }
 
         public int MoveConferenceTopics(int conferenceID, int userId)
         {
@@ -82,6 +113,22 @@ namespace Conference.BL
             result = _conferenceDAL.MoveConferenceTopics(conferenceID, userId);
             return result;
 
+        }
+
+
+        public (int result, string message) RegisterAssignUserTopic(int userID, int TopicsID, int RollID)
+        {
+
+            var (result, message) = _conferenceDAL.RegisterAssignUserTopic(userID, TopicsID, RollID);
+            return (result, message);
+
+        }
+
+        public List<ConferencesDatailsUser> GetConferenceUsersDetails(int conferenceID, int userID)
+        {
+            List<ConferencesDatailsUser> conferenceUser = new List<ConferencesDatailsUser>();
+            conferenceUser = _conferenceDAL.GetConferenceUsersDetails(conferenceID, userID);
+            return conferenceUser;
         }
     }
 }

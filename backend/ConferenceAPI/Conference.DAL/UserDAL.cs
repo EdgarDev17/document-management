@@ -318,8 +318,8 @@ namespace Conference.DAL
 
                                 if (response == 1)
                                 {
-                                    ruta = Path.Combine(directory, filename);
-                                    newImg.Save(ruta);
+                                   string ruta2 = Path.Combine(directory,filename);
+                                    newImg.Save(ruta2);
 
                                 }
                                 else if(response == 2)
@@ -331,10 +331,18 @@ namespace Conference.DAL
                                     if (File.Exists(oldFilePath))
                                     {
                                         File.Delete(oldFilePath);
+                                        string ruta2 = Path.Combine(directory, filename);
+                                        // Guardar el nuevo archivo
+                                        newImg.Save(ruta2);
+                                    }
+                                    else
+                                    {
+                                        // Guardar el nuevo archivo
+                                        string ruta2 = Path.Combine(directory, filename);
+                                        newImg.Save(ruta2);
+
                                     }
 
-                                    // Guardar el nuevo archivo
-                                    newImg.Save(ruta);
 
 
 

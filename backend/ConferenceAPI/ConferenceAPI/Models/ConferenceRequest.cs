@@ -17,4 +17,9 @@
 
 
     }
+
+    public class ConferenceRequestID
+    {
+        public int ConferenceID { get; set; }
+    }
 }
