@@ -8,18 +8,26 @@ namespace Conference.Entities
 {
     public class CertificateEN
     {
-        public int UserId { get; set; }
-        public int TopicId { get; set; }
-        public string InstitutionName { get; set; }
-        public string Content { get; set; }
-        public string LogoPath { get; set; }
-        public string BackgroundImagePath { get; set; }
+        public int DiplomaID { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Signed { get; set; }
+        public string CongressLogo { get; set; }
+        public string CongressSeal { get; set; }
+        public int TopicsID { get; set; }
+        public int UserID { get; set; }
+        public DateTime RegDate { get; set; }
+        public DateTime DateModified { get; set; }
+        public string BackGroundImgURL { get; set; }
         public string OrganizerName1 { get; set; }
-        public string OrganizerTitle1 { get; set; }
         public string OrganizerName2 { get; set; }
+        public string OrganizerTitle1 { get; set; }
         public string OrganizerTitle2 { get; set; }
         public string SignatureImagePath1 { get; set; }
         public string SignatureImagePath2 { get; set; }
-        public string SealLogo { get; set; }
+        public string EventDate { get; set; }
+        public string ParticipantName { get; set; }
+        public string InstitutionName { get; set; }
+        public string TitleTopic { get; set; }
     }
 }

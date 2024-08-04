@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
+using MimeKit.Utils;
 
 
 namespace Conference.BL.Utils
@@ -19,7 +20,7 @@ namespace Conference.BL.Utils
             settingsEmail = SettingsEmail;
         }
 
-        public  void Send(string Email,string Title, string MensajeBody)
+        public  void Send(string Email,string Title, string MensajeBody, byte[] pdfData)
         {
 
             try
@@ -34,9 +35,18 @@ namespace Conference.BL.Utils
                 // Construye el cuerpo del mensaje utilizando HTML
                 BodyBuilder CuerpoMensaje = new BodyBuilder();
 
-                CuerpoMensaje.HtmlBody = MensajeBody;
+                CuerpoMensaje.HtmlBody = MensajeBody;         
+
+                if(pdfData.Length > 0 && pdfData != null)
+                { 
+
+                    CuerpoMensaje.Attachments.Add("Diploma_participante.pdf",pdfData,new ContentType("application", "pdf"));
+                }
 
                 mensaje.Body = CuerpoMensaje.ToMessageBody();
+
+                // Evitar caer es SPAM (generando un ID unico)
+                mensaje.MessageId = MimeUtils.GenerateMessageId();
 
                 SmtpClient ClienteSmtp = new SmtpClient();
                 ClienteSmtp.CheckCertificateRevocation = false;

@@ -29,8 +29,13 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_TopicsID", topicId);
                 parameters.Add("@p_UserID", userID);
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output);       
 
-                certificates = _connection.Cnn.Query<CertificateEN>("CertificateEN", parameters, commandType: CommandType.StoredProcedure).AsList();
+                certificates = _connection.Cnn.Query<CertificateEN>("sp_get_diplomadata", parameters, commandType: CommandType.StoredProcedure).AsList();
+
+                int result = parameters.Get<int>("@result");
+                message = parameters.Get<string>("@message");
             }
             catch (Exception ex)
             {
@@ -69,6 +74,7 @@ namespace Conference.DAL
                 parameters.Add("@p_OrganizerTitle2", OrganizerTitle2);
                 parameters.Add("@p_SignatureImagePath1", SignatureImagePath1);
                 parameters.Add("@p_SignatureImagePath2", SignatureImagePath2);
+                parameters.Add("@p_InstitutionName", InstitutionName);
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output);
 

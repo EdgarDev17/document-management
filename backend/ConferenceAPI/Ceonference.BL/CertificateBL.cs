@@ -1,5 +1,7 @@
-﻿using Conference.DAL;
+﻿using Conference.BL.Utils;
+using Conference.DAL;
 using Conference.Entities;
+using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,12 @@ namespace Conference.BL
     public class CertificateBL
     {
         private readonly CertificateDAL certificateDAL;
+        private readonly EmailSend emailSend;
 
-        public CertificateBL(CertificateDAL certificateDAL)
+        public CertificateBL(CertificateDAL certificateDAL, EmailSend emailSend)
         {
             this.certificateDAL = certificateDAL;
+            this.emailSend = emailSend;
         }
         public List<CertificateEN> GetCertificatesData(int UserId, int TopicId, ref string message)
         {
@@ -23,6 +27,24 @@ namespace Conference.BL
 
             certificatesLst = this.certificateDAL.GetCertificatesData(UserId, TopicId,ref message);
 
+            if(certificatesLst.Count > 0)
+            {
+                foreach (var item in certificatesLst)
+                {
+                    string RegDate = string.Empty;
+                    string DateModified = string.Empty;
+                    RegDate = item.RegDate.ToString();
+                    DateModified = item.DateModified.ToString();
+
+                    byte[] pdf =Certificates.GeneratePDF(item.Title,item.Description,item.Signed,item.CongressLogo,item.CongressSeal,
+                        RegDate,DateModified,item.BackGroundImgURL,item.OrganizerName1,item.OrganizerName2,
+                        item.OrganizerTitle1,item.OrganizerTitle2,item.SignatureImagePath1,item.SignatureImagePath2,item.EventDate,
+                        item.ParticipantName,item.InstitutionName,item.TitleTopic);
+
+                    emailSend.Send("perez.vasquez.1812@gmail.com", "Prueba", "Diploma de participacion", pdf);
+
+                }
+            }
             return certificatesLst;
         }
 

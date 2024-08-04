@@ -7,12 +7,28 @@
       "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\certificatebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\utils\\emailsend.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\utils\\emailsend.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\utils\\certificates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\utils\\certificates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conference.dal\\certificatedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9FB10E8B-F0F1-46E9-8117-B0BCF9DC77A2}|Conference.DAL\\Conference.DAL.csproj|solutionrelative:conference.dal\\certificatedal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\conferencebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\conferencebl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conferenceapi\\controllers\\certificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C35767E-BB9D-496F-8ABB-B5D66768284F}|ConferenceAPI\\ConferenceAPI.csproj|solutionrelative:conferenceapi\\controllers\\certificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8DB99F52-7B10-4D77-BBEC-4183C6E7D69E}|Conference.Entities\\Conference.Entities.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\conference.entities\\certificateen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8DB99F52-7B10-4D77-BBEC-4183C6E7D69E}|Conference.Entities\\Conference.Entities.csproj|solutionrelative:conference.entities\\certificateen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|c:\\users\\dimas\\documents\\proyectos\\document-management\\backend\\conferenceapi\\ceonference.bl\\userbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79065824-024B-47EA-A100-547A2AC986BE}|Ceonference.BL\\Conference.BL.csproj|solutionrelative:ceonference.bl\\userbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,20 +38,79 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "CertificateDAL.cs",
               "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\CertificateDAL.cs",
               "RelativeDocumentMoniker": "Conference.DAL\\CertificateDAL.cs",
               "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.DAL\\CertificateDAL.cs",
               "RelativeToolTip": "Conference.DAL\\CertificateDAL.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAAAAB4AAAA0AAAA",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAowCYAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T23:31:43.937Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-01T05:16:26.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CertificateController.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\CertificateController.cs",
+              "RelativeDocumentMoniker": "ConferenceAPI\\Controllers\\CertificateController.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\ConferenceAPI\\Controllers\\CertificateController.cs",
+              "RelativeToolTip": "ConferenceAPI\\Controllers\\CertificateController.cs",
+              "ViewState": "AQIAAE4AAAAAAAAAAAAIwFwAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-01T05:16:26.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EmailSend.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Utils\\EmailSend.cs",
+              "RelativeDocumentMoniker": "Ceonference.BL\\Utils\\EmailSend.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Utils\\EmailSend.cs",
+              "RelativeToolTip": "Ceonference.BL\\Utils\\EmailSend.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAIwCoAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-01T04:32:08.058Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UserBL.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\UserBL.cs",
+              "RelativeDocumentMoniker": "Ceonference.BL\\UserBL.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\UserBL.cs",
+              "RelativeToolTip": "Ceonference.BL\\UserBL.cs",
+              "ViewState": "AQIAAIQAAAAAAAAAAAAowJQAAAA+AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T03:22:08.712Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CertificateEN.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\CertificateEN.cs",
+              "RelativeDocumentMoniker": "Conference.Entities\\CertificateEN.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Conference.Entities\\CertificateEN.cs",
+              "RelativeToolTip": "Conference.Entities\\CertificateEN.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAAswB4AAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T03:11:00.418Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Certificates.cs",
+              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Utils\\Certificates.cs",
+              "RelativeDocumentMoniker": "Ceonference.BL\\Utils\\Certificates.cs",
+              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\Utils\\Certificates.cs",
+              "RelativeToolTip": "Ceonference.BL\\Utils\\Certificates.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T03:09:30.894Z"
             },
             {
               "$type": "Document",
@@ -45,22 +120,9 @@
               "RelativeDocumentMoniker": "Ceonference.BL\\CertificateBL.cs",
               "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\CertificateBL.cs",
               "RelativeToolTip": "Ceonference.BL\\CertificateBL.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAQwCAAAAAJAAAA",
+              "ViewState": "AQIAABcAAAAAAAAAAAAcwCsAAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-27T23:31:39.794Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ConferenceBL.cs",
-              "DocumentMoniker": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\ConferenceBL.cs",
-              "RelativeDocumentMoniker": "Ceonference.BL\\ConferenceBL.cs",
-              "ToolTip": "C:\\Users\\Dimas\\Documents\\Proyectos\\document-management\\backend\\ConferenceAPI\\Ceonference.BL\\ConferenceBL.cs",
-              "RelativeToolTip": "Ceonference.BL\\ConferenceBL.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAgwBYAAAAZAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-27T23:29:56.522Z",
               "EditorCaption": ""
             }
           ]

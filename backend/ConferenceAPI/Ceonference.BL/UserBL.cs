@@ -146,7 +146,7 @@ namespace Conference.BL
 ";
 
 
-                _emailSend.Send(email, title, mensajeBody);
+                _emailSend.Send(email, title, mensajeBody,[]);
 
 
 

@@ -23,14 +23,14 @@ namespace ConferenceAPI.Controllers
         [HttpPost("SaveCertificateConfigs")]
         public ActionResult<IResponse> SaveCertificateConfigs([FromBody] CertificateRequest certificateRequest)
         {
-            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            /*if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {
                 return BadRequest(new GenericApiRespons
                 {
                     HttpCode = 400,
                     Message = "Authorization-Token must be provided"
                 });
-            }
+            }*/
 
             //var user = _userBL.VerifyPersonAuthentication(token);
             var user = "";
@@ -94,7 +94,9 @@ namespace ConferenceAPI.Controllers
             if (user == string.Empty)
             {
                 string message = string.Empty;
-                int result = this.certificateBL.( ref message);
+                int result = 1;
+
+                var lst = this.certificateBL.GetCertificatesData(userId, topicId, ref message);
 
                 if (result == 1)
                 {

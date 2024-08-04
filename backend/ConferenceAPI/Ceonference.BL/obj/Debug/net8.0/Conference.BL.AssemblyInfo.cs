@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Conference.BL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4430dd83940564d1fc98693ffb0fe6d3f5d6d1f8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4c2eb75e4e8ecc246433fe18c6a5ef34c478ff69")]
 [assembly: System.Reflection.AssemblyProductAttribute("Conference.BL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Conference.BL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
