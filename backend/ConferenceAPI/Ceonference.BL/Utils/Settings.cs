@@ -9,6 +9,6 @@ namespace Conference.BL.Utils
     public class Settings
     {
         public string TiempoVidaToken { get; set; }
-       
+        public string RutaArchivos { get; set; }
     }
 }

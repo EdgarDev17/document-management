@@ -1,9 +1,8 @@
 ﻿using Conference.BL;
-using Conference.Entities;
+using Conference.BL.Utils;
 using ConferenceAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Extensions.Options;
 
 namespace ConferenceAPI.Controllers
 {
@@ -13,15 +12,23 @@ namespace ConferenceAPI.Controllers
     {
         private readonly UserBL _userBL;
         private readonly CertificateBL certificateBL;
+        private readonly IHttpContextAccessor httpContext;
+        private readonly IWebHostEnvironment env;
+        private readonly IOptions<Settings> settings;
+        public readonly string container = "certificates";
 
-        public CertificateController(UserBL _userBL,CertificateBL certificateBL)
+        public CertificateController(UserBL _userBL,CertificateBL certificateBL, IHttpContextAccessor httpContext,
+            IWebHostEnvironment env, IOptions<Settings> settings)
         {
             this._userBL = _userBL;
             this.certificateBL = certificateBL;
+            this.httpContext = httpContext;
+            this.env = env;
+            this.settings = settings;
         }
 
         [HttpPost("SaveCertificateConfigs")]
-        public ActionResult<IResponse> SaveCertificateConfigs([FromBody] CertificateRequest certificateRequest)
+        public ActionResult<IResponse> SaveCertificateConfigs([FromForm] CertificateRequest certificateRequest)
         {
             /*if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {
@@ -37,10 +44,49 @@ namespace ConferenceAPI.Controllers
             if (user == string.Empty)
             {
                 string message = string.Empty;
+                string logoPath = string.Empty;
+                string signatureImagePath1 = string.Empty;
+                string signatureImagePath2 = string.Empty;
+                string sealLogo = string.Empty;
+
+                if (!Directory.Exists(settings.Value.RutaArchivos))
+                {
+                    //env.WebRootPath = Path.Combine(env.ContentRootPath, "wwwroot");
+
+                    Directory.CreateDirectory(settings.Value.RutaArchivos);
+                }
+
+                string folder = Path.Combine(settings.Value.RutaArchivos, container);
+
+                if (certificateRequest.LogoPath != null)
+                {
+                  logoPath = LocalFileSaver.SaveLocalFile(httpContext.HttpContext.Request.Scheme,httpContext.HttpContext.Request.Host.ToString(),
+                        container,folder,certificateRequest.LogoPath);
+                }
+
+                if (certificateRequest.SignatureImagePath1 != null)
+                {
+                   signatureImagePath1 = LocalFileSaver.SaveLocalFile(httpContext.HttpContext.Request.Scheme, httpContext.HttpContext.Request.Host.ToString(),
+                        container, folder, certificateRequest.SignatureImagePath1);
+                }
+
+                if (certificateRequest.SignatureImagePath2 != null)
+                {
+                    signatureImagePath2 = LocalFileSaver.SaveLocalFile(httpContext.HttpContext.Request.Scheme, httpContext.HttpContext.Request.Host.ToString(),
+                         container, folder, certificateRequest.SignatureImagePath2);
+                }
+
+                if (certificateRequest.SealLogo != null)
+                {
+                    signatureImagePath1 = LocalFileSaver.SaveLocalFile(httpContext.HttpContext.Request.Scheme, httpContext.HttpContext.Request.Host.ToString(),
+                         container, folder, certificateRequest.SealLogo);
+                }
+
                 int result = this.certificateBL.SaveCertificateConfigs(certificateRequest.UserId, certificateRequest.TopicId, certificateRequest.InstitutionName,
-                             certificateRequest.Content, certificateRequest.LogoPath, certificateRequest.BackgroundImagePath,
-                             certificateRequest.OrganizerName1, certificateRequest.OrganizerTitle1, certificateRequest.OrganizerName2, certificateRequest.OrganizerTitle2, certificateRequest.SignatureImagePath1, 
-                             certificateRequest.SignatureImagePath2, certificateRequest.SealLogo,ref message);
+                             certificateRequest.Content, logoPath, certificateRequest.BackgroundImagePath,
+                             certificateRequest.OrganizerName1, certificateRequest.OrganizerTitle1, certificateRequest.OrganizerName2, 
+                             certificateRequest.OrganizerTitle2, signatureImagePath1, 
+                             signatureImagePath2, sealLogo,ref message);
 
                 if (result == 1)
                 {

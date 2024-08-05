@@ -41,7 +41,7 @@ namespace Conference.BL
                         item.OrganizerTitle1,item.OrganizerTitle2,item.SignatureImagePath1,item.SignatureImagePath2,item.EventDate,
                         item.ParticipantName,item.InstitutionName,item.TitleTopic);
 
-                    emailSend.Send("perez.vasquez.1812@gmail.com", "Prueba", "Diploma de participacion", pdf);
+                    emailSend.Send(item.Email, "Certificado participación", String.Empty, pdf);
 
                 }
             }

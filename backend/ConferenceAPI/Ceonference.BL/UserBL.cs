@@ -146,7 +146,7 @@ namespace Conference.BL
 ";
 
 
-                _emailSend.Send(email, title, mensajeBody,[]);
+                _emailSend.Send(email, title, mensajeBody, []);
 
 
 
@@ -304,7 +304,7 @@ namespace Conference.BL
         {
             int result;
 
-            result = _userDAL.RegisterImagens(image,extension,UserID);
+            result = _userDAL.RegisterImagens(image, extension, UserID);
 
             return result;
         }
@@ -313,7 +313,7 @@ namespace Conference.BL
         public UserPerfilEN GetUserProfile(int userID)
         {
             UserPerfilEN user = new UserPerfilEN();
-            user=_userDAL.GetUserProfile(userID);
+            user = _userDAL.GetUserProfile(userID);
             return user;
         }
     }
