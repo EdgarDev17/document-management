@@ -9,6 +9,8 @@
         public DateTime startHour { get; set; }
         public DateTime StartEnd { get; set; }
         public int conferenceID { get; set; }
+        public int TotalSpeakers { get; set; }
+        public int TotalAttendees { get; set; }
         public int topicsID { get; set; }
 
     }
