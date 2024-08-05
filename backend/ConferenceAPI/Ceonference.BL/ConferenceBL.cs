@@ -36,22 +36,22 @@ namespace Conference.BL
 
         }
 
-        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId,int TotalAttendees, int TotalSpeakers)
         {
 
             int result = 0;
 
-            result = _conferenceDAL.RegisterConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId);
+            result = _conferenceDAL.RegisterConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId,TotalAttendees,TotalSpeakers);
             return result;
 
         }
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees,int TotalSpeakers)
         {
 
             int result = 0;
 
-            result = _conferenceDAL.UpdateConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId, topicsID);
+            result = _conferenceDAL.UpdateConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId, topicsID,TotalAttendees,TotalSpeakers);
             return result;
 
         }

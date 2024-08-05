@@ -90,7 +90,7 @@ namespace Conference.DAL
 
         //Registrar una conferencia topics
 
-        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers)
         {
             int result = 0;
             try
@@ -106,6 +106,8 @@ namespace Conference.DAL
                 parameters.Add("@p_StartEnd", startEnd);
                 parameters.Add("@p_conferenceID", conferenceId);
                 parameters.Add("@p_userID", userId);
+                parameters.Add("@p_TotalAttendees", TotalAttendees);
+                parameters.Add("@p_TotalSpeakers", TotalSpeakers);
 
                 //  parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -130,7 +132,7 @@ namespace Conference.DAL
 
         //actualizar una conferencia topics
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees, int TotalSpeakers)
         {
             int result = 0;
             try
@@ -146,8 +148,10 @@ namespace Conference.DAL
                 parameters.Add("@p_StartEnd", startEnd);
                 parameters.Add("@p_conferenceID", conferenceId);
                 parameters.Add("@p_userID", userId);
+                parameters.Add("@p_TotalAttendees", TotalAttendees);
+                parameters.Add("@p_TotalSpeakers", TotalSpeakers);
 
-                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
 
                 _connection.Cnn.Execute("sp_update_temp_conferencetopics", parameters, commandType: CommandType.StoredProcedure);
