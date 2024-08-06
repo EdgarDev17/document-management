@@ -50,6 +50,13 @@ builder.Services.AddScoped<conferenceDAL>();
 // Registra la clase  ConferenceBL para inyección de dependencias
 builder.Services.AddScoped<ConferenceBL>();
 
+
+// Registra la clase ConferenceDocumentDAL para inyección de dependencias
+builder.Services.AddScoped<ConferenceDocumentDAL>();
+
+// Registra la clase  ConferenceDocumentBL para inyección de dependencias
+builder.Services.AddScoped<ConferenceDocumentBL>();
+
 // Registra la clase  CertificateDAL para inyección de dependencias
 builder.Services.AddScoped<CertificateDAL>();
 

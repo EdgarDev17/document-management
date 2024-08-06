@@ -18,9 +18,10 @@ namespace Conference.DAL
         }
 
         //Registrar documento a tema 
-        public int RegisterDocument(int userID, int TopicsID, string NameDocument, byte[] Document, string DocumentExtension)
+        public(int result, string message) RegisterDocumentConference(int userID, int TopicsID, string NameDocument, byte[] Document, string DocumentExtension)
         {
             int response = -1;
+            string message = string.Empty;
             string ruta = string.Empty;
 
             try
@@ -36,27 +37,32 @@ namespace Conference.DAL
                         Directory.CreateDirectory(directory);
                     }
 
-                    ruta = Path.Combine(directory, filename);
+                    ruta = Path.Combine(directory);
 
                     using (var connection = _connection.Cnn)
                     {
                         connection.Open();
 
                         var parameters = new DynamicParameters();
+                        parameters.Add("@p_NameDocument", NameDocument);
+                        parameters.Add("@p_filename", filename);
+                        parameters.Add("@p_UrlDocument", ruta);
+                        parameters.Add("@p_TypeDocument", DocumentExtension);
                         parameters.Add("@p_UserID", userID);
-                        parameters.Add("@p_url", ruta);
-                        parameters.Add("@p_name", filename);
+                        parameters.Add("@p_TopicsID", TopicsID);
                         parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                        parameters.Add("@DocumentFile", dbType: DbType.String, direction: ParameterDirection.Output);
-                        connection.Execute("sp_register_document", parameters, commandType: CommandType.StoredProcedure);
+                        parameters.Add("@message", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
+                        connection.Execute("sp_register_document", parameters, commandType: CommandType.StoredProcedure);
+                        message = parameters.Get<string>("@message");
                         response = parameters.Get<int>("@result");
-                        string oldFileName = parameters.Get<string>("@DocumentFile");
+                       
 
                         if (response == 1)
                         {
+                            var ruta2 = Path.Combine(directory, filename);
                             // Guardar el nuevo archivo
-                            File.WriteAllBytes(ruta, Document);
+                            File.WriteAllBytes(ruta2, Document);
                         }
                         //else if (response == 2)
                         //{
@@ -81,7 +87,33 @@ namespace Conference.DAL
                 InsertErrorLogSession("Error en RegisterDocument en userDAL en sp_register_document BD", ex.Message, userID);
             }
 
-            return response;
+            return (response,message);
+        }
+
+
+        //Agregar un log  espeficifico de un sessionID
+
+        public void InsertErrorLogSession(string eventText, string message, int UserID)
+        {
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("p_UserID", UserID);
+                parameters.Add("p_event", eventText);
+                parameters.Add("p_message", message);
+
+                _connection.Cnn.Execute("sp_insert_log", parameters, commandType: CommandType.StoredProcedure);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
         }
 
     }
