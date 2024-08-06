@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConferenceAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58a895499388f878e98f69185a17c9be91a05593")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e86801c53d69ec6f63a0328f60bfb15c0c8e4ada")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConferenceAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConferenceAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

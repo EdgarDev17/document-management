@@ -30,18 +30,17 @@ namespace ConferenceAPI.Controllers
         [HttpPost("SaveCertificateConfigs")]
         public ActionResult<IResponse> SaveCertificateConfigs([FromForm] CertificateRequest certificateRequest)
         {
-            /*if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {
                 return BadRequest(new GenericApiRespons
                 {
                     HttpCode = 400,
                     Message = "Authorization-Token must be provided"
                 });
-            }*/
+            }
 
-            //var user = _userBL.VerifyPersonAuthentication(token);
-            var user = "";
-            if (user == string.Empty)
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
             {
                 string message = string.Empty;
                 string logoPath = string.Empty;
@@ -126,18 +125,18 @@ namespace ConferenceAPI.Controllers
         [HttpGet("GenerateCertificates/{userId:Int}/{topicId:Int}")]
         public ActionResult<IResponse> GenerateCertificates(int userId,int topicId)
         {
-            /*if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {
                 return BadRequest(new GenericApiRespons
                 {
                     HttpCode = 400,
                     Message = "Authorization-Token must be provided"
                 });
-            }*/
+            }
 
-            //var user = _userBL.VerifyPersonAuthentication(token);
-            var user = "";
-            if (user == string.Empty)
+            var user = _userBL.VerifyPersonAuthentication(token);
+
+            if (user != null)
             {
                 string message = string.Empty;
                 int result = 1;

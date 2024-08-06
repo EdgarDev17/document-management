@@ -60,6 +60,9 @@ builder.Services.AddScoped<CertificateBL>();
 
 builder.Services.AddScoped<LocalFileSaver>();
 
+builder.Services.AddScoped<RatingDAL>();
+builder.Services.AddScoped<RatingBL>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
