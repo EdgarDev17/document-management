@@ -161,3 +161,4 @@ C:\Users\Dimas\Documents\Proyectos\document-management\backend\ConferenceAPI\Con
 C:\Users\Dimas\Documents\Proyectos\document-management\backend\ConferenceAPI\ConferenceAPI\obj\Debug\net8.0\ConferenceAPI.pdb
 C:\Users\Dimas\Documents\Proyectos\document-management\backend\ConferenceAPI\ConferenceAPI\obj\Debug\net8.0\ConferenceAPI.genruntimeconfig.cache
 C:\Users\Dimas\Documents\Proyectos\document-management\backend\ConferenceAPI\ConferenceAPI\obj\Debug\net8.0\ref\ConferenceAPI.dll
+C:\Users\Dimas\Documents\Proyectos\document-management\backend\ConferenceAPI\ConferenceAPI\bin\Debug\net8.0\ConferenceAPI.staticwebassets.runtime.json

@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpContextAccessor();
+
 //CORS investigar e implementar
 
 builder.Services.AddCors(configuration =>
@@ -63,6 +65,10 @@ builder.Services.AddScoped<CertificateDAL>();
 // Registra la clase  CertificateBL para inyección de dependencias
 builder.Services.AddScoped<CertificateBL>();
 
+builder.Services.AddScoped<LocalFileSaver>();
+
+builder.Services.AddScoped<RatingDAL>();
+builder.Services.AddScoped<RatingBL>();
 
 var app = builder.Build();
 

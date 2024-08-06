@@ -28,6 +28,7 @@ namespace Conference.Entities
         public string EventDate { get; set; }
         public string ParticipantName { get; set; }
         public string InstitutionName { get; set; }
+        public string Email { get; set; }
         public string TitleTopic { get; set; }
     }
 }

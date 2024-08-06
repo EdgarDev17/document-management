@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[4.6.0, )"
             },
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
             "QuestPDF": {
               "target": "Package",
               "version": "[2022.12.1, )"
