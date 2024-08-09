@@ -34,25 +34,47 @@ import { format } from "date-fns";
 import { Calendar } from "@/app/components/ui/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
 
-const formSchema = z.object({
-  startingDate: z.date({
-    required_error: "Selecciona una fecha valida",
-  }),
-  finishingDate: z.date({
-    required_error: "Selecciona una fecha valida",
-  }),
-  eventType: z.string().min(1, {
-    message: "Selecciona una opción valida",
-  }),
-  eventAddress: z.string().min(1, { message: "Escriba la direccion o enlace" }),
-});
+const formSchema = z
+  .object({
+    startingDate: z
+      .date({
+        required_error: "Selecciona una fecha válida",
+      })
+      .refine(
+        (date) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return date >= today;
+        },
+        {
+          message: "La fecha de inicio debe ser igual o posterior a hoy",
+        },
+      ),
+    finishingDate: z.date({
+      required_error: "Selecciona una fecha valida",
+    }),
+    eventType: z.string().min(1, {
+      message: "Selecciona una opción valida",
+    }),
+    eventAddress: z
+      .string()
+      .min(1, { message: "Escriba la direccion o enlace" }),
+  })
+  .refine((data) => data.finishingDate >= data.startingDate, {
+    message:
+      "La fecha de finalización debe ser igual o posterior a la fecha de inicio",
+    path: ["finishingDate"],
+  });
 
 export default function StepTwo() {
   const [eventType, setEventType] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,9 +83,32 @@ export default function StepTwo() {
     },
   });
 
+  const { eventArea, eventName, eventDescription, updateStepTwo } =
+    useNewConferenceFormStore((state) => state);
+
+  useEffect(() => {
+    if (!eventArea || !eventName || !eventDescription) {
+      router.push("/host/dashboard/event/create/step-one");
+      return;
+    }
+    setLoading(false);
+  }, [eventArea, eventDescription, eventName, router]);
+
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
+    updateStepTwo(
+      values.startingDate,
+      values.finishingDate,
+      values.eventType,
+      values.eventAddress,
+    );
     router.push("/host/dashboard/event/create/step-three");
+  }
+
+  if (loading) {
+    <div className="w-full h-[80vh] flex justify-center items-center">
+      <p>cargando datos...</p>
+    </div>;
   }
 
   return (
@@ -217,7 +262,15 @@ export default function StepTwo() {
               )}
             </CardContent>
             <CardFooter className="h-[20%] flex gap-x-4">
-              <Button variant={"ghost"}>Volver</Button>
+              <Button
+                variant={"ghost"}
+                type="button"
+                onClick={() =>
+                  router.push("/host/dashboard/event/create/step-one")
+                }
+              >
+                Volver
+              </Button>
               <Button variant={"default"}>Continuar</Button>
             </CardFooter>
           </Card>

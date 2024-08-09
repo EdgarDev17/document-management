@@ -31,6 +31,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
+import { Drawer } from "vaul";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/app/components/ui/alert-dialog";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 const formSchema = z.object({
   eventName: z.string().min(1, {
@@ -55,8 +71,11 @@ export default function StepOne() {
     },
   });
 
-  // 2. Define a submit handler.
+  const { updateStepOne } = useNewConferenceFormStore((state) => state);
+  const windowSize = useWindowSize();
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    updateStepOne(values.eventName, values.eventDescription, values.eventArea);
     router.push("/host/dashboard/event/create/step-two");
   }
 
@@ -130,7 +149,68 @@ export default function StepOne() {
               />
             </CardContent>
             <CardFooter className="h-[20%] flex gap-x-4">
-              <Button variant={"ghost"}>Cancelar</Button>
+              {windowSize.width > 640 ? (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant={"outline"}>Cancelar</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        ¿Estas completamente seguro?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Si cancelas la creación del evento, los datos se
+                        perderás y debereas crearlo desde cero.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => router.push("/host/dashboard/")}
+                      >
+                        Continuar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                // TODO: HACERLO COMPONENTE
+                <Drawer.Root shouldScaleBackground>
+                  <Drawer.Trigger asChild>
+                    <Button variant={"outline"}>Cancelar</Button>
+                  </Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+                    <Drawer.Content className="bg-zinc-100 flex flex-col rounded-t-[10px] h-[80%] mt-24 fixed bottom-0 left-0 right-0">
+                      <div className="p-4 bg-white rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-zinc-300 mb-8" />
+                        <div className="max-w-md h-[90%] mx-auto flex flex-col justify-between">
+                          <div>
+                            <Drawer.Title className="font-medium mb-4 text-lg">
+                              ¿Estas completamente seguro?
+                            </Drawer.Title>
+                            <p className="text-zinc-600 mb-2">
+                              Si cancelas la creación del evento, los datos se
+                              perderás y debereas crearlo desde cero.
+                            </p>
+                          </div>
+                          <div className="flex flex-col w-full gap-y-4">
+                            <Button
+                              onClick={() => router.push("/host/dashboard/")}
+                            >
+                              Continuar
+                            </Button>
+                            <Drawer.Close asChild>
+                              <Button variant={"outline"}>Cancelar</Button>
+                            </Drawer.Close>
+                          </div>
+                        </div>
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>
+              )}
               <Button variant={"default"}>Continuar</Button>
             </CardFooter>
           </Card>

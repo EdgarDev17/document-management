@@ -34,8 +34,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { InputNumber } from "@/app/components/ui/input-number-controll";
-import useSteps from "@/hooks/usesteps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
 
 const formSchema = z.object({
   institutionName: z.string().min(1, {
@@ -55,8 +55,20 @@ export default function StepOne() {
     },
   });
 
-  // 2. Define a submit handler.
+  const { eventArea, eventName, eventDescription, updateStepThree } =
+    useNewConferenceFormStore((state) => {
+      return state;
+    });
+
+  useEffect(() => {
+    if (!eventArea || !eventName || !eventDescription) {
+      router.push("/host/dashboard/event/create/step-one");
+      return;
+    }
+  }, [eventArea, eventDescription, eventName, router]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    updateStepThree(values.institutionName, values.paperAttempts);
     router.push("/host/dashboard/event/create/summary");
   }
 
@@ -149,7 +161,14 @@ export default function StepOne() {
               />
             </CardContent>
             <CardFooter className="h-[20%] flex gap-x-4">
-              <Button variant={"ghost"}>Cancelar</Button>
+              <Button
+                variant={"ghost"}
+                onClick={() => {
+                  router.push("/host/dashboard/event/create/step-two");
+                }}
+              >
+                Volver
+              </Button>
               <Button variant={"default"}>Continuar</Button>
             </CardFooter>
           </Card>
