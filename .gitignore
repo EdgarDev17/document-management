@@ -10,6 +10,18 @@ backend/ConferenceAPI/Ceonference.BL/bin/Debug/
 .yarn/install-state.gz
 node_modules/
 
+# NO SUBIR. DEL BACKEND
+backend/ConferenceAPI/Ceonference.BL/bin
+backend/ConferenceAPI/Ceonference.BL/obj
+backend/ConferenceAPI/Conference.DAL/bin
+backend/ConferenceAPI/Conference.DAL/obj
+backend/ConferenceAPI/Conference.Entities/bin
+backend/ConferenceAPI/Conference.Entities/obj
+backend/ConferenceAPI/ConferenceAPI/obj
+backend/ConferenceAPI/ConferenceAPI/bin
+
+
+# NO SUBIR. DEL FRONTEND
 /frontend/conference/node_modules
 /frontend/conference/.vercel
 /frontend/conference/.next
