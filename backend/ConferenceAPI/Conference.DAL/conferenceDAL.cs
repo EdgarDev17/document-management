@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace Conference.DAL
 
 
         //Registrar una conferencia 
+        //Registrar una conferencia
 
         public (int result, int conferenceID) RegisterConference(int userID, int RollID, string nameInstitution, string webSiteInstitution, string contactPhoneInstitution, string nameConference,
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
@@ -91,6 +93,7 @@ namespace Conference.DAL
         //Registrar una conferencia topics
 
         public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int TotalAttendees, int TotalSpeakers)
         {
             int result = 0;
             try
@@ -164,6 +167,7 @@ namespace Conference.DAL
             {
                 //Console.WriteLine("Error: " + ex.Message);
               
+
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en actualizarConferenceTopics en conferenceDAL en  sp_update_temp_conferencetopics BD", ex.Message, userId);
             }
@@ -179,6 +183,7 @@ namespace Conference.DAL
         //eliminar una conferencia topics
 
         public int DeleteConferenceTopics( int topicsID,int userId)
+        public int DeleteConferenceTopics(int topicsID, int userId)
         {
             int result = 0;
             try
@@ -188,6 +193,7 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_TopicsID", topicsID);
             
+
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -305,6 +311,7 @@ namespace Conference.DAL
         }
 
         //listar conferencias de manera geral 
+        //listar conferencias de manera geral
 
         public List<ConferencesDetailsEN> get_conferences_general(int userID)
         {
@@ -315,6 +322,7 @@ namespace Conference.DAL
                 _connection.Cnn.Open();
               
                 conferences= _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conferences_general",  commandType: CommandType.StoredProcedure).AsList();
+                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conferences_general", commandType: CommandType.StoredProcedure).AsList();
             }
             catch (Exception ex)
             {
@@ -334,6 +342,7 @@ namespace Conference.DAL
         //listar conferencias de manera especifico por conferenceID
 
         public List<ConferencesDetailsEN> get_conferences_specific(int conferenceID,int userID)
+        public List<ConferencesDetailsEN> get_conferences_specific(int conferenceID, int userID)
         {
             List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
             try
@@ -360,6 +369,7 @@ namespace Conference.DAL
         //listar conferencias de manera especifico por usuario
 
         public List<ConferencesDetailsEN> get_conferences_specific_by_user( int userID)
+        public List<ConferencesDetailsEN> get_conferences_specific_by_user(int userID)
         {
             List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
             try
@@ -386,6 +396,7 @@ namespace Conference.DAL
         //listar topics de conferencias por conferenceID
 
         public List<ListTopicsEN> get_ListTopicsByConferenceID(int conferenceID,int userID)
+        public List<ListTopicsEN> get_ListTopicsByConferenceID(int conferenceID, int userID)
         {
             List<ListTopicsEN> topics = new List<ListTopicsEN>();
             try
@@ -436,8 +447,10 @@ namespace Conference.DAL
         }
 
         //Registrar una conferencia 
+        //Registrar una conferencia
 
         public (int result, string message) RegisterAssignUserTopic(int userID,int TopicsID, int RollID)
+        public (int result, string message) RegisterAssignUserTopic(int userID, int TopicsID, int RollID)
         {
             int result = 0;
             string message = string.Empty;
@@ -452,6 +465,7 @@ namespace Conference.DAL
              
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String,size:255, direction: ParameterDirection.Output);
+                parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
                 _connection.Cnn.Execute("sp_assign_user_topic", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
@@ -483,6 +497,7 @@ namespace Conference.DAL
                 _connection.Cnn.Open();
                 parameters.Add("@p_topicsID", conferenceID);
                 Users= _connection.Cnn.Query<ConferencesDatailsUser>("GetConferenceUsersDetails", parameters, commandType: CommandType.StoredProcedure).AsList();
+                Users = _connection.Cnn.Query<ConferencesDatailsUser>("GetConferenceUsersDetails", parameters, commandType: CommandType.StoredProcedure).AsList();
             }
             catch (Exception ex)
             {
