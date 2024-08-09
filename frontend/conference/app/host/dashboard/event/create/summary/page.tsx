@@ -26,6 +26,8 @@ import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provi
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Drawer } from "vaul";
+import { format } from "date-fns";
+import { ChevronRightIcon } from "@radix-ui/react-icons";
 
 export default function Summary() {
   const formSummary = useNewConferenceFormStore((state) => state);
@@ -52,16 +54,44 @@ export default function Summary() {
     alert("enviando a la bd...");
   };
 
+  if (
+    !formSummary.startingDate ||
+    !formSummary.finishingDate ||
+    !windowsSize.width
+  ) {
+    return <p>Cargando...</p>;
+  }
+
   return (
     <div className="w-full h-full md:h-[80vh] flex justify-center items-center">
       <Card className="md:w-[800px] md:h-[550px]">
         <CardHeader className="h-[20%]">
-          <CardTitle>Resumen de tu conferencia</CardTitle>
-          <CardDescription>
-            Estos son los datos que proporcionaste. {windowsSize.width}
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <div className="w-full md:w-[60%]">
+              <CardTitle className="text-lg">Resumen de tu evento</CardTitle>
+              <CardDescription>
+                Estos son los datos que proporcionaste para tu evento
+              </CardDescription>
+            </div>
+
+            <div className="w-[40%] gap-x-6 hidden md:flex md:items-center">
+              <div className="space-y-1">
+                <p className="text-zinc-500 text-sm"> Inicio</p>
+                <p className="text-base text-zinc-900">
+                  {format(formSummary.startingDate, "dd/MMM/yyyy")}
+                </p>
+              </div>
+              <ChevronRightIcon className="w-6 h-6 text-zinc-400 text-center" />
+              <div className="space-y-1">
+                <p className="text-zinc-500 text-sm">Finalización</p>
+                <p className="text-base text-zinc-900">
+                  {format(formSummary.finishingDate, "dd/MMM/yyyy")}
+                </p>
+              </div>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="w-full flex flex-col md:flex-row h-[70%] py-1 gap-x-14">
+        <CardContent className="w-full flex flex-col gap-y-12 md:gap-y-0 md:flex-row h-[70%] py-1 gap-x-14">
           <div className="w-full md:w-[50%] flex flex-col gap-y-8 md:gap-y-6 py-3">
             <div className="space-y-1">
               <p className="text-zinc-500">Titulo</p>
@@ -83,24 +113,38 @@ export default function Summary() {
               </p>
             </div>
           </div>
+          <div className="gap-x-6 flex items-center md:hidden p-1 border border-zinc-100 bg-zinc-50 rounded-lg">
+            <div className="space-y-1">
+              <p className="text-zinc-500 text-sm"> Inicio</p>
+              <p className="text-base text-zinc-900">
+                {format(formSummary.startingDate, "dd/MMM/yyyy")}
+              </p>
+            </div>
+            <ChevronRightIcon className="w-6 h-6 text-zinc-400 text-center" />
+            <div className="space-y-1">
+              <p className="text-zinc-500 text-sm">Finalización</p>
+              <p className="text-base text-zinc-900">
+                {format(formSummary.finishingDate, "dd/MMM/yyyy")}
+              </p>
+            </div>
+          </div>
           <div className="w-full md:w-[50%] flex flex-col gap-y-8 md:gap-y-6 py-3">
-            <div className="space-y-1">
-              <p className="text-zinc-500"> Fecha de inicio</p>
-              <p className="text-base text-zinc-900">
-                {formSummary.startingDate?.toString()}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-zinc-500">Fecha de finalización</p>
-              <p className="text-base text-zinc-900">
-                {formSummary.finishingDate?.toString()}
-              </p>
-            </div>
-            <div className="space-y-1">
+            <div className="space-y-1 bg-zinc-50 rounded-lg p-3 border border-zinc-100">
               <p className="text-zinc-500">Arfitrión</p>
               <p className="text-base text-zinc-900 pr-3">
                 {formSummary.institutionName}
+              </p>
+            </div>
+            <div className="space-y-1 bg-zinc-50 rounded-lg p-3 border border-zinc-100">
+              <p className="text-zinc-500">Tipo</p>
+              <p className="text-base text-zinc-900 pr-3">
+                {formSummary.eventType}
+              </p>
+            </div>
+            <div className="space-y-1 bg-zinc-50 rounded-lg p-3 border border-zinc-100">
+              <p className="text-zinc-500">Direción o enlace</p>
+              <p className="text-base text-zinc-900 pr-3">
+                {formSummary.eventAddress}
               </p>
             </div>
           </div>
