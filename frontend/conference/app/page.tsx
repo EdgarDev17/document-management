@@ -1,23 +1,25 @@
-'use client'
+"use client";
 
-import { useMainStore } from '@/lib/providers/main-store'
-import { P } from './components/ui/text'
-import { Button } from './components/ui/button'
+import { useMainStore } from "@/lib/providers/main-store";
+import { P } from "./components/ui/text";
+import { Button } from "./components/ui/button";
 import { useShallow } from "zustand/react/shallow";
+import { Calendar } from "./components/ui/calendar";
 
-function useConferenceForm(){
-	return useMainStore(
-		useShallow((store)=>({
-			title: store.conferenceForm.title
-		}))
-	)
+function useConferenceForm() {
+  return useMainStore(
+    useShallow((store) => ({
+      title: store.conferenceForm.title,
+    })),
+  );
 }
 
 export default function Home() {
-	const {title} = useConferenceForm()
-	return (
-		<div>
-			<P>{title}</P>
-		</div>
-	)
+  const { title } = useConferenceForm();
+  return (
+    <div>
+      <P>{title}</P>
+      <Calendar />
+    </div>
+  );
 }
