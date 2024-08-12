@@ -7,7 +7,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogFooter,
-  AlertDialogOverlay,
   AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -24,15 +23,22 @@ import {
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 import { format } from "date-fns";
-import { ChevronRightIcon } from "@radix-ui/react-icons";
+import { ChevronRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
+import axios, { HttpStatusCode } from "axios";
+import Spinner from "@/app/components/ui/spinner";
 
 export default function Summary() {
   const formSummary = useNewConferenceFormStore((state) => state);
   const windowsSize = useWindowSize();
   const router = useRouter();
+  const [waitingApiResponse, setWaitingApiResponse] = useState<boolean>(false);
+  const [response, setResponse] = useState(null);
+  const [isResponseOk, setIsResponseOk] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (
@@ -50,10 +56,6 @@ export default function Summary() {
     router,
   ]);
 
-  const onSubmit = () => {
-    alert("enviando a la bd...");
-  };
-
   if (
     !formSummary.startingDate ||
     !formSummary.finishingDate ||
@@ -61,6 +63,50 @@ export default function Summary() {
   ) {
     return <p>Cargando...</p>;
   }
+
+  const submitConference = async () => {
+    setWaitingApiResponse(true);
+    axios
+      .post(
+        "http://localhost:5110/api/Conference/RegisterConference",
+        {
+          RollID: 1,
+          nameInstitution: "Tech University XDD",
+          webSiteInstitution: "https://www.techuniversity.com",
+          contactPhoneInstitution: "+1234567890",
+          nameConference: "Tech Innovations 2024",
+          typeConference: "Technology",
+          description:
+            "A conference discussing the latest innovations in technology.",
+          beggingDate: "2024-09-15T09:00:00",
+          finishDate: "2024-09-17T17:00:00",
+          areaID: 4,
+          documentAttempt: 4,
+        },
+        {
+          headers: {
+            "Authorization-Token":
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOmZhbHNlLCJjb3VudHJ5SUQiOjEsImV4cGlyYXRpb25EYXRlIjoiMjAyNC0wOC0xMFQwMjo1ODoyMS43NzQyNjcxLTA2OjAwIiwic3RhdGUiOnRydWV9.flg5FkcXrxuh5f_-WKBKYp4EMco5RISG5c8TxsKvUfs",
+          },
+        },
+      )
+      .then(function (response) {
+        setWaitingApiResponse(false);
+
+        if (response.status == HttpStatusCode.Ok) {
+          setIsResponseOk(true);
+          setInterval(() => {
+            setOpen(false);
+            router.push("/host/dashboard/events/");
+          }, 1000);
+          return;
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        setWaitingApiResponse(false);
+      });
+  };
 
   return (
     <div className="w-full h-full md:h-[80vh] flex justify-center items-center">
@@ -160,26 +206,52 @@ export default function Summary() {
           </Button>
 
           {windowsSize.width > 640 ? (
-            <AlertDialog>
+            <AlertDialog open={open} onOpenChange={setOpen}>
               <AlertDialogTrigger asChild>
                 <Button variant={"default"}>Finalizar</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    ¿Estas completamente seguro?
+                    {!isResponseOk
+                      ? `¿Estás completamente seguro?`
+                      : `Petición exitosa`}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Me he asegurado que toda la información está completa y sin
+                    {!isResponseOk ? (
+                      `Me he asegurado que toda la información está completa y sin
                     errores, asi que deseo crear el evento con la información
-                    proporcionada.
+                    proporcionada.`
+                    ) : (
+                      <div className="w-full h-full flex flex-col justify-center items-center">
+                        <CheckCircledIcon className="w-12 h-12 text-zinc-800" />
+                        <p>Evento creado con éxito</p>
+                      </div>
+                    )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={onSubmit}>
-                    Continuar
-                  </AlertDialogAction>
+                  {!isResponseOk ? (
+                    <>
+                      {" "}
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <Button
+                        disabled={waitingApiResponse}
+                        onClick={submitConference}
+                      >
+                        {waitingApiResponse ? (
+                          <span className="flex gap-x-3 items-center">
+                            <Spinner color="#fafafa" size={16} />
+                            <p>cargando</p>
+                          </span>
+                        ) : (
+                          "Continuar"
+                        )}
+                      </Button>{" "}
+                    </>
+                  ) : (
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  )}
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -206,7 +278,7 @@ export default function Summary() {
                         </p>
                       </div>
                       <div className="flex flex-col w-full gap-y-4">
-                        <Button onClick={onSubmit}>Continuar</Button>
+                        <Button onClick={submitConference}>Continuar</Button>
                         <Drawer.Close asChild>
                           <Button variant={"outline"}>Cancelar</Button>
                         </Drawer.Close>

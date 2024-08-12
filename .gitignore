@@ -20,6 +20,9 @@ backend/ConferenceAPI/Conference.Entities/obj
 backend/ConferenceAPI/ConferenceAPI/obj
 backend/ConferenceAPI/ConferenceAPI/bin
 
+#git
+lazygit
+lazygit.tar.gz
 
 # NO SUBIR. DEL FRONTEND
 /frontend/conference/node_modules
