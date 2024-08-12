@@ -51,9 +51,9 @@ namespace Conference.DAL
                         parameters.Add("@p_UserID", userID);
                         parameters.Add("@p_TopicsID", TopicsID);
                         parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                        parameters.Add("@message", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                        parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
 
-                        connection.Execute("sp_register_document", parameters, commandType: CommandType.StoredProcedure);
+                        connection.Execute("sp_document_event", parameters, commandType: CommandType.StoredProcedure);
                         message = parameters.Get<string>("@message");
                         response = parameters.Get<int>("@result");
                        
@@ -84,7 +84,7 @@ namespace Conference.DAL
             catch (Exception ex)
             {
                 _connection.Cnn.Close();
-                InsertErrorLogSession("Error en RegisterDocument en userDAL en sp_register_document BD", ex.Message, userID);
+                InsertErrorLogSession("Error en RegisterDocument en userDAL en sp_document_event BD", ex.Message, userID);
             }
 
             return (response,message);
