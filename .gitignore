@@ -1,2 +1,20 @@
+
+#IDES
+.idea/
+backend/ConferenceAPI/.idea/
+
+# backend
 backend/ConferenceAPI/ConferenceAPI/bin/
 backend/ConferenceAPI/Ceonference.BL/bin/Debug/
+backend/ConferenceAPI/Ceonference.BL/obj/
+backend/ConferenceAPI/Conference.DAL/obj/
+backend/ConferenceAPI/Conference.Entities/obj/
+backend/ConferenceAPI/ConferenceAPI/obj/
+
+
+# git plugin
+lazygit
+lazygit.tar.gz
+
+# dependencias del front-end
+node_modules/
