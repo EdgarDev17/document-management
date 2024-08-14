@@ -8,6 +8,8 @@
         public string email { get; set; }
         public DateTime birthdate { get; set; }
         public int countryID { get; set; }
+        public string countryName { get; set; } // Nueva propiedad
+
         public string imagenBase { get; set; }
         
     }

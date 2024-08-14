@@ -19,6 +19,7 @@ namespace ConferenceAPI.Interactors
                 response.lastname = PerfilUser.lastname;
                 response.birthdate = PerfilUser.birthdate;
                 response.countryID = PerfilUser.countryID;
+                response.countryName = PerfilUser.countryName;
                 response.imagenBase = PerfilUser.imagenBase;
                
 
