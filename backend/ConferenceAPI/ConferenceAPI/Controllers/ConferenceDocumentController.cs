@@ -52,7 +52,7 @@ namespace ConferenceAPI.Controllers
                         return Conflict(new ConferenceResponse
                         {
                            
-                            Message = "usuario no encontrado"
+                            Message = message
                         });
                     }
                     else
