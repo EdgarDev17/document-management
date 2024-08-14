@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using Dapper;
 using System.Data;
 using Conference.Entities;
@@ -12,6 +10,11 @@ using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using System.Xml.Linq;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Png;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace Conference.DAL
 {
@@ -264,121 +267,123 @@ namespace Conference.DAL
 
 
 
-        //Registrar imagen de perfil de usuario
-        public int RegisterImagens(byte[] image, string extension, int userId)
-        {
-            int response = -1;
-            System.Drawing.Image newImg = null;
-            string ruta = string.Empty;
+        ////Registrar imagen de perfil de usuario
+        //public int RegisterImagens(byte[] image, string extension, int userId)
+        //{
+        //    int response = -1;
+        //    System.Drawing.Image newImg = null;
+        //    string ruta = string.Empty;
 
-            try
-            {
-                // Validar la extensión de la imagen
-                var validExtensions = new List<string> { "JPG", "PNG", "JPEG" };
-                if (validExtensions.Contains(extension.ToUpper()))
-                {
-                    using (System.Drawing.Image img = ConvertByteArrayToImage(image))
-                    {
-                        int ancho = 400;
-                        int alto = 250;
+        //    try
+        //    {
+        //        // Validar la extensión de la imagen
+        //        var validExtensions = new List<string> { "JPG", "PNG", "JPEG" };
+        //        if (validExtensions.Contains(extension.ToUpper()))
+        //        {
+        //            using (System.Drawing.Image img = ConvertByteArrayToImage(image))
+        //            {
+        //                int ancho = 400;
+        //                int alto = 250;
 
-                        if (img.Height > img.Width)
-                        {
-                            ancho = 250;
-                            alto = 400;
-                        }
+        //                if (img.Height > img.Width)
+        //                {
+        //                    ancho = 250;
+        //                    alto = 400;
+        //                }
 
-                        using (newImg = CambiarTamanoImagen(img, ancho, alto))
-                        {
-                            string filename = $"{Guid.NewGuid()}.{extension.ToLower()}";
-                            string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ImageUsers");
-                            if (!Directory.Exists(directory))
-                            {
-                                Directory.CreateDirectory(directory);
-                            }
+        //                using (newImg = CambiarTamanoImagen(img, ancho, alto))
+        //                {
+        //                    string filename = $"{Guid.NewGuid()}.{extension.ToLower()}";
+        //                    string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ImageUsers");
+        //                    if (!Directory.Exists(directory))
+        //                    {
+        //                        Directory.CreateDirectory(directory);
+        //                    }
 
-                            ruta = Path.Combine(directory);
-                           // newImg.Save(ruta);
+        //                    ruta = Path.Combine(directory);
+        //                   // newImg.Save(ruta);
 
-                            using (var connection = _connection.Cnn)
-                            {
-                                connection.Open();
+        //                    using (var connection = _connection.Cnn)
+        //                    {
+        //                        connection.Open();
 
-                                var parameters = new DynamicParameters();
-                                parameters.Add("@p_UserID", userId);
-                                parameters.Add("@p_url", ruta);
-                                parameters.Add("@p_name", filename);
-                                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                                parameters.Add("@PictureFile", dbType: DbType.String, direction: ParameterDirection.Output);
-                                connection.Execute("sp_register_imagens", parameters, commandType: CommandType.StoredProcedure);
+        //                        var parameters = new DynamicParameters();
+        //                        parameters.Add("@p_UserID", userId);
+        //                        parameters.Add("@p_url", ruta);
+        //                        parameters.Add("@p_name", filename);
+        //                        parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        //                        parameters.Add("@PictureFile", dbType: DbType.String, direction: ParameterDirection.Output);
+        //                        connection.Execute("sp_register_imagens", parameters, commandType: CommandType.StoredProcedure);
 
-                                response = parameters.Get<int>("@result");
-                                string oldFileName = parameters.Get<string>("@PictureFile");
-
-
-                                if (response == 1)
-                                {
-                                   string ruta2 = Path.Combine(directory,filename);
-                                    newImg.Save(ruta2);
-
-                                }
-                                else if(response == 2)
-                                {
-                                    // Construir la ruta completa del archivo antiguo
-                                    string oldFilePath = Path.Combine(directory, oldFileName);
-
-                                    // Eliminar el archivo antiguo si existe
-                                    if (File.Exists(oldFilePath))
-                                    {
-                                        File.Delete(oldFilePath);
-                                        string ruta2 = Path.Combine(directory, filename);
-                                        // Guardar el nuevo archivo
-                                        newImg.Save(ruta2);
-                                    }
-                                    else
-                                    {
-                                        // Guardar el nuevo archivo
-                                        string ruta2 = Path.Combine(directory, filename);
-                                        newImg.Save(ruta2);
-
-                                    }
+        //                        response = parameters.Get<int>("@result");
+        //                        string oldFileName = parameters.Get<string>("@PictureFile");
 
 
+        //                        if (response == 1)
+        //                        {
+        //                           string ruta2 = Path.Combine(directory,filename);
+        //                            newImg.Save(ruta2);
+
+        //                        }
+        //                        else if(response == 2)
+        //                        {
+        //                            // Construir la ruta completa del archivo antiguo
+        //                            string oldFilePath = Path.Combine(directory, oldFileName);
+
+        //                            // Eliminar el archivo antiguo si existe
+        //                            if (File.Exists(oldFilePath))
+        //                            {
+        //                                File.Delete(oldFilePath);
+        //                                string ruta2 = Path.Combine(directory, filename);
+        //                                // Guardar el nuevo archivo
+        //                                newImg.Save(ruta2);
+        //                            }
+        //                            else
+        //                            {
+        //                                // Guardar el nuevo archivo
+        //                                string ruta2 = Path.Combine(directory, filename);
+        //                                newImg.Save(ruta2);
+
+        //                            }
 
 
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _connection.Cnn.Close();
-                InsertErrorLogSession("Error en RegisterImagens en userDAL en sp_register_imagens BD", ex.Message, userId);
-            }
 
-            return response;
-        }
 
-        public static System.Drawing.Image ConvertByteArrayToImage(byte[] byteArrayImage)
-        {
-            using (var ms = new System.IO.MemoryStream(byteArrayImage))
-            {
-                return System.Drawing.Image.FromStream(ms);
-            }
-        }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _connection.Cnn.Close();
+        //        InsertErrorLogSession("Error en RegisterImagens en userDAL en sp_register_imagens BD", ex.Message, userId);
+        //    }
 
-        public System.Drawing.Image CambiarTamanoImagen(System.Drawing.Image imagen, int ancho, int alto)
-        {
-            var bitmap = new Bitmap(ancho, alto);
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(imagen, 0, 0, ancho, alto);
-            }
-            return bitmap;
-        }
+        //    return response;
+        //}
+
+        
+
+        //public static System.Drawing.Image ConvertByteArrayToImage(byte[] byteArrayImage)
+        //{
+        //    using (var ms = new System.IO.MemoryStream(byteArrayImage))
+        //    {
+        //        return System.Drawing.Image.FromStream(ms);
+        //    }
+        //}
+
+        //public System.Drawing.Image CambiarTamanoImagen(System.Drawing.Image imagen, int ancho, int alto)
+        //{
+        //    var bitmap = new Bitmap(ancho, alto);
+        //    using (var graphics = Graphics.FromImage(bitmap))
+        //    {
+        //        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        //        graphics.DrawImage(imagen, 0, 0, ancho, alto);
+        //    }
+        //    return bitmap;
+        //}
 
         //rEGRASAR LOS DATOS DEL USUARIO 
 
@@ -423,7 +428,119 @@ namespace Conference.DAL
             }
             return null!; 
         }
+        //Registrar imagen de perfil de usuario
+        public int RegisterImagens(byte[] image, string extension, int userId)
+        {
+            int response = -1;
+            Image newImg = null;
+            string ruta = string.Empty;
 
+            try
+            {
+                var validExtensions = new List<string> { "JPG", "PNG", "JPEG" };
+                if (validExtensions.Contains(extension.ToUpper()))
+                {
+                    using (var img = Image.Load(image))
+                    {
+                        int ancho = 400;
+                        int alto = 250;
+
+                        if (img.Height > img.Width)
+                        {
+                            ancho = 250;
+                            alto = 400;
+                        }
+
+                        newImg = img.Clone(x => x.Resize(ancho, alto));
+
+                        string filename = $"{Guid.NewGuid()}.{extension.ToLower()}";
+                        string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ImageUsers");
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+
+                        ruta = Path.Combine(directory);
+
+                        using (var connection = _connection.Cnn)
+                        {
+                            connection.Open();
+
+                            var parameters = new DynamicParameters();
+                            parameters.Add("@p_UserID", userId);
+                            parameters.Add("@p_url", ruta);
+                            parameters.Add("@p_name", filename);
+                            parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                            parameters.Add("@PictureFile", dbType: DbType.String, direction: ParameterDirection.Output);
+                            connection.Execute("sp_register_imagens", parameters, commandType: CommandType.StoredProcedure);
+
+                            response = parameters.Get<int>("@result");
+                            string oldFileName = parameters.Get<string>("@PictureFile");
+
+                            if (response == 1)
+                            {
+                                string ruta2 = Path.Combine(directory, filename);
+                                SaveImage(newImg, ruta2, extension);
+                            }
+                            else if (response == 2)
+                            {
+                                string oldFilePath = Path.Combine(directory, oldFileName);
+                                if (File.Exists(oldFilePath))
+                                {
+                                    File.Delete(oldFilePath);
+                                }
+                                string ruta2 = Path.Combine(directory, filename);
+                                SaveImage(newImg, ruta2, extension);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en RegisterImagens en userDAL en sp_register_imagens BD", ex.Message, userId);
+            }
+            finally
+            {
+                newImg?.Dispose();
+            }
+
+            return response;
+        }
+
+        private void SaveImage(Image image, string path, string extension)
+        {
+            switch (extension.ToUpper())
+            {
+                case "JPG":
+                case "JPEG":
+                    image.Save(path, new JpegEncoder());
+                    break;
+                case "PNG":
+                    image.Save(path, new PngEncoder());
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported image format");
+            }
+        }
+
+
+        public static Image ConvertByteArrayToImage(byte[] byteArrayImage)
+        {
+            using (var ms = new System.IO.MemoryStream(byteArrayImage))
+            {
+                return Image.Load(ms);
+            }
+        }
+
+
+
+        public static Image CambiarTamanoImagen(Image imagen, int ancho, int alto)
+        {
+            imagen.Mutate(x => x.Resize(ancho, alto));
+            return imagen;
+        }
         ////Registrar imagen de perfil de usuario
 
         //public void RegisterImagens(byte[] Image, string extension,int UserID)

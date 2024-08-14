@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[2022.12.1, )"
             },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
             "jose-jwt": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -144,6 +148,10 @@
               "target": "Package",
               "version": "[8.4.0, )"
             },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[8.0.5, )"
@@ -202,6 +210,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -270,6 +284,10 @@
             "QuestPDF": {
               "target": "Package",
               "version": "[2022.12.1, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
