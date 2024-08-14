@@ -541,6 +541,53 @@ namespace Conference.DAL
             imagen.Mutate(x => x.Resize(ancho, alto));
             return imagen;
         }
+        
+        
+        // METODO QUE DEVUELVE LAS INSTITUCIONES POR USUARIO
+        public List<InstitutionDetailsEN> GetInstitutionsByUser(int userID, out int result)
+        {
+            List<InstitutionDetailsEN> institutions = new List<InstitutionDetailsEN>();
+            result = 0; // Inicializar resultado
+
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userID);
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                _connection.Cnn.Open();
+
+                using (var multi = _connection.Cnn.QueryMultiple("GetInstitutionsByUserID", parameters, commandType: CommandType.StoredProcedure))
+                {
+                    institutions = multi.Read<dynamic>()
+                        .Select(row => new InstitutionDetailsEN
+                        {
+                            InstitutionID = (int)row.institutionID,
+                            Name = (string)row.name,
+                            Website = (string)row.website,
+                            ContactPhone = (string)row.contact_phone,
+                            RolID = (int)row.rolID,
+                            Description = (string)row.description
+                        })
+                        .ToList();
+
+                    // Obtener el valor del parámetro de salida
+                    result = parameters.Get<int>("@result");
+                }
+            }
+            catch (Exception ex)
+            {
+                InsertErrorLogSession("Error en GetInstitutionsByUser en DataAccessLayer", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return institutions;
+        }
+
+        
         ////Registrar imagen de perfil de usuario
 
         //public void RegisterImagens(byte[] Image, string extension,int UserID)

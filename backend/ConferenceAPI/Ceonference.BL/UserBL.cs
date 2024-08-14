@@ -311,6 +311,28 @@ namespace Conference.BL
 
             return result;
         }
+        
+        public List<InstitutionDetailsEN> GetInstitutionsByUser(int userID)
+        {
+            List<InstitutionDetailsEN> institutions = new List<InstitutionDetailsEN>();
+            int result;
+
+            // Llama al método de la capa DAL
+            institutions = _userDAL.GetInstitutionsByUser(userID, out result);
+            // Verifica el resultado y maneja en la capa de BL si es necesario
+            if (result == 1)
+            {
+                // El usuario está activo y las instituciones se han cargado correctamente
+                return institutions;
+            }
+            else
+            {
+                // El usuario no existe o no está activo
+                // Manejar el caso según sea necesario
+                // Por ejemplo, podrías lanzar una excepción o retornar una lista vacía
+                throw new Exception("El usuario no existe o no está activo.");
+            }
+        }
 
 
         public UserPerfilEN GetUserProfile(int userID)
