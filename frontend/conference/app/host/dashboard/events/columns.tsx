@@ -1,35 +1,58 @@
 "use client";
 
+import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Event = {
-  id: number;
-  eventName: string;
-  eventType: number;
-  startingDate: Date;
-};
+export interface Conference {
+  conferenceID: number;
+  conference_name: string;
+  conference_type: string;
+  description: string;
+  conference_RegDate: Date;
+  beggingDate: Date;
+  finishDate: Date;
+  documentAttempt: number;
+  institutionID: number;
+  status: number;
+  institution_name: string;
+  institution_website: string;
+  institution_contact_phone: string;
+  rolID: number;
+}
 
-export const columns: ColumnDef<Event>[] = [
+export const columns: ColumnDef<Conference>[] = [
   {
-    accessorKey: "eventName",
-    header: "Evento",
+    accessorKey: "conference_name",
+    header: "Conferencias",
     cell: ({ row }) => {
       return (
-        <Link href={`/host/dashboard/events/${row.original.id}`}>
-          {row.getValue("eventName")}
+        <Link href={`/host/dashboard/events/${row.original.conferenceID}`}>
+          {row.getValue("conference_name")}
         </Link>
       );
     },
   },
   {
-    accessorKey: "eventType",
-    header: "Modalidad",
+    accessorKey: "institution_name",
+    header: "Institución",
   },
   {
-    accessorKey: "startingDate",
+    accessorKey: "beggingDate",
     header: "Fecha de inicio",
+    cell: ({ row }) => {
+      const formattedDate = formatDate(row.getValue("beggingDate"));
+
+      return <p>{formattedDate}</p>;
+    },
   },
+  // {
+  //   accessorKey: "finishDate",
+  //   header: "Fecha de finalización",
+  //   cell: ({ row }) => {
+  //     const formattedDate = formatDate(row.getValue("finishDate"));
+  //
+  //     return <p>{formattedDate}</p>;
+  //   },
+  // },
 ];

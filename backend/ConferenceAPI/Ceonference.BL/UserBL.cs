@@ -27,7 +27,10 @@ namespace Conference.BL
         private readonly IOptions<Settings> settings;
         private readonly JWT jwt;
         private readonly EmailSend _emailSend;
-
+        public UserBL()
+        {
+            // Constructor sin parámetros
+        }
 
 
         public UserBL(UserDAL userDAL, IOptions<Settings> settings, EmailSend emailSend)
@@ -263,7 +266,7 @@ namespace Conference.BL
 
 
 
-        public UserEN VerifyPersonAuthentication(IEnumerable<String> pToken)
+        public virtual UserEN VerifyPersonAuthentication(IEnumerable<String> pToken)
         {
             UserEN verifiedPerson = new();
 

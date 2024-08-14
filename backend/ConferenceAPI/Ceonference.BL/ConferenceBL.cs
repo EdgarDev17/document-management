@@ -12,6 +12,10 @@ namespace Conference.BL
     public class ConferenceBL
     {
         private readonly conferenceDAL _conferenceDAL;
+        public ConferenceBL()
+        {
+            // Constructor sin parámetros
+        }
         public ConferenceBL(conferenceDAL conferenceDAL)
         {
 
@@ -72,7 +76,7 @@ namespace Conference.BL
             Topics = _conferenceDAL.GetTopics(userID, conferenceID);
             return Topics;
         }
-        public List<ConferencesDetailsEN> get_conferences_general(int userID)
+        public virtual List<ConferencesDetailsEN> get_conferences_general(int userID)
         {
             List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
             conference = _conferenceDAL.get_conferences_general(userID);

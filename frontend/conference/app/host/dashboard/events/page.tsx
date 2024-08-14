@@ -21,7 +21,9 @@ import {
 
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { DataTable } from "./data-table";
-import { Event, columns } from "./columns";
+import { columns, Conference } from "./columns";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const chartConfig = {
   desktop: {
@@ -39,77 +41,28 @@ const chartData = [
   { month: "June", desktop: 214 },
 ];
 
-const events: Event[] = [
-  {
-    id: 1,
-    eventName: "Tech Conference 2024",
-    eventType: 1,
-    startingDate: new Date("2024-09-15"),
-  },
-  {
-    id: 2,
-    eventName: "Annual Company Retreat",
-    eventType: 2,
-    startingDate: new Date("2024-10-05"),
-  },
-  {
-    id: 2,
-
-    eventName: "Product Launch Event",
-    eventType: 3,
-    startingDate: new Date("2024-08-20"),
-  },
-  {
-    id: 2,
-
-    eventName: "Community Meetup",
-    eventType: 4,
-    startingDate: new Date("2024-11-12"),
-  },
-  {
-    id: 2,
-
-    eventName: "Cybersecurity Workshop",
-    eventType: 5,
-    startingDate: new Date("2024-09-01"),
-  },
-  {
-    id: 2,
-
-    eventName: "Holiday Party",
-    eventType: 2,
-    startingDate: new Date("2024-12-18"),
-  },
-  {
-    id: 2,
-
-    eventName: "Developer Bootcamp",
-    eventType: 1,
-    startingDate: new Date("2024-07-30"),
-  },
-  {
-    id: 2,
-
-    eventName: "Board Meeting",
-    eventType: 6,
-    startingDate: new Date("2024-08-25"),
-  },
-  {
-    id: 2,
-
-    eventName: "User Experience Conference",
-    eventType: 3,
-    startingDate: new Date("2024-10-10"),
-  },
-  {
-    id: 2,
-    eventName: "Startup Pitch Night",
-    eventType: 4,
-    startingDate: new Date("2024-11-20"),
-  },
-];
-
 export default function Page() {
+  const [events, setEvents] = useState<Conference[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios("http://localhost:5110/api/Conference/ConferencesDetailsByUser", {
+      headers: {
+        "Authorization-Token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTE0VDEwOjI1OjA5LjY2NzIwNDgtMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.VzOMkwfOYWkzFiKE_uB5AkYxYGp0a2wgGldNJoJ1b9I",
+      },
+    })
+      .then((response) => {
+        setEvents(response.data.conference);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col gap-y-14">
       <section className="w-full h-[60%] flex gap-x-6">
@@ -119,7 +72,13 @@ export default function Page() {
               <CardTitle className="text-white">Eventos creados</CardTitle>
             </CardHeader>
             <CardContent className="w-full h-full flex justify-center items-center py-4">
-              <p className="text-5xl font-bold text-zinc-800">16</p>
+              {loading ? (
+                <p>cargando...</p>
+              ) : (
+                <p className="text-5xl font-bold text-zinc-800">
+                  {events.length}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -195,7 +154,11 @@ export default function Page() {
         </div>
       </section>
       <section className="">
-        <DataTable columns={columns} data={events} />
+        {loading ? (
+          <p>Cargando...</p>
+        ) : (
+          <DataTable columns={columns} data={events} />
+        )}
       </section>
     </div>
   );

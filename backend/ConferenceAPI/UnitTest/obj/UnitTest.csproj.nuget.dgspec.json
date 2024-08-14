@@ -1,0 +1,399 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/UnitTest/UnitTest.csproj": {}
+  },
+  "projects": {
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj",
+        "projectName": "Conference.BL",
+        "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj",
+        "packagesPath": "/home/edgar/.nuget/packages/",
+        "outputPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/edgar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj"
+              },
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.6.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2022.12.1, )"
+            },
+            "jose-jwt": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj",
+        "projectName": "Conference.DAL",
+        "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj",
+        "packagesPath": "/home/edgar/.nuget/packages/",
+        "outputPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/edgar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj",
+        "projectName": "Conference.Entities",
+        "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj",
+        "packagesPath": "/home/edgar/.nuget/packages/",
+        "outputPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/edgar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/ConferenceAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/ConferenceAPI.csproj",
+        "projectName": "ConferenceAPI",
+        "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/ConferenceAPI.csproj",
+        "packagesPath": "/home/edgar/.nuget/packages/",
+        "outputPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/edgar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj"
+              },
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2022.12.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Volo.Abp.Data": {
+              "target": "Package",
+              "version": "[8.1.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/UnitTest/UnitTest.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/UnitTest/UnitTest.csproj",
+        "projectName": "UnitTest",
+        "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/UnitTest/UnitTest.csproj",
+        "packagesPath": "/home/edgar/.nuget/packages/",
+        "outputPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/UnitTest/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/edgar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Ceonference.BL/Conference.BL.csproj"
+              },
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.DAL/Conference.DAL.csproj"
+              },
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/Conference.Entities/Conference.Entities.csproj"
+              },
+              "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/ConferenceAPI.csproj": {
+                "projectPath": "/home/edgar/Documents/projects/college/document-management/backend/ConferenceAPI/ConferenceAPI/ConferenceAPI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.6.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -305,7 +305,7 @@ namespace Conference.DAL
 
         //listar conferencias de manera geral
 
-        public List<ConferencesDetailsEN> get_conferences_general(int userID)
+        public virtual List<ConferencesDetailsEN> get_conferences_general(int userID)
         {
             List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
             try
@@ -366,12 +366,21 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                 _connection.Cnn.Open();
                 parameters.Add("@p_userID", userID);
-                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conference_details_by_user", parameters, commandType: CommandType.StoredProcedure).AsList();
-            }
+                using (var multi = _connection.Cnn.QueryMultiple("sp_get_conference_details_by_user", parameters, commandType: CommandType.StoredProcedure))
+                {
+                    // Leer el primer conjunto de resultados
+                    var firstSet = multi.Read<ConferencesDetailsEN>().ToList();
+                    conferences.AddRange(firstSet);
+
+                    // Leer el segundo conjunto de resultados, si existe
+                    if (!multi.IsConsumed)
+                    {
+                        var secondSet = multi.Read<ConferencesDetailsEN>().ToList();
+                        conferences.AddRange(secondSet);
+                    }
+                }            }
             catch (Exception ex)
             {
-
-
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_get_conference_details`", ex.Message, userID);
             }

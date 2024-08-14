@@ -385,7 +385,7 @@ namespace ConferenceAPI.Controllers
 
         [HttpGet]
         [Route("ConferencesDetailsGeneral")]
-        public ActionResult<IResponse> GetConferencesDetails()
+        public virtual ActionResult<IResponse> GetConferencesDetails()
         {
 
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
