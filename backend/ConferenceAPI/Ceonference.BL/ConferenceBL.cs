@@ -138,5 +138,24 @@ namespace Conference.BL
             return (result, message);
 
         }
+
+        public ResponseEvaluationD getDetallesEavliation(int userID)
+        {
+            ResponseEvaluationD response = new ResponseEvaluationD();
+
+          List< ResponseEvalutionscale> responseScale = new List<ResponseEvalutionscale> ();
+
+            responseScale = _conferenceDAL.getScale(userID);
+
+            response._Evalutionscale = responseScale;
+
+            List <ResponseEvalutioncriteria> responseCriteria = new List<ResponseEvalutioncriteria>();
+            responseCriteria = _conferenceDAL.getcriteria(userID);
+
+            response._Evalutioncriteria = responseCriteria;
+
+            return response;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Conference.BL;
 using Conference.Entities;
+using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -719,5 +720,53 @@ namespace ConferenceAPI.Controllers
                 });
             }
         }
+
+
+
+        [HttpGet]
+        [Route("GetEvalutionCriteriaScaleDetails")]
+        public ActionResult<IResponse> GetEvalutionCriteriaScaleDetails()
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                var ResponseE = _conferenceBL.getDetallesEavliation( user.UserID);
+
+
+
+                if (ResponseE != null)
+                {
+                    //Crear respuesta exitosa
+                    EvaluationInteractor interactor = new EvaluationInteractor();
+                    var responseSuccess = interactor.responsePurchaseInteractor(ResponseE);
+
+                    return Ok(responseSuccess);
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
     }
+
+
 }

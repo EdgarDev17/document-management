@@ -532,5 +532,53 @@ namespace Conference.DAL
 
             return (result, message);
         }
+
+
+
+        public List<ResponseEvalutionscale> getScale(int userID)
+        {
+            List<ResponseEvalutionscale> areas = new List<ResponseEvalutionscale>();
+            try
+            {
+                _connection.Cnn.Open();
+
+                areas = _connection.Cnn.Query<ResponseEvalutionscale>("sp_get_Evalutionscale", commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL en  sp_get_Evalutionscale", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return areas;
+        }
+
+
+        public List<ResponseEvalutioncriteria> getcriteria(int userID)
+        {
+            List<ResponseEvalutioncriteria> areas = new List<ResponseEvalutioncriteria>();
+            try
+            {
+                _connection.Cnn.Open();
+
+                areas = _connection.Cnn.Query<ResponseEvalutioncriteria>("sp_get_evalutioncriteria", commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL en  sp_get_evalutioncriteria", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return areas;
+        }
     }
+
 }
