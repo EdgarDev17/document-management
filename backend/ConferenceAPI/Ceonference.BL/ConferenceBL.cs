@@ -29,13 +29,13 @@ namespace Conference.BL
         }
 
 
-        public (int result, int conferenceID) RegisterConference(int userID, int RollID, string nameInstitution, string webSiteInstitution, string contactPhoneInstitution, string nameConference,
+        public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID,string nameConference,
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
         {
 
 
 
-            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, nameInstitution, webSiteInstitution, contactPhoneInstitution, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
+            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, institucionID, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
             return (result, conferenceID);
 
         }
@@ -134,5 +134,32 @@ namespace Conference.BL
             conferenceUser = _conferenceDAL.GetConferenceUsersDetails(conferenceID, userID);
             return conferenceUser;
         }
+
+        public (int result, string message) UpdateUserConferenceRole(int userID, int TopicsID, int RollID)
+        {
+
+            var (result, message) = _conferenceDAL.UpdateUserConferenceRole(userID, TopicsID, RollID);
+            return (result, message);
+
+        }
+
+        public ResponseEvaluationD getDetallesEavliation(int userID)
+        {
+            ResponseEvaluationD response = new ResponseEvaluationD();
+
+          List< ResponseEvalutionscale> responseScale = new List<ResponseEvalutionscale> ();
+
+            responseScale = _conferenceDAL.getScale(userID);
+
+            response._Evalutionscale = responseScale;
+
+            List <ResponseEvalutioncriteria> responseCriteria = new List<ResponseEvalutioncriteria>();
+            responseCriteria = _conferenceDAL.getcriteria(userID);
+
+            response._Evalutioncriteria = responseCriteria;
+
+            return response;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 using Conference.BL;
 using Conference.Entities;
+using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace ConferenceAPI.Controllers
         }
         AreasResponse responseD = new AreasResponse();
         TopicsResponse TopicsResponse = new TopicsResponse();
-        ConferenceDetailsResponse ConferenceDetailsResponse = new ConferenceDetailsResponse();
+        ConferenceDetailsResponse ConferenceDetailsResponse=new ConferenceDetailsResponse();
         [HttpGet]
         [Route("areas")]
         public ActionResult<IResponse> Getareas()
@@ -82,7 +83,7 @@ namespace ConferenceAPI.Controllers
 
                 if (user != null)
                 {
-                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.nameInstitution, data.webSiteInstitution, data.contactPhoneInstitution, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt);
+                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.institucionID, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt);
                     if (result == 1)
                     {
                         return Ok(new ConferenceResponse
@@ -150,41 +151,40 @@ namespace ConferenceAPI.Controllers
 
             UserEN user = _userBL.VerifyPersonAuthentication(token);
 
-            if (data.TotalSpeakers > 3)
+            if (data.TotalSpeakers>3) { 
+
+            if (user != null)
             {
-
-                if (user != null)
+                var result = _conferenceBL.RegisterConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID,data.TotalAttendees,data.TotalSpeakers);
+                if (result == 0)
                 {
-                    var result = _conferenceBL.RegisterConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID, data.TotalAttendees, data.TotalSpeakers);
-                    if (result == 0)
-                    {
-                        var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
-                        return Ok(response);
-                    }
+                    var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
+                    return Ok(response);
+                }
 
-                    else if (result == 1)
-                    {
-                        var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
-                        return Conflict(response);
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
-                        {
-                            HttpCode = 500,
-                            Message = "Something went wrong"
-                        });
-                    }
+                else if (result == 1)
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                    return Conflict(response);
                 }
                 else
                 {
-
                     return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
                     {
                         HttpCode = 500,
                         Message = "Something went wrong"
                     });
                 }
+            }
+            else
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
 
 
             }
@@ -216,7 +216,7 @@ namespace ConferenceAPI.Controllers
 
             if (user != null)
             {
-                var result = _conferenceBL.UpdateConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID, data.topicsID, data.TotalAttendees, data.TotalSpeakers);
+                var result = _conferenceBL.UpdateConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID, data.topicsID,data.TotalAttendees,data.TotalSpeakers);
                 if (result == 1)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
@@ -351,7 +351,7 @@ namespace ConferenceAPI.Controllers
 
             if (user != null)
             {
-                var result = _conferenceBL.MoveConferenceTopics(data.ConferenceID, user.UserID);
+                var result = _conferenceBL.MoveConferenceTopics( data.ConferenceID, user.UserID);
                 if (result == 1)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
@@ -385,7 +385,7 @@ namespace ConferenceAPI.Controllers
 
         [HttpGet]
         [Route("ConferencesDetailsGeneral")]
-        public virtual ActionResult<IResponse> GetConferencesDetails()
+        public ActionResult<IResponse> GetConferencesDetails()
         {
 
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
@@ -441,7 +441,7 @@ namespace ConferenceAPI.Controllers
             if (user != null)
             {
 
-                List<ConferencesDetailsEN> Conference = _conferenceBL.get_conferences_specific(conferenceID, user.UserID);
+                List<ConferencesDetailsEN> Conference = _conferenceBL.get_conferences_specific(conferenceID,user.UserID);
 
 
 
@@ -481,7 +481,7 @@ namespace ConferenceAPI.Controllers
             if (user != null)
             {
 
-                List<ConferencesDetailsEN> Conference = _conferenceBL.get_conferences_specific_by_user(user.UserID);
+                List<ConferencesDetailsEN> Conference = _conferenceBL.get_conferences_specific_by_user( user.UserID);
 
 
 
@@ -632,9 +632,100 @@ namespace ConferenceAPI.Controllers
                 });
             }
         }
+            [HttpGet]
+            [Route("GetConferenceUsersDetails")]
+            public ActionResult<IResponse> GetConferenceUsersDetails(int conferenceID)
+            {
+
+                if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+                {
+                    return BadRequest(new GenericApiRespons
+                    {
+                        HttpCode = 400,
+                        Message = "Authorization-Token must be provided"
+                    });
+                }
+
+                var user = _userBL.VerifyPersonAuthentication(token);
+                if (user != null)
+                {
+
+                    List<ConferencesDatailsUser> User = _conferenceBL.GetConferenceUsersDetails(conferenceID, user.UserID);
+
+
+
+                    if (User != null)
+                    {
+                        return Ok(new { UserConference = User });
+                    }
+                    else
+                    {
+                        var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                        return Conflict(response);
+                    }
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+
+            }
+
+
+
+        [HttpPost("UpdateUserConferenceRole")]
+        // (Summary = "Deletes an existing conference", Description = "Requires Authorization-Token in the header")
+        public ActionResult<IResponse> UpdateUserConferenceRole([FromBody] ConferenceUserRol data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+            if (user != null)
+            {
+                var (result, message) = _conferenceBL.UpdateUserConferenceRole(data.UserID,data.topicsID,data.NewRolID);
+                if (result == 1)
+                {
+                    var response = new GenericApiRespons { HttpCode = 200, Message = message };
+                    return Ok(response);
+                }
+                else if (result == 0)
+                {
+                    var response = new GenericApiRespons { HttpCode = 404, Message = message };
+                    return NotFound(response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+
+
+
         [HttpGet]
-        [Route("GetConferenceUsersDetails")]
-        public ActionResult<IResponse> GetConferenceUsersDetails(int conferenceID)
+        [Route("GetEvalutionCriteriaScaleDetails")]
+        public ActionResult<IResponse> GetEvalutionCriteriaScaleDetails()
         {
 
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
@@ -650,13 +741,17 @@ namespace ConferenceAPI.Controllers
             if (user != null)
             {
 
-                List<ConferencesDatailsUser> User = _conferenceBL.GetConferenceUsersDetails(conferenceID, user.UserID);
+                var ResponseE = _conferenceBL.getDetallesEavliation( user.UserID);
 
 
 
-                if (User != null)
+                if (ResponseE != null)
                 {
-                    return Ok(new { UserConference = User });
+                    //Crear respuesta exitosa
+                    EvaluationInteractor interactor = new EvaluationInteractor();
+                    var responseSuccess = interactor.responsePurchaseInteractor(ResponseE);
+
+                    return Ok(responseSuccess);
                 }
                 else
                 {
@@ -671,9 +766,7 @@ namespace ConferenceAPI.Controllers
             });
 
         }
-
-
-
-
     }
+
+
 }
