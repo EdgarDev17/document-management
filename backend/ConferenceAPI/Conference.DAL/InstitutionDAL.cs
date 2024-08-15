@@ -120,7 +120,7 @@ public class InstitutionDAL
             UPDATE institution 
             SET Name = @Name, 
                 Website = @Website, 
-                contact_phone = @ContactPhone, 
+                contact_phone = @contact_phone, 
                 Description = @Description,
                 DateModified = @DateModified
             WHERE institutionID = @InstitutionId AND userID = @UserId;
@@ -160,5 +160,36 @@ public class InstitutionDAL
                 await _connection.Cnn.CloseAsync();
             }
         }
+    }
+
+    public async Task<InstitutionDetailsEN> GetInstitutionById(int userId, int institutionId)
+    {
+        await _connection.Cnn.OpenAsync();
+        const string query = @"
+            SELECT 
+                InstitutionID, 
+                Name, 
+                Website, 
+                contact_phone, 
+                Description, 
+                UserID 
+            FROM institution 
+            WHERE userID = @userId AND institutionID = @institutionId";
+
+        var parameters = new
+        {
+            userID = userId,
+            institutionID = institutionId,
+        };
+
+        var institution = await _connection.Cnn.QuerySingleOrDefaultAsync<InstitutionDetailsEN>(query, parameters);
+
+        
+        if (institution == null)
+        {
+            throw new InvalidOperationException("Institution not found or user not authorized to update it");
+        }
+
+        return institution;
     }
 }

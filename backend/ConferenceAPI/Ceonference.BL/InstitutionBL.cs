@@ -43,4 +43,9 @@ public class InstitutionBL
     {
         return await _institutionDal.UpdateInstitutionById(userId, institution);
     }
+    
+    public async Task<InstitutionDetailsEN> GetInstitutionById(int userId, int institutionId)
+    {
+        return await _institutionDal.GetInstitutionById(userId, institutionId);
+    }
 }

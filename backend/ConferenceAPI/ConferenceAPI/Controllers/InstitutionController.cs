@@ -9,7 +9,7 @@ using MySql.Data.MySqlClient;
 
 namespace ConferenceAPI.Controllers
 {
-    [Route("api/Institution/")]
+    [Route("api/Institutions/")]
     [ApiController]
     public class InstitutionController : ControllerBase
     {
@@ -137,7 +137,7 @@ namespace ConferenceAPI.Controllers
             });
         }
         
-        [HttpGet("Institutions")]
+        [HttpGet]
         public async Task<ActionResult<IResponse>> UserInstitution()
         {
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
@@ -172,7 +172,30 @@ namespace ConferenceAPI.Controllers
             });
         }
 
+        [HttpGet("{institutionId}")]
+        public async Task<ActionResult<IResponse>> GetInstitutionById(int institutionId)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
 
+            var user = _userBl.VerifyPersonAuthentication(token);
+            try
+            {
+                var institution = await _institutionBl.GetInstitutionById(user.UserID, institutionId);
+                return Ok(institution);
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }
