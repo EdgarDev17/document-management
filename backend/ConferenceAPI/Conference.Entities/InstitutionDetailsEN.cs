@@ -8,9 +8,7 @@ public class InstitutionDetailsEN
     public string Name { get; set; }
     public string Website { get; set; }
     
-    [Column("contact_phone")]
-    public string ContactPhone { get; set; }
-
+    public string contact_phone { get; set; }
     public string Description { get; set; }
     public int UserID { get; set; }
 }

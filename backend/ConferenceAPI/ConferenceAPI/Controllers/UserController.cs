@@ -2,7 +2,9 @@
 using Conference.Entities;
 using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
+using ConferenceAPI.Models.Institution;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace ConferenceAPI.Controllers
 {
@@ -49,87 +51,6 @@ namespace ConferenceAPI.Controllers
 
                     return Unauthorized(new GenericApiRespons { HttpCode = 401, Message = "no data" });
                 }
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
-            {
-                HttpCode = 500,
-                Message = "Something went wrong"
-            });
-        }
-
-
-        [HttpGet("Institutions")]
-        public async Task<ActionResult<IResponse>> UserInstitution()
-        {
-            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
-            {
-                return BadRequest(new GenericApiRespons
-                {
-                    HttpCode = 400,
-                    Message = "Authorization-Token must be provided"
-                });
-            }
-
-            var user = _userBL.VerifyPersonAuthentication(token);
-
-            if (user != null)
-            {
-                try
-                {
-                    var institutions = await _userBL.GetInstitutionsByUserAsync(user.UserID);
-                    return Ok(institutions);
-                }
-                catch (Exception ex)
-                {
-                    // Manejar el error y devolver una respuesta apropiada
-                    return StatusCode(500, "Ha ocurrido un error al obtener las instituciones.");
-                }
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
-            {
-                HttpCode = 500,
-                Message = "Something went wrong"
-            });
-        }
-
-        [HttpPost("CreateInstitution")]
-        public ActionResult<IResponse> UserCreateInstitution([FromBody] InstitutionRegisterRequest data)
-        {
-            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
-            {
-                return BadRequest(new GenericApiRespons
-                {
-                    HttpCode = 400,
-                    Message = "Authorization-Token must be provided"
-                });
-            }
-
-            var user = _userBL.VerifyPersonAuthentication(token);
-            
-            if (user != null && data != null)
-            {
-                
-                var result = _userBL.CreateInstitutionByUser(user.UserID, new InstitutionDetailsEN
-                {
-                    Description = data.Description,
-                    ContactPhone = data.Phone,
-                    Name = data.Name,
-                    Website = data.Wesbite,
-                    UserID = data.UserID,
-                });
-                
-                if (result > 0)
-                {
-                    return Ok(new GenericApiRespons
-                    {
-                        HttpCode = 200,
-                        Message = "Institution created successfully",
-                    });
-                }
-                
-
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons

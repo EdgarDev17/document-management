@@ -56,8 +56,6 @@ namespace ConferenceAPI.Controllers
         [HttpPost("RegisterUser")]
         public ActionResult<GenericApiRespons> RegisterUser([FromBody] UserRegisterRequest data)
         {
-
-
             try
             {
                 if (data != null)

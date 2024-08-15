@@ -312,37 +312,13 @@ namespace Conference.BL
             return result;
         }
         
-        /* TODO: AQUI ES INNECESARIO USAR UN SP DE MYSQL, CAMBIA EL SP POR UNA SENTENCIA SELECT
-        USANDO WHERE PARA EL ID DEL USUARIO*/
-        
-        public async Task<List<InstitutionDetailsEN>> GetInstitutionsByUserAsync(int userId)
-        {
-            try
-            {
-                return await _userDAL.GetInstitutionsByUserAsync(userId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw; // Re-lanzar la excepción para que el controlador pueda manejarla
-            }
-        }
-
-        public int CreateInstitutionByUser(int userID, InstitutionDetailsEN institution)
-        {
-            int result;
-
-            result = _userDAL.InsertNewInstitutionByUser(userID, institution);
-
-            return result;
-        }
-
         public UserPerfilEN GetUserProfile(int userID)
         {
             UserPerfilEN user = new UserPerfilEN();
             user = _userDAL.GetUserProfile(userID);
             return user;
         }
+        
     }
 
 }
