@@ -4,9 +4,10 @@
     {
 
         public int RollID { get; set; }
-        public string nameInstitution { get; set; }
-        public string webSiteInstitution { get; set; }
-        public string contactPhoneInstitution { get; set; }
+        public int institucionID { get; set; }
+        // public string nameInstitution { get; set; }
+        //  public string webSiteInstitution { get; set; }
+        //  public string contactPhoneInstitution { get; set; }
         public string nameConference { get; set; }
         public string typeConference { get; set; }
         public string description { get; set; }

@@ -130,5 +130,13 @@ namespace Conference.BL
             conferenceUser = _conferenceDAL.GetConferenceUsersDetails(conferenceID, userID);
             return conferenceUser;
         }
+
+        public (int result, string message) UpdateUserConferenceRole(int userID, int TopicsID, int RollID)
+        {
+
+            var (result, message) = _conferenceDAL.UpdateUserConferenceRole(userID, TopicsID, RollID);
+            return (result, message);
+
+        }
     }
 }
