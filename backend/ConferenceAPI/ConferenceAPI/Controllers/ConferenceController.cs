@@ -82,7 +82,7 @@ namespace ConferenceAPI.Controllers
 
                 if (user != null)
                 {
-                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.nameInstitution, data.webSiteInstitution, data.contactPhoneInstitution, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt);
+                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.institucionID, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt);
                     if (result == 1)
                     {
                         return Ok(new ConferenceResponse

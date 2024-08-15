@@ -25,13 +25,13 @@ namespace Conference.BL
         }
 
 
-        public (int result, int conferenceID) RegisterConference(int userID, int RollID, string nameInstitution, string webSiteInstitution, string contactPhoneInstitution, string nameConference,
+        public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID,string nameConference,
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
         {
 
 
 
-            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, nameInstitution, webSiteInstitution, contactPhoneInstitution, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
+            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, institucionID, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
             return (result, conferenceID);
 
         }
