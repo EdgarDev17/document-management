@@ -12,5 +12,5 @@ public class InstitutionDetailsEN
     public string ContactPhone { get; set; }
 
     public string Description { get; set; }
-    public int RolID { get; set; }
+    public int UserID { get; set; }
 }

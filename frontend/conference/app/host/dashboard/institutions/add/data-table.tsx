@@ -15,6 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import { Input } from "@headlessui/react";
+import { Button } from "@/app/components/ui/button";
+import axios from "axios";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,15 +34,29 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const submitNewInstitution = async () => {
+    axios
+      .post("/user", {
+        firstName: "Fred",
+        lastName: "Flintstone",
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="rounded-md border">
-      <Table>
-        <TableHeader>
+      <Table className={"w-full"}>
+        <TableHeader className={"bg-tertiary text-white"}>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={"text-white"}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -52,7 +69,31 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+
+        <TableBody className={"bg-white w-full"}>
+          <TableRow>
+            <TableCell>
+              <Input
+                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+                placeholder="Nombre conferencia"
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+                placeholder="Website conferencia"
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+                placeholder="Telefono conferencia"
+              />
+            </TableCell>
+            {/*<TableCell>*/}
+            {/*  <Button>Crear</Button>*/}
+            {/*</TableCell>*/}
+          </TableRow>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

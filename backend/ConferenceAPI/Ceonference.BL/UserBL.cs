@@ -312,28 +312,30 @@ namespace Conference.BL
             return result;
         }
         
-        public List<InstitutionDetailsEN> GetInstitutionsByUser(int userID)
+        /* TODO: AQUI ES INNECESARIO USAR UN SP DE MYSQL, CAMBIA EL SP POR UNA SENTENCIA SELECT
+        USANDO WHERE PARA EL ID DEL USUARIO*/
+        
+        public async Task<List<InstitutionDetailsEN>> GetInstitutionsByUserAsync(int userId)
         {
-            List<InstitutionDetailsEN> institutions = new List<InstitutionDetailsEN>();
-            int result;
-
-            // Llama al método de la capa DAL
-            institutions = _userDAL.GetInstitutionsByUser(userID, out result);
-            // Verifica el resultado y maneja en la capa de BL si es necesario
-            if (result == 1)
+            try
             {
-                // El usuario está activo y las instituciones se han cargado correctamente
-                return institutions;
+                return await _userDAL.GetInstitutionsByUserAsync(userId);
             }
-            else
+            catch (Exception ex)
             {
-                // El usuario no existe o no está activo
-                // Manejar el caso según sea necesario
-                // Por ejemplo, podrías lanzar una excepción o retornar una lista vacía
-                throw new Exception("El usuario no existe o no está activo.");
+                Console.WriteLine(ex);
+                throw; // Re-lanzar la excepción para que el controlador pueda manejarla
             }
         }
 
+        public int CreateInstitutionByUser(int userID, InstitutionDetailsEN institution)
+        {
+            int result;
+
+            result = _userDAL.InsertNewInstitutionByUser(userID, institution);
+
+            return result;
+        }
 
         public UserPerfilEN GetUserProfile(int userID)
         {
