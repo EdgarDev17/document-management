@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Conference.Entities;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -89,7 +90,57 @@ namespace Conference.DAL
 
             return (response,message);
         }
+        //REGRASAR LOS DATOS DEL USUARIO Y DOCUMENTO
 
+        public List<DocumentEN> GetDocumentsByConference(int TopicsID, int userId)
+        {
+            List<DocumentEN> users = new List<DocumentEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_TopicsID", TopicsID);
+
+                users = _connection.Cnn.Query<DocumentEN>("sp_GetDocumentAndUserDetailsByTopicsID", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+
+                foreach (var user in users)
+                {
+                    if (user != null && !string.IsNullOrEmpty(user.Url))
+                    {
+                        user.DocumentBase = ConvertFileToBase64(user.Url, user.FileName);
+                    }
+                }
+
+                //if (user != null && !string.IsNullOrEmpty(user.profilePictureUrl))
+                //{
+                //    user.imagenBase = ConvertFileToBase64(user.profilePictureUrl, user.profilePictureFile);
+                //}
+            }
+
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+               // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return users!;
+        }
+
+        private string ConvertFileToBase64(string filePath, string filename)
+        {
+
+            string FilePath = Path.Combine(filePath, filename);
+            if (File.Exists(FilePath))
+            {
+                byte[] fileBytes = File.ReadAllBytes(FilePath);
+                return Convert.ToBase64String(fileBytes);
+            }
+            return null!;
+        }
 
         //Agregar un log  espeficifico de un sessionID
 

@@ -1,4 +1,5 @@
 ﻿using Conference.DAL;
+using Conference.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,13 @@ namespace Conference.BL
             var (result, message) = _conferenceDocumentDAL.RegisterDocumentConference(userID, TopicsID,NameDocument,Document,DocumentExtension);
             return (result, message);
 
+        }
+
+        public List<DocumentEN> GetDocumentsByConference(int TopicsID, int userID)
+        {
+            List<DocumentEN> conferenceUser = new List<DocumentEN>();
+            conferenceUser = _conferenceDocumentDAL.GetDocumentsByConference(TopicsID, userID);
+            return conferenceUser;
         }
     }
 }

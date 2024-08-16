@@ -543,6 +543,46 @@ namespace ConferenceAPI.Controllers
         }
 
         [HttpGet]
+        [Route("ConferencesListTopicsByUserID")]
+        public ActionResult<IResponse> get_ListTopicsByUserID()
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<ListTopicsENU> Topics = _conferenceBL.get_ListTopicsByUserID( user.UserID);
+
+
+
+                if (Topics != null)
+                {
+                    return Ok(new { Topics = Topics });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
+        [HttpGet]
         [Route("ConferencesListTopicsByTopicsID")]
         public ActionResult<IResponse> get_ListTopicsByTopicsID(int TopicsID)
         {

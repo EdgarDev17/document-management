@@ -98,6 +98,14 @@ namespace Conference.BL
             conference = _conferenceDAL.get_ListTopicsByConferenceID(conferenceID, userID);
             return conference;
         }
+
+
+        public List<ListTopicsENU> get_ListTopicsByUserID( int userID)
+        {
+            List<ListTopicsENU> conference = new List<ListTopicsENU>();
+            conference = _conferenceDAL.get_ListTopicsByUserID( userID);
+            return conference;
+        }
         public List<ListTopicsEN> get_ListTopicsByTopicsID(int TopicsID, int userID)
         {
             List<ListTopicsEN> conference = new List<ListTopicsEN>();

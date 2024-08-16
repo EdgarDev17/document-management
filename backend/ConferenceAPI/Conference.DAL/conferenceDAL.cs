@@ -432,7 +432,31 @@ namespace Conference.DAL
             }
             return topics;
         }
+        //listar topics de conferencias por userID
 
+        public List<ListTopicsENU> get_ListTopicsByUserID(int userID)
+        {
+            List<ListTopicsENU> topics = new List<ListTopicsENU>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_UserID", userID);
+                topics = _connection.Cnn.Query<ListTopicsENU>("sp_ListTopicsByUserID", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_ListTopicsByUserID", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return topics;
+        }
         //Registrar una conferencia 
 
         public (int result, string message) RegisterAssignUserTopic(int userID,int TopicsID, int RollID)
