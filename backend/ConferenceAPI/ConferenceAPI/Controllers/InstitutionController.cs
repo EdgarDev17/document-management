@@ -116,6 +116,8 @@ namespace ConferenceAPI.Controllers
                     Name = data.Name,
                     Website = data.Wesbite,
                     UserID = data.UserID,
+                    Image = data.Image
+                    
                 });
                 
                 if (result > 0)
@@ -123,7 +125,7 @@ namespace ConferenceAPI.Controllers
                     return Ok(new GenericApiRespons
                     {
                         HttpCode = 200,
-                        Message = "Institution created successfully",
+                        Message = "Institution created successfully"
                     });
                 }
                 
@@ -197,5 +199,6 @@ namespace ConferenceAPI.Controllers
                 throw;
             }
         }
+        
     }
 }
