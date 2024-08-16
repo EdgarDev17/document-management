@@ -10,6 +10,12 @@ backend/ConferenceAPI/Ceonference.BL/obj/
 backend/ConferenceAPI/Conference.DAL/obj/
 backend/ConferenceAPI/Conference.Entities/obj/
 backend/ConferenceAPI/ConferenceAPI/obj/
+backend/ConferenceAPI/UnitTest/obj/
+backend/ConferenceAPI/UnitTest/
+backend/ConferenceAPI/UnitTest/obj
+backend/ConferenceAPI/UnitTest/bin
+
+backend/ConferenceAPI/.idea/
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
