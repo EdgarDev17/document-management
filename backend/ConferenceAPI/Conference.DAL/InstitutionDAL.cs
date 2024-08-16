@@ -206,41 +206,101 @@ public class InstitutionDAL
 
     public async Task<InstitutionDetailsEN> UpdateInstitutionById(int userId, InstitutionDetailsEN institution)
     {
+        int response = 0;
+        Image newImg = null;
+        string imagePath = string.Empty;
+        string fileName = string.Empty;
+        
         try
         {
-            await _connection.Cnn.OpenAsync();
+            if (institution.Image != null && institution.Image.Length > 0)
+            {
+                var validExtensions = new List<string> { "JPG", "PNG", "JPEG" };
+                // TODO: HACER QUE LA EXTENSION VENGA DESDE EL CLIENTE
+                if (validExtensions.Contains("jpg".ToUpper()))
+                {
+                    
+                    byte[] imageBytes = Convert.FromBase64String(institution.Image);
 
-            string query = @"
+                    using (var ms = new MemoryStream(imageBytes))
+                    using (var img = await Image.LoadAsync(ms))
+                    {
+                        int width = 400;
+                        int height = 400;
+
+                        if (img.Height > img.Width)
+                        {
+                            width = 400;
+                            height = 400;
+                        }
+
+                        newImg = img.Clone(x => x.Resize(width, height));
+
+                        // TODO: HACER QUE LA EXTENSION VENGA DESDE EL CLIENTE
+                        fileName = $"{Guid.NewGuid()}.{"jpg".ToLower()}"; // le asignamos un nombre
+                        string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "InstitutionImages");
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+
+                        imagePath = Path.Combine(directory, fileName); // lugar en donde se guarda la img
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid image format. Only JPG, PNG, and JPEG are allowed.");
+                }
+            }
+
+            using (var connection = _connection.Cnn)
+            {
+                
+                connection.Open();
+                string query = @"
             UPDATE institution 
             SET Name = @Name, 
                 Website = @Website, 
                 contact_phone = @contact_phone, 
                 Description = @Description,
-                DateModified = @DateModified
+                DateModified = @DateModified,
+                image_url = @image_url,
+                image_name = @image_name
             WHERE institutionID = @InstitutionId AND userID = @UserId;
             
             SELECT * FROM institution 
             WHERE institutionID = @InstitutionId AND userID = @UserId;";
+                
+                
+                var parameters = new
+                {
+                    institution.Name,
+                    institution.Website,
+                    institution.contact_phone,
+                    institution.Description,
+                    DateModified = DateTime.UtcNow,
+                    InstitutionId = institution.InstitutionID,
+                    UserId = userId,
+                    image_name = fileName,
+                    image_url = imagePath
+                };
+                
+                var updatedInstitution = await _connection.Cnn.QuerySingleOrDefaultAsync<InstitutionDetailsEN>(query, parameters);
 
-            var parameters = new
-            {
-                institution.Name,
-                institution.Website,
-                institution.contact_phone,
-                institution.Description,
-                DateModified = DateTime.UtcNow,
-                InstitutionId = institution.InstitutionID,
-                UserId = userId
-            };
+                if (updatedInstitution == null)
+                {
+                    throw new InvalidOperationException("Institution not found or user not authorized to update it");
+                }
 
-            var updatedInstitution = await _connection.Cnn.QuerySingleOrDefaultAsync<InstitutionDetailsEN>(query, parameters);
+                if (newImg == null)
+                {
+                    throw new InvalidOperationException("InstitutionDAL: imagen null");
 
-            if (updatedInstitution == null)
-            {
-                throw new InvalidOperationException("Institution not found or user not authorized to update it");
+                }
+
+                SaveImage(newImg, imagePath, "JPG");
+                return updatedInstitution;
             }
-
-            return updatedInstitution;
         }
         catch (Exception e)
         {
