@@ -56,8 +56,6 @@ namespace ConferenceAPI.Controllers
         [HttpPost("RegisterUser")]
         public ActionResult<GenericApiRespons> RegisterUser([FromBody] UserRegisterRequest data)
         {
-
-
             try
             {
                 if (data != null)
@@ -115,7 +113,7 @@ namespace ConferenceAPI.Controllers
 
             if (user != null)
             {
-               var result =_userBL.imagen(data.Image,data.ImageExtension,user.UserID);
+               var result =_userBL.imagen(data.Image, data.ImageExtension,user.UserID);
 
                 if (result == 1 || result==2)
                 {

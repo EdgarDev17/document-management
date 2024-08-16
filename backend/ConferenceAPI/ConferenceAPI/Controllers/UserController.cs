@@ -2,8 +2,9 @@
 using Conference.Entities;
 using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
-using Microsoft.AspNetCore.Http;
+using ConferenceAPI.Models.Institution;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace ConferenceAPI.Controllers
 {
@@ -12,6 +13,7 @@ namespace ConferenceAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserBL _userBL;
+
         public UserController(UserBL userBL)
         {
             _userBL = userBL;
@@ -35,7 +37,7 @@ namespace ConferenceAPI.Controllers
             {
 
                 UserPerfilEN resp = new();
-                 resp = _userBL.GetUserProfile(user.UserID);
+                resp = _userBL.GetUserProfile(user.UserID);
                 if (resp != null)
                 {
                     //Crear respuesta exitosa
@@ -57,6 +59,5 @@ namespace ConferenceAPI.Controllers
                 Message = "Something went wrong"
             });
         }
-
     }
 }

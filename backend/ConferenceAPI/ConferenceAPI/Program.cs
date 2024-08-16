@@ -28,7 +28,7 @@ builder.Services.AddCors(configuration =>
     });
 });
 
-// Configurar la cadena de conexión para inyección de dependencias
+// Configurar la cadena de conexiï¿½n para inyecciï¿½n de dependencias
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 
 builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"));
@@ -37,38 +37,42 @@ builder.Services.Configure<SettingsEmail>(builder.Configuration.GetSection("Sett
 
 builder.Services.AddScoped<EmailSend>();
 
-// Registra la clase Connection para inyección de dependencias
+// Registra la clase Connection para inyecciï¿½n de dependencias
 builder.Services.AddScoped<Connection>();
 
-// Registra la clase UserDAL para inyección de dependencias
+// Registra la clase UserDAL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<UserDAL>();
 
-// Registra la clase UserBL para inyección de dependencias
+// Registra la clase UserBL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<UserBL>();
 
-// Registra la clase conferenceDAL para inyección de dependencias
+// Registra la clase conferenceDAL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<conferenceDAL>();
 
-// Registra la clase  ConferenceBL para inyección de dependencias
+// Registra la clase  ConferenceBL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<ConferenceBL>();
 
 
-// Registra la clase ConferenceDocumentDAL para inyección de dependencias
+// Registra la clase ConferenceDocumentDAL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<ConferenceDocumentDAL>();
 
-// Registra la clase  ConferenceDocumentBL para inyección de dependencias
+// Registra la clase  ConferenceDocumentBL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<ConferenceDocumentBL>();
 
-// Registra la clase  CertificateDAL para inyección de dependencias
+// Registra la clase  CertificateDAL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<CertificateDAL>();
 
-// Registra la clase  CertificateBL para inyección de dependencias
+// Registra la clase  CertificateBL para inyecciï¿½n de dependencias
 builder.Services.AddScoped<CertificateBL>();
 
 builder.Services.AddScoped<LocalFileSaver>();
 
 builder.Services.AddScoped<RatingDAL>();
 builder.Services.AddScoped<RatingBL>();
+
+builder.Services.AddScoped<InstitutionBL>();
+builder.Services.AddScoped<InstitutionDAL>();
+
 
 var app = builder.Build();
 

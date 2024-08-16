@@ -1,4 +1,4 @@
-﻿using Conference.BL;
+using Conference.BL;
 using Conference.Entities;
 using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
