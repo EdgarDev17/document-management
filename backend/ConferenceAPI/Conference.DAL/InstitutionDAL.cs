@@ -29,12 +29,21 @@ public class InstitutionDAL
                 Website, 
                 contact_phone, 
                 Description, 
-                UserID 
+                UserID,
+                image_url,
+                image_name
             FROM institution 
             WHERE userID = @UserId";
 
-            var institutions = await _connection.Cnn.QueryAsync<InstitutionDetailsEN>(sql, new { UserId = userId });
-            return institutions.ToList();
+            var institutions = (await _connection.Cnn.QueryAsync<InstitutionDetailsEN>(sql, new { UserId = userId })).ToList();
+            
+            foreach (var institution in institutions)
+            {
+                // Convertir la imagen a Base64 y asignarla a la propiedad Image
+                institution.Image = ConvertFileToBase64(institution.image_url);
+            }
+
+            return institutions;
         }
         catch (Exception ex)
         {
