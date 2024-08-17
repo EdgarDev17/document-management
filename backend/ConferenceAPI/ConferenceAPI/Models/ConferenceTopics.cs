@@ -33,5 +33,11 @@
         public int TopicsID { get; set; }
         public int RolID { get; set; }
     }
+    public class ConferenceEvalutionCriteria
 
+    {
+        public int criterionID { get; set; }
+        public int ConferenceID { get; set; }
+      
+    }
 }

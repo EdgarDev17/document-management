@@ -32,5 +32,12 @@ namespace Conference.BL
             conferenceUser = _conferenceDocumentDAL.GetDocumentsByConference(TopicsID, userID);
             return conferenceUser;
         }
+
+        public List<DocumentRolIdEN> GetDocumentsByRolID(int userId, int TopicsID, int RolId)
+        {
+            List<DocumentRolIdEN> conferenceUser = new List<DocumentRolIdEN>();
+            conferenceUser = _conferenceDocumentDAL.GetDocumentsByRolID(userId,TopicsID,RolId);
+            return conferenceUser;
+        }
     }
 }

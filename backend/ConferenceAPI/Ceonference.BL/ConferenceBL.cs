@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Conference.BL
 {
@@ -168,6 +169,26 @@ namespace Conference.BL
 
             return response;
         }
+        public int RegisterEvalutionCriteriaConference(List<ConferenceEvaluationCriteria> data, int UserID)
+        {
 
+
+
+            foreach (var topic in data)
+            {
+                // Lógica para registrar una conferencia individual
+                var result = _conferenceDAL.RegisterEvalutionCriteriaConference(
+                    topic.ConferenceID,topic.criterionID,UserID
+                );
+
+                // Manejo de errores si es necesario
+                if (result != 1)
+                {
+                    return result; // Retornar el código de error si ocurre algún problema
+                }
+            }
+
+            return 0; // Retornar 0 si todas las conferencias fueron registradas con éxito
+        }
     }
 }

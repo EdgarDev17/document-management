@@ -1,5 +1,6 @@
 ﻿using Conference.BL;
 using Conference.Entities;
+using ConferenceAPI.Interactors;
 using ConferenceAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -105,6 +106,48 @@ namespace ConferenceAPI.Controllers
 
                 if (User != null)
                 {
+                    return Ok(new { Document = User });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen documentos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
+
+        [HttpGet]
+        [Route("GetDocumentsByRolID")]
+        public ActionResult<IResponse> GetDocumentsByRolID( int TopicsID, int RolId)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<DocumentRolIdEN> User = _conferenceDocumentBL.GetDocumentsByRolID( user.UserID,TopicsID,RolId);
+
+
+
+                if (User != null)
+                {
+                    
                     return Ok(new { Document = User });
                 }
                 else

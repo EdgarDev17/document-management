@@ -469,8 +469,9 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_UserID", userID);
-                parameters.Add("@p_RollID", RollID);
                 parameters.Add("@p_TopicsID", TopicsID);
+                parameters.Add("@p_RolID", RollID);
+               
              
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String,size:255, direction: ParameterDirection.Output);
@@ -602,6 +603,45 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
             return areas;
+        }
+
+
+        //Registrar criterios en conferencias
+
+        public int RegisterEvalutionCriteriaConference(int conferenceID,int criterionID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                parameters.Add("@p_CriterionID", criterionID);
+               
+
+                parameters.Add("@p_Result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_InsertEvaluationCriteriaConference", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@p_Result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en sp_InsertEvaluationCriteriaConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
         }
     }
 

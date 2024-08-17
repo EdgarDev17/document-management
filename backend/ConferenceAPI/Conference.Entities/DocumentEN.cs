@@ -26,4 +26,18 @@ namespace Conference.Entities
         // Otros datos que podrías necesitar, como la imagen convertida a Base64
         public string DocumentBase { get; set; }
     }
+
+    public class DocumentRolIdEN
+    {
+        public int DocumentID { get; set; }
+        public string Name { get; set; }
+        public DateTime RegDate { get; set; }
+        public string Review { get; set; }
+        public int UserID { get; set; }
+        public int TopicsID { get; set; }
+        public string Url { get; set; }
+        public string FileName { get; set; }
+        public string ReviewJury { get; set; }
+        public string DocumentBase { get; set; }
+    }
 }

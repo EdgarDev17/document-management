@@ -806,6 +806,53 @@ namespace ConferenceAPI.Controllers
             });
 
         }
+
+
+        [HttpPost("RegisterEvalutionCriteriaConference")]
+        public ActionResult<IResponse> RegisterEvalutionCriteriaConference([FromBody] List<ConferenceEvaluationCriteria> data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+            if (user != null)
+            {
+                var result = _conferenceBL.RegisterEvalutionCriteriaConference(data, user.UserID);
+
+                if (result == 0)
+                {
+                    return Ok(new GenericApiRespons { HttpCode = 200, Message = "Success" });
+                }
+                else if (result == 1)
+                {
+                    return Conflict(new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" });
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+
     }
 
 

@@ -141,7 +141,45 @@ namespace Conference.DAL
             }
             return null!;
         }
+        //REGRASAR LOS DATOS DEL  DOCUMENTO por rolID
 
+        public List<DocumentRolIdEN> GetDocumentsByRolID(int userId,int TopicsID,int RolId )
+        {
+            List<DocumentRolIdEN> users = new List<DocumentRolIdEN>();
+            try
+            {
+
+                
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_TopicsID", TopicsID);
+                parameters.Add("@p_RolID", RolId);
+                users = _connection.Cnn.Query<DocumentRolIdEN>("sp_GetDocumentsByUserAndRole", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+
+                foreach (var user in users)
+                {
+                    if (user != null && !string.IsNullOrEmpty(user.Url))
+                    {
+                        user.DocumentBase = ConvertFileToBase64(user.Url, user.FileName);
+                    }
+                }
+
+               
+            }
+
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+                // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return users!;
+        }
         //Agregar un log  espeficifico de un sessionID
 
         public void InsertErrorLogSession(string eventText, string message, int UserID)
