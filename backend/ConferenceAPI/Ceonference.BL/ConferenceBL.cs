@@ -190,5 +190,20 @@ namespace Conference.BL
 
             return 0; // Retornar 0 si todas las conferencias fueron registradas con éxito
         }
+
+        public List<ConferencesAgenda> GetConferencesAgenda(int conferenceID, int userID)
+        {
+            List<ConferencesAgenda> conference = new List<ConferencesAgenda>();
+            conference = _conferenceDAL.GetConferencesAgenda(conferenceID, userID);
+            return conference;
+        }
+
+
+        public List<EvaluationCriteriaConference> GetEvaluationCriteriaByConference(int conferenceID, int userID)
+        {
+            List<EvaluationCriteriaConference> conference = new List<EvaluationCriteriaConference>();
+            conference = _conferenceDAL.GetEvaluationCriteriaByConference(conferenceID, userID);
+            return conference;
+        }
     }
 }

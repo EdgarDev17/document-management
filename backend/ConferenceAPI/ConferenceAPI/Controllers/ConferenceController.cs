@@ -853,6 +853,87 @@ namespace ConferenceAPI.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("ConferencesAgenda")]
+        public ActionResult<IResponse> GetConferencesAgenda(int conferenceID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<ConferencesAgenda> Conference = _conferenceBL.GetConferencesAgenda(conferenceID, user.UserID);
+
+
+
+                if (Conference != null)
+                {
+                    return Ok(new { Conference = Conference });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
+        [HttpGet]
+        [Route("ListEvaluationCriteriaByConference")]
+        public ActionResult<IResponse> GetEvaluationCriteriaByConference(int conferenceID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<EvaluationCriteriaConference> Conference = _conferenceBL.GetEvaluationCriteriaByConference(conferenceID, user.UserID);
+
+
+
+                if (Conference != null)
+                {
+                    return Ok(new { Conference = Conference });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
     }
 
 

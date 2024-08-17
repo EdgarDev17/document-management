@@ -643,6 +643,57 @@ namespace Conference.DAL
 
             return result;
         }
+
+        //Agenda de la conferencia
+
+        public List<ConferencesAgenda> GetConferencesAgenda(int conferenceID, int userID)
+        {
+            List<ConferencesAgenda> conferences = new List<ConferencesAgenda>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                conferences = _connection.Cnn.Query<ConferencesAgenda>("sp_GetConferenceAgenda", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en  sp_GetConferenceAgenda`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+        //Lista de evaluation criteria por conferences
+
+        public List<EvaluationCriteriaConference> GetEvaluationCriteriaByConference(int conferenceID, int userID)
+        {
+            List<EvaluationCriteriaConference> conferences = new List<EvaluationCriteriaConference>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                conferences = _connection.Cnn.Query<EvaluationCriteriaConference>("sp_GetEvaluationCriteriaByConference", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en  sp_GetConferenceAgenda`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
     }
 
 }
