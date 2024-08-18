@@ -11,4 +11,12 @@ namespace Conference.Entities
         public int criterionID { get; set; }
         public int ConferenceID { get; set; }
     }
+
+    public class RegisterEvaluationCriteriaDocument
+    {
+        public int EvaCritConfID { get; set; }
+        public int ScaleID { get; set; }
+       // public int UserID { get; set; }
+        public int DocumentID { get; set; }
+    }
 }

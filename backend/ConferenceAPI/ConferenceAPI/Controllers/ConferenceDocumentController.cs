@@ -163,5 +163,102 @@ namespace ConferenceAPI.Controllers
             });
 
         }
+        [HttpPost("RegisterDocumentEvaluationCriteria")]
+        public ActionResult<IResponse> RegisterDocumentEvaluationCriteria([FromBody] List<RegisterEvaluationCriteriaDocument> data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+            if (user != null)
+            {
+                var result = _conferenceDocumentBL.RegisterDocumentEvaluationCriteria(data, user.UserID);
+
+                if (result == 1)
+                {
+                    return Ok(new GenericApiRespons { HttpCode = 200, Message = "Success" });
+                }
+                else if (result == 0)
+                {
+                    return Conflict(new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" });
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+
+        [HttpPost("RegisterDocumentVeredict")]
+        // (Summary = "Registers a new conference", Description = "Requires Authorization-Token in the header")
+        public ActionResult<IResponse> RegisterDocumentVeredict([FromBody] DocumentVeredictRequest data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+
+
+            if (user != null)
+            {
+                var (result, message) = _conferenceDocumentBL.RegisterDocumentVeredict(data.documentID, data.veredictID, user.UserID);
+                if (result == 1)
+                {
+                    var response = new GenericApiRespons { HttpCode = 200, Message = message };
+                    return Ok(response);
+                }
+
+                else if (result == 0)
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = message };
+                    return Conflict(response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+
+
     }
 }

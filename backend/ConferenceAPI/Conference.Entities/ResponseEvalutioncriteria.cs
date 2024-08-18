@@ -17,7 +17,7 @@ namespace Conference.Entities
     {
         // Properties with Getters and Setters
 
-        public int CriterionID { get; set; }          // Corresponds to ec.criterionID
+        public int evaCritConfID { get; set; }          // Corresponds to ec.criterionID
         public int ConferenceID { get; set; }         // Corresponds to ec.conferenceID
         public string Aspect { get; set; }            // Corresponds to c.aspect
         public string Description { get; set; }       // Corresponds to c.description

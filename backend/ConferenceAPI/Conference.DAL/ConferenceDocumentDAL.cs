@@ -205,5 +205,81 @@ namespace Conference.DAL
             }
         }
 
+        public int RegisterDocumentEvaluationCriteria(int EvaCritConfID, int ScaleID, int UserID, int DocumentID)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_evaCritConfID", EvaCritConfID);
+                parameters.Add("@p_scaleID", ScaleID);
+                parameters.Add("@p_UserID", UserID);
+                parameters.Add("@p_documentID", DocumentID);
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_RegisterDocumentEvaluationCriteria", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en sp_RegisterDocumentEvaluationCriteria", ex.Message, UserID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+        //Registrar veredicto del documento
+
+        public  (int result, string message) RegisterDocumentVeredict(int documentID, int veredictID, int userId)
+        {
+            int result = 0;
+            string message = string.Empty;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_documentID", documentID);
+                parameters.Add("@p_veredictID", veredictID);
+                parameters.Add("@p_UserID", userId);
+
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+                _connection.Cnn.Execute("sp_RegisterDocumentVeredict", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@result");
+                message = parameters.Get<string>("@message");
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en sp_RegisterDocumentVeredict", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return (result, message);
+        }
     }
 }

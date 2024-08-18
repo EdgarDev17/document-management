@@ -39,5 +39,38 @@ namespace Conference.BL
             conferenceUser = _conferenceDocumentDAL.GetDocumentsByRolID(userId,TopicsID,RolId);
             return conferenceUser;
         }
+
+
+        public int RegisterDocumentEvaluationCriteria(List<RegisterEvaluationCriteriaDocument> data, int UserID)
+        {
+
+            foreach (var Criteria in data)
+            {
+                // Lógica para registrar una conferencia individual
+                var result = _conferenceDocumentDAL.RegisterDocumentEvaluationCriteria(
+                    Criteria.EvaCritConfID,
+                    Criteria.ScaleID,
+                    UserID,
+                    Criteria.DocumentID
+                );
+
+                // Manejo de errores si es necesario
+                if (result != 1)
+                {
+                    return result; // Retornar el código de error si ocurre algún problema
+                }
+            }
+
+            return 1; // Retornar 0 si todas las conferencias fueron registradas con éxito
+        }
+
+
+        public (int result, string message) RegisterDocumentVeredict(int documentID, int veredictID, int userId)
+        {
+
+            var (result, message) = _conferenceDocumentDAL.RegisterDocumentVeredict(documentID, veredictID, userId);
+            return (result, message);
+
+        }
     }
 }
