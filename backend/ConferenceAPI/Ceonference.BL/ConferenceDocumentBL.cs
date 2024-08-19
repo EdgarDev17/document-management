@@ -72,5 +72,20 @@ namespace Conference.BL
             return (result, message);
 
         }
+
+        public DocumentEvaluationDetails GetDocumentEvaluationDetails(int documentID, int userID)
+        {
+            DocumentEvaluationDetails documentDetails = new DocumentEvaluationDetails();
+            documentDetails = _conferenceDocumentDAL.GetDocumentEvaluationDetails(documentID, userID);
+            return documentDetails;
+        }
+
+        public string GetValidateDocumentVerdict(int documentID, int userID)
+        {
+
+            var message=_conferenceDocumentDAL.GetValidateDocumentVerdict(documentID,  userID);
+            return  message;
+
+        }
     }
 }

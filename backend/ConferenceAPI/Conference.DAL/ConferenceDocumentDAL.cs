@@ -281,5 +281,77 @@ namespace Conference.DAL
 
             return (result, message);
         }
+
+        //listar los criterios evaluados del documento 
+
+        public DocumentEvaluationDetails GetDocumentEvaluationDetails(int documentID, int userID)
+
+        {
+
+
+            var documentEvaluationDetails = new DocumentEvaluationDetails
+            {
+                Evaluations = new List<ResponseDocumentEvaluation>()
+            };
+            //List<ResponseDocumentEvaluation> Evaluation = new List<ResponseDocumentEvaluation>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_documentID", documentID);
+                using (var multi = _connection.Cnn.QueryMultiple("GetDocumentEvaluationDetails", parameters, commandType: CommandType.StoredProcedure))
+                {
+                    documentEvaluationDetails.Evaluations = multi.Read<ResponseDocumentEvaluation>().AsList();
+                    documentEvaluationDetails.Veredict = multi.ReadFirstOrDefault<ResponseDocumentVeredict>();
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en GetDocumentEvaluationDetails", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return documentEvaluationDetails;
+        }
+        //estado del documento 
+        public string  GetValidateDocumentVerdict(int documentID, int userID)
+        {
+           
+            string message = string.Empty;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@p_documentID",documentID);
+               
+
+               
+                parameters.Add("@p_status", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+                _connection.Cnn.Execute("GetValidateDocumentVerdict", parameters, commandType: CommandType.StoredProcedure);
+
+              
+                message = parameters.Get<string>("@p_status");
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en  GetValidateDocumentVerdict BD", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return  message;
+        }
     }
 }

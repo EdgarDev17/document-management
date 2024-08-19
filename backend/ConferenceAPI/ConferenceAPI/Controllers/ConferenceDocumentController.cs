@@ -258,7 +258,86 @@ namespace ConferenceAPI.Controllers
                 });
             }
         }
+        [HttpGet]
+        [Route("GetDocumentEvaluationDetails")]
+        public ActionResult<IResponse> GetDocumentEvaluationDetails(int documentID)
+        {
 
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+                DocumentEvaluationDetails documentDetails = new DocumentEvaluationDetails();
+                documentDetails = _conferenceDocumentBL.GetDocumentEvaluationDetails(documentID, user.UserID);
+
+
+
+                if (documentDetails != null)
+                {
+                    return Ok(new { DocumentoEvaluation = documentDetails });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen datos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
+        [HttpGet]
+        [Route("GetValidateDocumentVerdict")]
+        public ActionResult<IResponse> GetValidateDocumentVerdict(int documentID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+               
+                string message = _conferenceDocumentBL.GetValidateDocumentVerdict(documentID, user.UserID);
+
+
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    var response = new GenericApiRespons { HttpCode = 200, Message = message };
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen datos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
 
     }
 }
