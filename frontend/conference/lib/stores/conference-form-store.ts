@@ -9,8 +9,8 @@ export type NewConferenceFormState = {
   finishingDate: Date | null;
   eventType: string;
   eventAddress: string;
-  institutionName: string;
-  paperAttempts: number;
+  institutionId: string;
+  documentAttempt: number;
 };
 
 // acciones que modifican el estado del formulario
@@ -42,8 +42,8 @@ export const defaultStateValues: NewConferenceFormState = {
   eventType: "",
   finishingDate: null,
   startingDate: null,
-  institutionName: "",
-  paperAttempts: 1,
+  institutionId: "",
+  documentAttempt: 1,
 };
 
 export const initNewConferenceFormStore = (): NewConferenceFormState => {
@@ -79,8 +79,8 @@ export const createNewConferenceFormStore = (
       })),
     updateStepThree: (pInstitutionName: string, pPaperAttemps: number) =>
       set((state) => ({
-        institutionName: pInstitutionName,
-        paperAttempts: pPaperAttemps,
+        institutionId: pInstitutionName,
+        documentAttempt: pPaperAttemps,
       })),
   }));
 };

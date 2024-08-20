@@ -9,9 +9,12 @@ export interface InstitutionDetails {
   institutionID: number;
   name: string;
   website: string;
-  contactPhone: string | null;
+  contact_phone: string;
   rolID: number;
   description: string;
+  image_url: string;
+  image_name: string;
+  image: string;
 }
 
 export const columns: ColumnDef<InstitutionDetails>[] = [
@@ -24,7 +27,7 @@ export const columns: ColumnDef<InstitutionDetails>[] = [
     header: "Website",
   },
   {
-    accessorKey: "contactPhone",
+    accessorKey: "contact_phone",
     header: "Telefono",
   },
 ];

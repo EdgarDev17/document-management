@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "../components/ui/button";
 import { H2 } from "../components/ui/headings";
 import { P } from "../components/ui/text";
@@ -9,8 +7,12 @@ import { DataTable as PaperDataTable } from "./data-table-papers";
 
 import { conferences, conferencesColumns } from "./columns";
 import { papers, papersColumns } from "./columns-papers";
+import { auth } from "@/auth";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const session = await auth();
+
+  console.log(session);
   return (
     <div className="w-full h-full">
       <div className="py-4">
