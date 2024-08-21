@@ -9,10 +9,11 @@ import {
 import axios from "axios";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { urlConference } from "@/lib/endpoints";
 
 async function fetchCurrentEvent() {
   return axios
-    .get("http://localhost:5110/api/Conference/ConferencesDetailsSpecific", {
+    .get(`${urlConference}/ConferencesDetailsSpecific`, {
       params: {
         conferenceID: 1,
       },
@@ -35,7 +36,7 @@ async function fetchCurrentEvent() {
 async function fetchTopicsById() {
   return axios
     .get(
-      "http://localhost:5110/api/Conference/ConferencesListTopicsByConferenceID",
+      `${urlConference}/ConferencesListTopicsByConferenceID`,
       {
         params: {
           conferenceID: 1,

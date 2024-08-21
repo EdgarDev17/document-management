@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { urlRegisterUsers } from "@/lib/endpoints";
 import { Label } from "@/app/components/ui/label";
 import { Input } from "@/app/components/ui/input";
 import {
@@ -166,7 +167,7 @@ const ImageUploader: React.FC = () => {
     if (image) {
       try {
         const response = await axios.post(
-          "http://localhost:5110/api/RegisterUsers/Imagen",
+          `${urlRegisterUsers}/Imagen`,
           {
             Image: image,
             ImageExtension: imageExtension,
