@@ -1,0 +1,82 @@
+
+#IDES
+.idea/
+backend/ConferenceAPI/.idea/
+
+# backend
+backend/ConferenceAPI/ConferenceAPI/bin/
+backend/ConferenceAPI/Ceonference.BL/bin/Debug/
+backend/ConferenceAPI/Ceonference.BL/obj/
+backend/ConferenceAPI/Conference.DAL/obj/
+backend/ConferenceAPI/Conference.Entities/obj/
+backend/ConferenceAPI/ConferenceAPI/obj/
+backend/ConferenceAPI/UnitTest/obj/
+backend/ConferenceAPI/UnitTest/
+backend/ConferenceAPI/UnitTest/obj
+backend/ConferenceAPI/UnitTest/bin
+
+backend/ConferenceAPI/.idea/
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+node_modules/
+
+# NO SUBIR. DEL BACKEND
+backend/ConferenceAPI/Ceonference.BL/bin
+backend/ConferenceAPI/Ceonference.BL/obj
+backend/ConferenceAPI/Conference.DAL/bin
+backend/ConferenceAPI/Conference.DAL/obj
+backend/ConferenceAPI/Conference.Entities/bin
+backend/ConferenceAPI/Conference.Entities/obj
+backend/ConferenceAPI/ConferenceAPI/obj
+backend/ConferenceAPI/ConferenceAPI/bin
+
+#git
+lazygit
+lazygit.tar.gz
+
+# NO SUBIR. DEL FRONTEND
+/frontend/conference/node_modules
+/frontend/conference/.vercel
+/frontend/conference/.next
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+
+# git plugin
+lazygit
+lazygit.tar.gz
+
+# dependencias del front-end
+node_modules/
