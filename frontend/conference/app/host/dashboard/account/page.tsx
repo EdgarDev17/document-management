@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { urlRegisterUsers } from "@/lib/endpoints";
 
 export default function Page() {
   return (
@@ -54,7 +55,7 @@ const ImageUploader: React.FC = () => {
     if (image) {
       try {
         const response = await axios.post(
-          "http://localhost:5110/api/RegisterUsers/Imagen",
+          `${urlRegisterUsers}/Imagen`,
           {
             Image: image,
             ImageExtension: "JPEG",
