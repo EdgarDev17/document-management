@@ -24,6 +24,7 @@ import { DataTable } from "./data-table";
 import { columns, Conference } from "./columns";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { urlConference } from "@/lib/endpoints";
 
 const chartConfig = {
   desktop: {
@@ -46,7 +47,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios("http://localhost:5110/api/Conference/ConferencesDetailsByUser", {
+    axios(`${urlConference}/ConferencesDetailsByUser`, {
       headers: {
         "Authorization-Token":
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTE0VDEwOjI1OjA5LjY2NzIwNDgtMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.VzOMkwfOYWkzFiKE_uB5AkYxYGp0a2wgGldNJoJ1b9I",

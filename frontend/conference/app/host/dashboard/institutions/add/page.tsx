@@ -10,6 +10,7 @@ import { DataTable } from "./data-table";
 import { columns, InstitutionDetails } from "./columns";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { urlUser } from "@/lib/endpoints";
 
 //
 export default function Page() {
@@ -19,7 +20,7 @@ export default function Page() {
   );
 
   useEffect(() => {
-    axios("http://localhost:5110/api/User/Institutions", {
+    axios(`${urlUser}/Institutions`, {
       headers: {
         "Authorization-Token":
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTE0VDEwOjI1OjA5LjY2NzIwNDgtMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.VzOMkwfOYWkzFiKE_uB5AkYxYGp0a2wgGldNJoJ1b9I",
