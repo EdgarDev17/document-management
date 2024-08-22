@@ -694,6 +694,41 @@ namespace Conference.DAL
             }
             return conferences;
         }
+        //Actualizar el estado de la conferencia
+        public int update_conference_status_to_inactive(int conferenceID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_conferenceID", conferenceID);
+
+
+                parameters.Add("@p_result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_update_conference_status_to_inactive", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("p_result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL sp_update_conference_status_to_inactive ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
     }
 
 }

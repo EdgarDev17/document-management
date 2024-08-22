@@ -205,5 +205,15 @@ namespace Conference.BL
             conference = _conferenceDAL.GetEvaluationCriteriaByConference(conferenceID, userID);
             return conference;
         }
+
+        public int update_conference_status_to_inactive(int conferenceID, int userId)
+        {
+
+            int result = 0;
+
+            result = _conferenceDAL.update_conference_status_to_inactive(conferenceID, userId);
+            return result;
+
+        }
     }
 }

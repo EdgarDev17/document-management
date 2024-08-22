@@ -40,4 +40,9 @@
         public int ConferenceID { get; set; }
       
     }
+
+    public class ConferenceUpdateConferenceID
+    {
+        public int ConferenceID { get; set; }
+    }
 }

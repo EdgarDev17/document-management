@@ -934,6 +934,53 @@ namespace ConferenceAPI.Controllers
 
         }
 
+        [HttpPost("update_conference_status_to_inactive")]
+        // (Summary = "Deletes an existing conference", Description = "Requires Authorization-Token in the header")
+        public ActionResult<IResponse> update_conference_status_to_inactive([FromBody] ConferenceUpdateConferenceID data)
+        {
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            UserEN user = _userBL.VerifyPersonAuthentication(token);
+
+            if (user != null)
+            {
+                var result = _conferenceBL.update_conference_status_to_inactive(data.ConferenceID, user.UserID);
+                if (result == 1)
+                {
+                    var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
+                    return Ok(response);
+                }
+                else if (result == 0)
+                {
+                    var response = new GenericApiRespons { HttpCode = 404, Message = "Failed to update status" };
+                    return NotFound(response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                    {
+                        HttpCode = 500,
+                        Message = "Something went wrong"
+                    });
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+                {
+                    HttpCode = 500,
+                    Message = "Something went wrong"
+                });
+            }
+        }
+
     }
 
 
