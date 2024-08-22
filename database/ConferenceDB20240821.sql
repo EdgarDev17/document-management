@@ -1372,12 +1372,39 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conferences_general`()
 BEGIN
-    DECLARE v_current_date DATE;
+    DECLARE v_conferenceID INT;
+    DECLARE done INT DEFAULT 0;
 
-    -- Obtener la fecha actual
-    SET v_current_date = CURDATE();
+    -- Declarar un cursor para obtener los conferenceID que cumplen con la condición
+    DECLARE conference_cursor CURSOR FOR
+    SELECT conferenceID
+    FROM `conferencesdb`.`conference`
+    WHERE NOW() NOT BETWEEN beggingDate AND finishDate 
+    AND Status = 1;
 
-    -- Seleccionar todos los detalles de las conferencias que están vigentes en la fecha actual
+    -- Manejo de la finalización del cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Abrir el cursor
+    OPEN conference_cursor;
+
+    -- Bucle para recorrer los resultados del cursor
+    read_loop: LOOP
+        FETCH conference_cursor INTO v_conferenceID;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Actualizar el Status a 0 para cada conferenceID
+        UPDATE `conferencesdb`.`conference`
+        SET Status = 0
+        WHERE conferenceID = v_conferenceID;
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE conference_cursor;
+
+    -- Seleccionar y devolver los registros actualizados
     SELECT 
         c.conferenceID,
         c.name AS conference_name,
@@ -1393,11 +1420,9 @@ BEGIN
         i.website AS institution_website,
         i.contact_phone AS institution_contact_phone
     FROM 
-        conference c
+        `conferencesdb`.`conference` c
     LEFT JOIN 
-        institution i ON c.institutionID = i.institutionID
-    WHERE 
-        v_current_date BETWEEN c.RegDate AND c.finishDate;
+        `conferencesdb`.`institution` i ON c.institutionID = i.institutionID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1476,75 +1501,62 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conference_details_by_user`(
-    IN p_userID INT
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conference_details_by_user`(IN p_userID int)
 BEGIN
-    DECLARE v_conferenceID INT DEFAULT NULL;
-    DECLARE v_topicsID INT DEFAULT NULL;
-    DECLARE v_rolID INT DEFAULT NULL;
-    DECLARE v_current_date DATE;
+    -- Declarar una variable para almacenar los IDs de conferencia
+    DECLARE v_conferenceIDs TEXT DEFAULT NULL;
 
-    -- Obtener la fecha actual
-    SET v_current_date = CURDATE();
+    -- Obtener todos los IDs de conferencia directamente asociados al usuario
+    SELECT GROUP_CONCAT(conferenceID) INTO v_conferenceIDs
+    FROM conference
+    WHERE userID = p_userID;
 
-    -- Verificar si el userID existe en la tabla conference
-    SELECT conferenceID, rolID INTO v_conferenceID, v_rolID 
-    FROM conference 
-    WHERE userID = p_userID 
-    LIMIT 1;
-
-    IF v_conferenceID IS NULL THEN
-        -- Si no existe en conference, buscar el topicsID y el rolID en la tabla userconference
-        SELECT TopicsID, rolID INTO v_topicsID, v_rolID 
-        FROM userconference 
-        WHERE userID = p_userID 
-        LIMIT 1;
-
-        IF v_topicsID IS NOT NULL THEN
-            -- Buscar el topicsID en la tabla conferencetopics
-            SELECT conferenceID INTO v_conferenceID 
-            FROM conferencetopics 
-            WHERE topicsID = v_topicsID
-            LIMIT 1;
-        END IF;
+    -- Si no se encontraron conferencias directamente, buscar en userconference y conferencetopics
+    IF v_conferenceIDs IS NULL THEN
+        SELECT GROUP_CONCAT(DISTINCT ct.conferenceID) INTO v_conferenceIDs
+        FROM userconference uc
+        JOIN conferencetopics ct ON uc.TopicsID = ct.topicsID
+        WHERE uc.userID = p_userID;
     END IF;
 
-    -- Verificar si se encontró un conferenceID válido y que esté vigente
-    IF v_conferenceID IS NOT NULL AND EXISTS (
-        SELECT 1 
-        FROM conference 
-        WHERE conferenceID = v_conferenceID 
-          AND v_current_date BETWEEN RegDate AND finishDate
-    ) THEN
-        -- Seleccionar todos los detalles de la conferencia
-        SELECT 
-            c.conferenceID,
-            c.name AS conference_name,
-            c.type AS conference_type,
-            c.description,
-            c.RegDate AS conference_RegDate,
-            c.beggingDate,
-            c.finishDate,
-            c.documentAttempt,
-            c.institutionID,
-            c.Status,
-            i.name AS institution_name,
-            i.website AS institution_website,
-            i.contact_phone AS institution_contact_phone,
-            v_rolID AS rolID
-        FROM 
-            conference c
-        LEFT JOIN 
-            institution i ON c.institutionID = i.institutionID
-        WHERE 
-            c.conferenceID = v_conferenceID;
+    -- Si se encontraron conferencias, seleccionar todos los detalles
+    IF v_conferenceIDs IS NOT NULL THEN
+        SET @sql = CONCAT('
+            SELECT
+                c.conferenceID,
+                c.name AS conference_name,
+                c.type AS conference_type,
+                c.description,
+                c.RegDate AS conference_RegDate,
+                c.beggingDate,
+                c.finishDate,
+                c.documentAttempt,
+                c.institutionID,
+                c.Status,
+                i.name AS institution_name,
+                i.website AS institution_website,
+                i.contact_phone AS institution_contact_phone,
+                COALESCE(c.rolID, uc.rolID) AS rolID
+            FROM
+                conference c
+            LEFT JOIN
+                institution i ON c.institutionID = i.institutionID
+            LEFT JOIN
+                userconference uc ON c.userID = uc.userID
+            WHERE
+                c.conferenceID IN (', v_conferenceIDs, ')
+        ');
+
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
     ELSE
-        -- Si no existe, retornar NULL junto con el rolID encontrado
-        SELECT NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description, 
+        -- Si no se encontraron conferencias, devolver un conjunto de resultados vacío
+        SELECT NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description,
                NULL AS conference_RegDate, NULL AS beggingDate, NULL AS finishDate, NULL AS documentAttempt,
-               NULL AS institutionID, NULL AS Status, NULL AS institution_name, NULL AS institution_website, 
-               NULL AS institution_contact_phone, v_rolID AS rolID;
+               NULL AS institutionID, NULL AS Status, NULL AS institution_name, NULL AS institution_website,
+               NULL AS institution_contact_phone, NULL AS rolID
+        WHERE 1 = 0; -- Esta condición asegura que no se devuelvan filas
     END IF;
 END ;;
 DELIMITER ;
@@ -2788,6 +2800,45 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_update_conference_status_to_inactive` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_conference_status_to_inactive`(
+    IN p_conferenceID INT,
+    OUT p_result INT
+)
+BEGIN
+    DECLARE v_rows_affected INT;
+
+    -- Inicializar el resultado
+    SET p_result = 0;
+
+    -- Actualizar el Status a 0
+    UPDATE `conferencesdb`.`conference`
+    SET Status = 0
+    WHERE conferenceID = p_conferenceID 
+    AND Status = 1;
+
+    -- Obtener el número de filas afectadas
+    SELECT ROW_COUNT() INTO v_rows_affected;
+
+    -- Si se actualizaron filas, setear el resultado a 1
+    IF v_rows_affected > 0 THEN
+        SET p_result = 1;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_update_temp_conferencetopics` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -3126,4 +3177,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-18 22:16:48
+-- Dump completed on 2024-08-21 22:06:15
