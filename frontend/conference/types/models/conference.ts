@@ -1,6 +1,6 @@
 export interface Conference {
   conferenceID: number; // Identificador único para la conferencia
-  name: string; // Nombre de la conferencia
+  conference_name: string; // Nombre de la conferencia
   type: string; // Tipo de conferencia
   description?: string; // Descripción de la conferencia (opcional)
   DateModified?: Date; // Fecha de última modificación (opcional)

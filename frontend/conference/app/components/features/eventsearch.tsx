@@ -20,6 +20,7 @@ import { apiClient } from "@/lib/api-service";
 import { urlConference } from "@/lib/endpoints";
 import { Conference } from "@/app/host/dashboard/events/columns";
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 // Array de colores de Tailwind con valor "100"
 const bgColors = [
@@ -189,36 +190,42 @@ function EventSearch({ token }: { token: string }) {
         {displayedEvents.map((evento) => {
           const randomColor = getRandomColor();
           return (
-            <Card key={evento.id} className="overflow-hidden">
-              <CardContent className="p-4 flex">
-                <div
-                  className={`mr-4 flex flex-col items-center justify-center ${randomColor} rounded-md p-2 min-w-[80px]`}
-                >
-                  <span className="text-sm font-semibold">12</span>
-                  <span className="text-xs">sep</span>
-                  <span className="text-xs">2022</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold">{evento.conference_name}</h3>
-                  <p className="text-sm mt-1 line-clamp-2">
-                    {evento.description}
-                  </p>
-                  <div className="flex items-center mt-2 space-x-2">
-                    <Badge variant="secondary">
-                      <GlobeAltIcon className="inline-block mr-1 h-3 w-3" />
-                      {evento.conference_type}
-                    </Badge>
-                    <Badge variant="outline">{"software"}</Badge>
+            <Link
+              key={evento.conferenceID}
+              className="w-fit h-fit"
+              href={`/dashboard/events/marketplace/event/${evento.conferenceID}`}
+            >
+              <Card className="overflow-hidden">
+                <CardContent className="p-4 flex">
+                  <div
+                    className={`mr-4 flex flex-col items-center justify-center ${randomColor} rounded-md p-2 min-w-[80px]`}
+                  >
+                    <span className="text-sm font-semibold">12</span>
+                    <span className="text-xs">sep</span>
+                    <span className="text-xs">2022</span>
                   </div>
-                </div>
-                <div className="flex flex-col justify-between items-end ml-4">
-                  <Badge variant="secondary" className="mb-2">
-                    {`${formatDate(evento.beggingDate)} - ${formatDate(evento.finishDate)}`}
-                  </Badge>
-                  <Button size="sm">Ver conferencia</Button>
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">{evento.conference_name}</h3>
+                    <p className="text-sm mt-1 line-clamp-2">
+                      {evento.description}
+                    </p>
+                    <div className="flex items-center mt-2 space-x-2">
+                      <Badge variant="secondary">
+                        <GlobeAltIcon className="inline-block mr-1 h-3 w-3" />
+                        {evento.conference_type}
+                      </Badge>
+                      <Badge variant="outline">{"software"}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-between items-end ml-4">
+                    <Badge variant="secondary" className="mb-2">
+                      {`${formatDate(evento.beggingDate)} - ${formatDate(evento.finishDate)}`}
+                    </Badge>
+                    <Button size="sm">Ver conferencia</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>

@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import {
   CalendarIcon,
   MapPinIcon,
@@ -24,6 +23,25 @@ import {
 } from "@/app/components/ui/card";
 import { GlobeAltIcon } from "@heroicons/react/20/solid";
 import { ScrollArea } from "@/app/components/ui/scrollarea";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/app/components/ui/dialog";
+import { auth } from "@/auth";
+import { apiClient } from "@/lib/api-service";
+import { urlConference, urlInstitutions } from "@/lib/endpoints";
+import { Conference } from "@/types/models/conference";
+import { formatDate } from "@/lib/utils";
+import { Institution } from "@/types/models/institution";
+import { AgendaContainer } from "@/app/components/features/agendacontainer";
 
 // Simulación de una función para obtener los detalles del evento
 async function getEventoDetalle(id: string) {
@@ -87,77 +105,125 @@ async function getEventoDetalle(id: string) {
   return evento;
 }
 
-export default async function EventoDetalle({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const evento = await getEventoDetalle(params.id);
+async function getEventAgenda(id: string, token: string) {
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesagenda?conferenceID=${id}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
+      },
+    );
 
-  if (!evento) {
-    notFound();
+    return response.data.conference;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+async function getEventDetailts(id: string, token: string) {
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
+      },
+    );
+
+    return response.data.conference[0];
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+async function getInstitution(id: string) {
+  try {
+    const response = await apiClient.get(`${urlInstitutions}/public/${id}`);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+export default async function Page({ params }: { params: { id: string } }) {
+  const session = await auth();
+
+  const event: Conference = await getEventDetailts(
+    params.id,
+    session.accessToken,
+  );
+
+  const agenda: [] = await getEventAgenda(params.id, session.accessToken);
+  const institution: Institution = await getInstitution(params.id);
+
+  if (!event || !agenda) {
+    return "No se encontró el evento";
   }
 
+  if (!session) {
+    return "no auth";
+  }
+
+  console.log({ EVENT: event });
   return (
     <div className=" p-4 space-y-8 h-[70vh]">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{evento.nombre}</h1>
+          <h1 className="text-3xl font-bold mb-2">{event.conference_name}</h1>
           <p className="text-xl text-muted-foreground mb-4">
-            {evento.descripcion}
+            {event.description}
           </p>
           <div className="flex space-x-4">
             <Badge variant="yellow" className="text-sm">
               <CalendarIcon className="mr-1 h-4 w-4" />
-              {evento.fechaInicio} - {evento.fechaFin}
+              {formatDate(event.beggingDate)} - {formatDate(event.finishDate)}
             </Badge>
             <Badge variant="blue" className="text-sm">
               <MapPinIcon className="mr-1 h-4 w-4" />
-              {evento.modalidad}
+              {event.type}
             </Badge>
+            {/*TODO: TRAER EL AREA DE LA BD */}
             <Badge variant="outline" className="text-sm">
-              {evento.area}
+              Area aqui
             </Badge>
           </div>
         </div>
-        <Button size="lg" className="bg-blue-600">
-          Unirme al evento
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="lg" className="bg-blue-600">
+              Registrarme al evento
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Bienvenido, Un paso más</DialogTitle>
+              <DialogDescription>
+                Selecciona como quieres registrarte al evento
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-3 flex gap-x-6">
+              <Button className="bg-blue-600">Como invitado</Button>
+              <Button variant={"outline"}>Como ponente</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden">
+        <Card className="md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden px-4">
           <CardHeader>
             <CardTitle>Agenda</CardTitle>
             <CardDescription>Programa detallado del evento</CardDescription>
           </CardHeader>
           <ScrollArea className="flex-grow">
             <CardContent className="w-full">
-              <ol className="relative px-3 border-l border-gray-200 dark:border-gray-700">
-                {evento.agenda.map((item, index) => (
-                  <li key={index} className="mb-10 ml-6 cursor-pointer">
-                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                      <ClockIcon className="w-3 h-3 text-blue-800 dark:text-blue-300" />
-                    </span>
-                    <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-                      {item.titulo}
-                      {item.ponente && (
-                        <span className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ml-3">
-                          {item.ponente}
-                        </span>
-                      )}
-                    </h3>
-                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                      {item.hora}
-                    </time>
-                    {item.ponentes && (
-                      <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-                        Ponentes: {item.ponentes.join(", ")}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ol>
+              <AgendaContainer agenda={agenda} />
             </CardContent>
           </ScrollArea>
         </Card>
@@ -174,39 +240,37 @@ export default async function EventoDetalle({
               <div className="flex items-center space-x-4">
                 <Avatar className="h-20 w-20">
                   <AvatarImage
-                    src={evento.anfitrion.imagen}
-                    alt={evento.anfitrion.nombre}
+                    src={`data:image/JPG;base64,${institution.image}`}
+                    alt={institution.name}
                   />
                   <AvatarFallback>
-                    {evento.anfitrion.nombre
+                    {institution.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-lg font-semibold">
-                    {evento.anfitrion.nombre}
-                  </h3>
+                  <h3 className="text-lg font-semibold">{institution.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {evento.anfitrion.descripcion}
+                    {institution.description}
                   </p>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center text-sm">
                   <PhoneIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <span>{evento.anfitrion.telefono}</span>
+                  <span>{institution.contact_phone}</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <GlobeAltIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                   <a
-                    href={`https://${evento.anfitrion.sitioWeb}`}
+                    href={`${institution.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
-                    {evento.anfitrion.sitioWeb}
+                    {institution.website}
                   </a>
                 </div>
               </div>
@@ -228,12 +292,12 @@ export default async function EventoDetalle({
                 <div className="flex items-center space-x-2">
                   <Badge variant="outline" className="text-sm">
                     <CalendarIcon className="mr-1 h-3 w-3" />
-                    {evento.fechaInicio}
+                    {formatDate(event.beggingDate)}
                   </Badge>
                   <span>hasta</span>
                   <Badge variant="outline" className="text-sm">
                     <CalendarIcon className="mr-1 h-3 w-3" />
-                    {evento.fechaFin}
+                    {formatDate(event.finishDate)}
                   </Badge>
                 </div>
               </div>
@@ -243,27 +307,26 @@ export default async function EventoDetalle({
                 </h4>
                 <div className="flex items-center">
                   <MapPinIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <span>{evento.ubicacion}</span>
+                  <span>Ubicacion aqui</span>
                 </div>
               </div>
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm text-muted-foreground">
                   Participantes
                 </h4>
+                {/*TODO: HACER QUE LA CONFERENCIA ACEPTA MAXIMOS DE PARTICIAPANTES */}
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">
-                    {evento.participantesRegistrados}
-                  </span>
+                  <span className="text-2xl font-bold">5</span>
                   <Badge variant="outline" className="text-sm">
                     <UsersIcon className="mr-1 h-3 w-3" />
-                    {evento.limiteParticipantes} max
+                    100 max
                   </Badge>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                   <div
                     className="bg-blue-600 h-2.5 rounded-full"
                     style={{
-                      width: `${(evento.participantesRegistrados / evento.limiteParticipantes) * 100}%`,
+                      width: `${(5 / 100) * 100}%`,
                     }}
                   ></div>
                 </div>

@@ -44,7 +44,7 @@ export default function DashboardLayout({
                 <p>Diplomas</p>
               </div>
             </SideBarItem>
-            <SideBarItem url="/host/dashboard/account/">
+            <SideBarItem url="/dashboard/account/">
               <div className="w-full flex justify-start items-center gap-x-4 p-3 hover:bg-accent rounded-lg">
                 <UserIcon className="w-6 h-6 text-zinc-700" />
                 <p>Cuenta</p>
