@@ -729,6 +729,43 @@ namespace Conference.DAL
 
             return result;
         }
+
+
+        //registrar usurio en conferencia
+        public int RegisterUserAssignedConference(int conferenceID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_conferenceID", conferenceID);
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("RegisterUserAssignedConference", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
     }
 
 }

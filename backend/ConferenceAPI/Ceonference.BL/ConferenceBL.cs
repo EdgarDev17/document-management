@@ -215,5 +215,15 @@ namespace Conference.BL
             return result;
 
         }
+
+        public int RegisterUserAssignedConference(int conferenceID, int userId)
+        {
+
+            int result = 0;
+
+            result = _conferenceDAL.RegisterUserAssignedConference(conferenceID, userId);
+            return result;
+
+        }
     }
 }
