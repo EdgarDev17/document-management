@@ -12,6 +12,8 @@
         public int TotalSpeakers { get; set; }
         public int TotalAttendees { get; set; }
         public int topicsID { get; set; }
+        public string? nameSpeaker { get; set; }
+
 
     }
     public class ConferenceTopicstopicsID
@@ -39,5 +41,10 @@
         public int criterionID { get; set; }
         public int ConferenceID { get; set; }
       
+    }
+
+    public class ConferenceUpdateConferenceID
+    {
+        public int ConferenceID { get; set; }
     }
 }

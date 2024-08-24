@@ -51,7 +51,7 @@ CREATE TABLE `areasconference` (
   KEY `FK_conferenceID_conference` (`conferenceID`),
   CONSTRAINT `areasconference_ibfk_1` FOREIGN KEY (`areaID`) REFERENCES `area` (`areaID`),
   CONSTRAINT `FK_conferenceID_conference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,6 +75,8 @@ CREATE TABLE `conference` (
   `Status` int NOT NULL,
   `rolID` int NOT NULL,
   `UserID` int NOT NULL,
+  `Location` varchar(250) DEFAULT NULL,
+  `urlconference` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`conferenceID`),
   KEY `FK_institutionID_conference` (`institutionID`),
   KEY `FK_rolID_conference` (`rolID`),
@@ -82,7 +84,7 @@ CREATE TABLE `conference` (
   CONSTRAINT `FK_institutionID_conference` FOREIGN KEY (`institutionID`) REFERENCES `institution` (`institutionID`),
   CONSTRAINT `FK_rolID_conference` FOREIGN KEY (`rolID`) REFERENCES `roluserconference` (`rolID`),
   CONSTRAINT `FK_UserID_conference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +95,7 @@ DROP TABLE IF EXISTS `conferencetopics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conferencetopics` (
-  `TopicsID` int NOT NULL,
+  `TopicsID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(150) NOT NULL,
   `Description` varchar(250) NOT NULL,
   `Location` varchar(250) NOT NULL,
@@ -109,7 +111,7 @@ CREATE TABLE `conferencetopics` (
   PRIMARY KEY (`TopicsID`),
   KEY `fk_ConferenceTopics_Conference` (`conferenceID`),
   CONSTRAINT `fk_ConferenceTopics_Conference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +370,7 @@ CREATE TABLE `logerror` (
   PRIMARY KEY (`logID`),
   KEY `FK_sessionID_logError` (`sessionID`),
   CONSTRAINT `FK_sessionID_logError` FOREIGN KEY (`sessionID`) REFERENCES `sessions` (`sessionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -458,7 +460,24 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`sessionID`),
   KEY `FK_UserID_sessions` (`UserID`),
   CONSTRAINT `FK_UserID_sessions` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `speakerconference`
+--
+
+DROP TABLE IF EXISTS `speakerconference`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `speakerconference` (
+  `SpeakerConferenceID` int NOT NULL AUTO_INCREMENT,
+  `TopicsID` int DEFAULT NULL,
+  `NameSpeaker` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`SpeakerConferenceID`),
+  KEY `fk_TopicsID_SpeakerConference` (`TopicsID`),
+  CONSTRAINT `fk_TopicsID_SpeakerConference` FOREIGN KEY (`TopicsID`) REFERENCES `conferencetopics` (`TopicsID`)
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -480,7 +499,22 @@ CREATE TABLE `temp-conferencetopics` (
   `TotalAttendees` int NOT NULL,
   `TotalSpeakers` int NOT NULL,
   PRIMARY KEY (`TopicsID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tempspeakerconference`
+--
+
+DROP TABLE IF EXISTS `tempspeakerconference`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tempspeakerconference` (
+  `SpeakerConferenceID` int NOT NULL AUTO_INCREMENT,
+  `TopicsID` int DEFAULT NULL,
+  `NameSpeaker` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`SpeakerConferenceID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -514,6 +548,27 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `userassignedconference`
+--
+
+DROP TABLE IF EXISTS `userassignedconference`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `userassignedconference` (
+  `UserAssignedConferenceID` int NOT NULL AUTO_INCREMENT,
+  `DateModified` datetime DEFAULT NULL,
+  `RefDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `UserID` int NOT NULL,
+  `conferenceID` int NOT NULL,
+  PRIMARY KEY (`UserAssignedConferenceID`),
+  KEY `FK_UserID_UserAssignedConference` (`UserID`),
+  KEY `fk_conferenceID_UserAssignedConference` (`conferenceID`),
+  CONSTRAINT `fk_conferenceID_UserAssignedConference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`),
+  CONSTRAINT `FK_UserID_UserAssignedConference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `userconference`
 --
 
@@ -535,7 +590,7 @@ CREATE TABLE `userconference` (
   CONSTRAINT `FK_RolID_userConference` FOREIGN KEY (`RolID`) REFERENCES `roluserconference` (`rolID`),
   CONSTRAINT `fk_TopicsId` FOREIGN KEY (`TopicsID`) REFERENCES `conferencetopics` (`TopicsID`),
   CONSTRAINT `FK_UserID_userConference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -757,6 +812,49 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RegisterUserAssignedConference` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RegisterUserAssignedConference`(
+    IN p_UserID INT,
+    IN p_conferenceID INT,
+    OUT result INT
+)
+BEGIN
+    DECLARE user_exists INT;
+    DECLARE conference_exists INT;
+
+    -- Verificar si el usuario existe
+    SELECT COUNT(*) INTO user_exists
+    FROM `user`
+    WHERE `UserID` = p_UserID;
+
+    -- Verificar si la conferencia existe
+    SELECT COUNT(*) INTO conference_exists
+    FROM `conference`
+    WHERE `conferenceID` = p_conferenceID and Status=1;
+
+    -- Validar si ambos existen
+    IF user_exists = 1 AND conference_exists = 1 THEN
+        INSERT INTO `UserAssignedConference` (`UserID`, `conferenceID`, `DateModified`)
+        VALUES (p_UserID, p_conferenceID, NOW());
+        SET result = 1; -- Registro exitoso
+    ELSE
+        SET result = 0; -- No se realizó el registro
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_assign_user_topic` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -895,18 +993,31 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_temp_conferencetopics`(
 )
 BEGIN
     DECLARE v_exists INT DEFAULT 0;
+    DECLARE v_existst INT DEFAULT 0;
 
-    -- Verificar si el registro existe
+    -- Verificar si el registro en temp-conferencetopics existe
     SELECT COUNT(*)
     INTO v_exists
     FROM `temp-conferencetopics`
     WHERE TopicsID = p_TopicsID;
 
     IF v_exists = 1 THEN
-        -- Si existe, realizar la eliminación
+        -- Verificar si el registro en tempspeakerconference existe
+        SELECT COUNT(*)
+        INTO v_existst
+        FROM `tempspeakerconference`
+        WHERE TopicsID = p_TopicsID;
+
+        IF v_existst = 1 THEN
+            -- Si existe, eliminar el registro en tempspeakerconference
+            DELETE FROM `tempspeakerconference`
+            WHERE TopicsID = p_TopicsID;
+        END IF;
+
+        -- Eliminar el registro en temp-conferencetopics
         DELETE FROM `temp-conferencetopics`
         WHERE TopicsID = p_TopicsID;
-        
+
         SET result = 1;
     ELSE
         -- Si no existe, retornar 0
@@ -1372,12 +1483,41 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conferences_general`()
 BEGIN
-    DECLARE v_current_date DATE;
+    DECLARE v_conferenceID INT;
+    DECLARE done INT DEFAULT 0;
 
-    -- Obtener la fecha actual
-    SET v_current_date = CURDATE();
+    -- Declarar un cursor para obtener los conferenceID que cumplen con la condición
+    DECLARE conference_cursor CURSOR FOR
+    SELECT conferenceID
+    FROM `conferencesdb`.`conference`
+    WHERE NOW() NOT BETWEEN beggingDate AND finishDate 
+    AND Status = 1;
 
-    -- Seleccionar todos los detalles de las conferencias que están vigentes en la fecha actual
+    -- Manejo de la finalización del cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Abrir el cursor
+    OPEN conference_cursor;
+
+    -- Bucle para recorrer los resultados del cursor
+    read_loop: LOOP
+        FETCH conference_cursor INTO v_conferenceID;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Actualizar el Status a 0 para cada conferenceID
+        UPDATE `conferencesdb`.`conference`
+        SET Status = 0
+        WHERE conferenceID = v_conferenceID;
+
+        -- Aquí se podría realizar alguna acción adicional si es necesario
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE conference_cursor;
+
+    -- Seleccionar y devolver los registros actualizados junto con TotalSum
     SELECT 
         c.conferenceID,
         c.name AS conference_name,
@@ -1389,15 +1529,32 @@ BEGIN
         c.documentAttempt,
         c.institutionID,
         c.Status,
+		c.Location,
+		c.urlconference,
         i.name AS institution_name,
         i.website AS institution_website,
-        i.contact_phone AS institution_contact_phone
+        i.contact_phone AS institution_contact_phone,
+        (
+            SELECT 
+                SUM(IFNULL(TotalAttendees, 0) + IFNULL(TotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalCupos,
+        
+                ( 
+            SELECT 
+                SUM(IFNULL(CounterAttendees, 0) + IFNULL(CounterTotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalRegistrados
     FROM 
-        conference c
+        `conferencesdb`.`conference` c
     LEFT JOIN 
-        institution i ON c.institutionID = i.institutionID
-    WHERE 
-        v_current_date BETWEEN c.RegDate AND c.finishDate;
+        `conferencesdb`.`institution` i ON c.institutionID = i.institutionID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1444,9 +1601,28 @@ BEGIN
             c.documentAttempt,
             c.institutionID,
             c.Status,
+            c.Location,
+            c.urlconference,
             i.name AS institution_name,
             i.website AS institution_website,
-            i.contact_phone AS institution_contact_phone
+            i.contact_phone AS institution_contact_phone,
+            (
+            SELECT 
+                SUM(IFNULL(TotalAttendees, 0) + IFNULL(TotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalCupos,
+        
+                ( 
+            SELECT 
+                SUM(IFNULL(CounterAttendees, 0) + IFNULL(CounterTotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalRegistrados
         FROM 
             conference c
         LEFT JOIN 
@@ -1458,7 +1634,7 @@ BEGIN
         SELECT NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description, 
                NULL AS conference_RegDate, NULL AS beggingDate, NULL AS finishDate, NULL AS documentAttempt,
                NULL AS institutionID, NULL AS Status, NULL AS institution_name, NULL AS institution_website, 
-               NULL AS institution_contact_phone;
+               NULL AS institution_contact_phone,null as TotalRegistrados,null as TotalRegistrados;
     END IF;
 END ;;
 DELIMITER ;
@@ -1476,76 +1652,76 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conference_details_by_user`(
-    IN p_userID INT
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_conference_details_by_user`(IN p_userID INT)
 BEGIN
-    DECLARE v_conferenceID INT DEFAULT NULL;
-    DECLARE v_topicsID INT DEFAULT NULL;
-    DECLARE v_rolID INT DEFAULT NULL;
-    DECLARE v_current_date DATE;
+    -- Crear tabla temporal para almacenar los IDs de conferencia y el rol
+    CREATE TEMPORARY TABLE IF NOT EXISTS temp_conferences (
+        conferenceID INT,
+        rolID INT
+    );
 
-    -- Obtener la fecha actual
-    SET v_current_date = CURDATE();
+    -- Vaciar la tabla temporal si ya existen datos
+    TRUNCATE TABLE temp_conferences;
 
-    -- Verificar si el userID existe en la tabla conference
-    SELECT conferenceID, rolID INTO v_conferenceID, v_rolID 
-    FROM conference 
-    WHERE userID = p_userID 
-    LIMIT 1;
+    -- Insertar IDs de conferencias directamente asociadas al usuario junto con el rol
+    INSERT INTO temp_conferences (conferenceID, rolID)
+    SELECT conferenceID, MAX(rolID) -- Utilizar el rol asociado en la tabla 'conference'
+    FROM conference
+    WHERE userID = p_userID
+    GROUP BY conferenceID;
 
-    IF v_conferenceID IS NULL THEN
-        -- Si no existe en conference, buscar el topicsID y el rolID en la tabla userconference
-        SELECT TopicsID, rolID INTO v_topicsID, v_rolID 
-        FROM userconference 
-        WHERE userID = p_userID 
-        LIMIT 1;
+    -- Insertar IDs de conferencias asignadas al usuario en UserAssignedConference con rolID = 0 si no están en la tabla 'conference'
+    INSERT INTO temp_conferences (conferenceID, rolID)
+    SELECT conferenceID, 0
+    FROM UserAssignedConference
+    WHERE UserID = p_userID
+    AND conferenceID NOT IN (SELECT conferenceID FROM conference WHERE userID = p_userID);
 
-        IF v_topicsID IS NOT NULL THEN
-            -- Buscar el topicsID en la tabla conferencetopics
-            SELECT conferenceID INTO v_conferenceID 
-            FROM conferencetopics 
-            WHERE topicsID = v_topicsID
-            LIMIT 1;
-        END IF;
-    END IF;
+    -- Seleccionar todos los detalles de las conferencias
+    SELECT
+        c.conferenceID,
+        c.name AS conference_name,
+        c.type AS conference_type,
+        c.description,
+        c.RegDate AS conference_RegDate,
+        c.beggingDate,
+        c.finishDate,
+        c.documentAttempt,
+        c.institutionID,
+        c.Status,
+		c.Location,
+		c.urlconference,
+        i.name AS institution_name,
+        i.website AS institution_website,
+        i.contact_phone AS institution_contact_phone,
+        tc.rolID,
+          (
+            SELECT 
+                SUM(IFNULL(TotalAttendees, 0) + IFNULL(TotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalCupos,
+        
+                ( 
+            SELECT 
+                SUM(IFNULL(CounterAttendees, 0) + IFNULL(CounterTotalSpeakers, 0))
+            FROM 
+                `conferencesdb`.`conferencetopics` 
+            WHERE 
+                conferenceID = c.conferenceID
+        ) AS TotalRegistrados
+    FROM
+        temp_conferences tc
+    LEFT JOIN
+        conference c ON tc.conferenceID = c.conferenceID
+    LEFT JOIN
+        institution i ON c.institutionID = i.institutionID;
 
-    -- Verificar si se encontró un conferenceID válido y que esté vigente
-    IF v_conferenceID IS NOT NULL AND EXISTS (
-        SELECT 1 
-        FROM conference 
-        WHERE conferenceID = v_conferenceID 
-          AND v_current_date BETWEEN RegDate AND finishDate
-    ) THEN
-        -- Seleccionar todos los detalles de la conferencia
-        SELECT 
-            c.conferenceID,
-            c.name AS conference_name,
-            c.type AS conference_type,
-            c.description,
-            c.RegDate AS conference_RegDate,
-            c.beggingDate,
-            c.finishDate,
-            c.documentAttempt,
-            c.institutionID,
-            c.Status,
-            i.name AS institution_name,
-            i.website AS institution_website,
-            i.contact_phone AS institution_contact_phone,
-            v_rolID AS rolID
-        FROM 
-            conference c
-        LEFT JOIN 
-            institution i ON c.institutionID = i.institutionID
-        WHERE 
-            c.conferenceID = v_conferenceID;
-    ELSE
-        -- Si no existe, retornar NULL junto con el rolID encontrado
-        SELECT NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description, 
-               NULL AS conference_RegDate, NULL AS beggingDate, NULL AS finishDate, NULL AS documentAttempt,
-               NULL AS institutionID, NULL AS Status, NULL AS institution_name, NULL AS institution_website, 
-               NULL AS institution_contact_phone, v_rolID AS rolID;
-    END IF;
+    -- Eliminar la tabla temporal
+    DROP TEMPORARY TABLE IF EXISTS temp_conferences;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2069,12 +2245,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_temp_conferencetopics`(
     IN p_conferenceID INT,
     IN p_userID INT,
     IN P_TotalAttendees INT,
-	IN p_TotalSpeakers INT
-    
+    IN p_TotalSpeakers INT,
+    IN p_nameSpeaker VARCHAR(250)
 )
 BEGIN
-    INSERT INTO `temp-conferencetopics` (Name, Description, Location, StartHour, StartEnd, conferenceID, userID,TotalAttendees,TotalSpeakers)
-    VALUES (p_Name, p_Description, p_Location, p_StartHour, p_StartEnd, p_conferenceID, p_userID,P_TotalAttendees,p_TotalSpeakers);
+    DECLARE v_TopicsID INT;
+
+    -- Insertar en la tabla temp-conferencetopics
+    INSERT INTO `temp-conferencetopics` (Name, Description, Location, StartHour, StartEnd, conferenceID, userID, TotalAttendees, TotalSpeakers)
+    VALUES (p_Name, p_Description, p_Location, p_StartHour, p_StartEnd, p_conferenceID, p_userID, P_TotalAttendees, p_TotalSpeakers);
+
+    -- Obtener el TopicsID de la inserción
+    SET v_TopicsID = LAST_INSERT_ID();
+
+    -- Verificar si p_nameSpeaker no es NULL antes de insertar en TempSpeakerConference
+    IF p_nameSpeaker IS NOT NULL THEN
+        -- Insertar en la tabla TempSpeakerConference con el TopicsID y nameSpeaker
+        INSERT INTO TempSpeakerConference (TopicsID, NameSpeaker)
+        VALUES (v_TopicsID, p_nameSpeaker);
+    END IF;
+
+    -- Opcional: Devolver el TopicsID si se desea
+    SELECT v_TopicsID AS TopicsID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2094,17 +2286,22 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ListTopicsByConferenceID`(IN p_conferenceID INT)
 BEGIN
     SELECT 
-        TopicsID, 
-        Name, 
-        Description, 
-        Location, 
-        StartHour, 
-        StartEnd, 
-        conferenceID
+        tct.TopicsID, 
+        tct.Name, 
+        tct.Description, 
+        tct.Location, 
+        tct.StartHour, 
+        tct.StartEnd, 
+        tct.conferenceID, 
+        GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
-       conferencetopics
+        `conferencetopics` tct
+    LEFT JOIN 
+        `SpeakerConference` tsc ON tct.TopicsID = tsc.TopicsID
     WHERE 
-        conferenceID = p_conferenceID;
+        tct.conferenceID = p_conferenceID
+    GROUP BY 
+        tct.TopicsID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2123,18 +2320,23 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ListTopicsByTopicsID`(IN p_topicsID INT)
 BEGIN
-    SELECT 
-        TopicsID, 
-        Name, 
-        Description, 
-        Location, 
-        StartHour, 
-        StartEnd, 
-        conferenceID
+ SELECT 
+        tct.TopicsID, 
+        tct.Name, 
+        tct.Description, 
+        tct.Location, 
+        tct.StartHour, 
+        tct.StartEnd, 
+        tct.conferenceID, 
+        GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
-        conferencetopics
+        `conferencetopics` tct
+    LEFT JOIN 
+        `SpeakerConference` tsc ON tct.TopicsID = tsc.TopicsID
     WHERE 
-        TopicsID = p_topicsID;
+        tct.TopicsID = p_topicsID
+    GROUP BY 
+        tct.TopicsID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2161,15 +2363,29 @@ BEGIN
         ct.StartHour, 
         ct.StartEnd, 
         ct.conferenceID,
-        uc.RolID
+        uc.RolID,
+        GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
         conferencetopics ct
     JOIN 
         userconference uc 
     ON 
         ct.TopicsID = uc.TopicsID
+    LEFT JOIN 
+        SpeakerConference tsc 
+    ON 
+        ct.TopicsID = tsc.TopicsID
     WHERE 
-        uc.UserID = p_UserID;
+        uc.UserID = p_UserID
+    GROUP BY 
+        ct.TopicsID, 
+        ct.Name, 
+        ct.Description, 
+        ct.Location, 
+        ct.StartHour, 
+        ct.StartEnd, 
+        ct.conferenceID,
+        uc.RolID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2190,9 +2406,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_list_temp_conferencetopics`(
     IN p_conferenceID INT
 )
 BEGIN
-    SELECT TopicsID, Name, Description, Location, StartHour, StartEnd, conferenceID, userID,TotalAttendees,TotalSpeakers 
-    FROM `temp-conferencetopics`
-    WHERE conferenceID = p_conferenceID;
+    SELECT 
+        tct.TopicsID, 
+        tct.Name, 
+        tct.Description, 
+        tct.Location, 
+        tct.StartHour, 
+        tct.StartEnd, 
+        tct.conferenceID, 
+        tct.userID,
+        tct.TotalAttendees,
+        tct.TotalSpeakers,
+        tsc.NameSpeaker
+    FROM 
+        `temp-conferencetopics` tct
+    LEFT JOIN 
+        `TempSpeakerConference` tsc ON tct.TopicsID = tsc.TopicsID
+    WHERE 
+        tct.conferenceID = p_conferenceID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2306,40 +2537,86 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Move_Topics`(IN p_conferenceID INT,IN p_userID INT, OUT result INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Move_Topics`(
+    IN p_conferenceID INT,
+    IN p_userID INT,
+    OUT result INT
+)
 BEGIN
     DECLARE v_count INT;
+    DECLARE v_newTopicsID INT;
+    DECLARE v_oldTopicsID INT;
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur CURSOR FOR
+        SELECT TopicsID
+        FROM `conferencesdb`.`temp-conferencetopics`
+        WHERE conferenceID = p_conferenceID AND userID = p_userID;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
     -- Inicializar el valor de resultado en 0 (por defecto no exitoso)
     SET result = 0;
 
+    -- Desactivar safe update mode
+    SET SQL_SAFE_UPDATES = 0;
+
     -- Verificar si hay registros en temp-conferencetopics para el conferenceID dado
     SELECT COUNT(*) INTO v_count
     FROM `temp-conferencetopics`
-    WHERE conferenceID = p_conferenceID and userID = p_userID;
+    WHERE conferenceID = p_conferenceID AND userID = p_userID;
 
     IF v_count = 0 THEN
         -- No hay registros para el conferenceID proporcionado
         SET result = 0;
     ELSE
-        -- Insertar los datos seleccionados de temp-conferencetopics a conferencetopics
-        INSERT INTO conferencesdb.conferencetopics (
-            TopicsID, Name, Description, Location, StartHour, StartEnd, conferenceID, RegDate,TotalAttendees,TotalSpeakers,CounterAttendees,CounterTotalSpeakers
-        )
-        SELECT
-            TopicsID, Name, Description, Location, StartHour, StartEnd, conferenceID, NOW() AS RegDate,TotalAttendees,TotalSpeakers,0,0
-        FROM
-            `temp-conferencetopics`
-        WHERE
-            conferenceID = p_conferenceID   and userID = p_userID;
+        -- Abrir el cursor para recorrer los TopicsID en temp-conferencetopics
+        OPEN cur;
+        read_loop: LOOP
+            FETCH cur INTO v_oldTopicsID;
+            IF done THEN
+                LEAVE read_loop;
+            END IF;
+
+            -- Inserción en conferencetopics sin el TopicsID de temp-conferencetopics
+            INSERT INTO conferencesdb.conferencetopics (
+                Name, Description, Location, StartHour, StartEnd, conferenceID, RegDate, TotalAttendees, TotalSpeakers, CounterAttendees, CounterTotalSpeakers
+            )
+            SELECT
+                Name, Description, Location, StartHour, StartEnd, conferenceID, NOW() AS RegDate, TotalAttendees, TotalSpeakers, 0, 0
+            FROM
+                `temp-conferencetopics`
+            WHERE
+                TopicsID = v_oldTopicsID;
+
+            -- Obtener el nuevo TopicsID generado
+            SET v_newTopicsID = LAST_INSERT_ID();
+
+            -- Insertar el NameSpeaker correspondiente en speakerconference con el nuevo TopicsID
+            INSERT INTO `conferencesdb`.`speakerconference` (TopicsID, NameSpeaker)
+            SELECT
+                v_newTopicsID, ts.NameSpeaker
+            FROM
+                `conferencesdb`.`tempspeakerconference` ts
+            WHERE
+                ts.TopicsID = v_oldTopicsID;
+
+            -- Actualizar tempspeakerconference con el nuevo TopicsID
+            UPDATE `conferencesdb`.`tempspeakerconference`
+            SET TopicsID = v_newTopicsID
+            WHERE TopicsID = v_oldTopicsID;
+
+        END LOOP;
+        CLOSE cur;
 
         -- Eliminar los datos de temp-conferencetopics después de la inserción
         DELETE FROM `temp-conferencetopics`
-        WHERE conferenceID = p_conferenceID  and userID = p_userID;
+        WHERE conferenceID = p_conferenceID AND userID = p_userID;
 
         -- Si la inserción fue exitosa, actualizar el resultado a 1
         SET result = 1;
     END IF;
+
+    -- Reactivar safe update mode
+    SET SQL_SAFE_UPDATES = 1;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2564,73 +2841,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_registration_conference` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registration_conference`(
-in p_UserID int,
-in p_RollID int,
-in p_nameInstitution varchar(100),
-in p_websiteInstitution varchar (100),
-in p_contactPhoneInstitution varchar (25),
-in p_nameConference varchar(100),
-in p_typeConference varchar(100),
-in p_description text,
-in p_beggingDate datetime,
-in p_finishDate datetime,
-in p_areaID int,
-in p_documentAttempt int,
-OUT result INT
-
-)
-BEGIN
-DECLARE v_exists INT DEFAULT 0;
-DECLARE v_institucionID INT;
-DECLARE v_conferenceID INT;
-
-  -- Verificar si el usuario existe y está activo
-    SELECT 1 INTO v_exists 
-    FROM user 
-    WHERE UserID = p_UserID AND state = 1 
-    LIMIT 1;
- IF v_exists = 1 THEN
-   -- Inserta en la tabla `institution` y obtiene el `id`
- insert into institution(name,website,contact_phone,regDate)
- values(p_nameInstitution,p_websiteInstitution,p_contactPhoneInstitution,now());
-  SET v_institucionID = LAST_INSERT_ID();
-  
-   -- Inserta en la tabla `conference` y obtiene el `id`
- insert into conference (name,type,description,RegDate,beggingDate,finishDate,documentAttempt,institutionID,Status)
- values (p_nameConference,p_typeConference,p_description,now(),p_beggingDate,p_finishDate,p_documentAttempt,v_institucionID,1);
-SET v_conferenceID = LAST_INSERT_ID();
-
-insert into  userconference (RefDate,UserID,conferenceID,rolID)
-values(now(),p_UserID,v_conferenceID,p_RollID);
-
-insert into areasconference (RegDate,areaID,conferenceID)
-values(now(),p_areaID,v_conferenceID);
-SET result = 1;
-
-  ELSE
-        -- Si no existe, retornar 0
-        SET result = 0;
-        
-        SELECT result AS result;
-    END IF;
- 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_registration_conferences` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -2655,6 +2865,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registration_conferences`(
     IN p_finishDate DATETIME,
     IN p_areaID INT,
     IN p_documentAttempt INT,
+    IN p_Location varchar(250),
+    in p_urlconference varchar(250),
     OUT result INT,
     OUT conferenceID INT
 )
@@ -2678,8 +2890,8 @@ BEGIN
      --   SET v_institucionID = LAST_INSERT_ID();
 
         -- Inserta en la tabla `conference` y obtiene el `id`
-        INSERT INTO conference (name, type, description, RegDate, beggingDate, finishDate, documentAttempt, institutionID, Status,UserID,rolID)
-        VALUES (p_nameConference, p_typeConference, p_description, NOW(), p_beggingDate, p_finishDate, p_documentAttempt, p_institucionID, 1,p_UserID,p_RollID);
+        INSERT INTO conference (name, type, description, RegDate, beggingDate, finishDate, documentAttempt, institutionID, Status,UserID,rolID,Location,urlconference)
+        VALUES (p_nameConference, p_typeConference, p_description, NOW(), p_beggingDate, p_finishDate, p_documentAttempt, p_institucionID, 1,p_UserID,p_RollID,IF(p_Location IS NOT NULL, p_Location, NULL),IF(p_urlconference IS NOT NULL, p_urlconference, NULL));
         SET conferenceID = LAST_INSERT_ID();
 
         -- Inserta en la tabla `userconference`
@@ -2788,6 +3000,45 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_update_conference_status_to_inactive` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_conference_status_to_inactive`(
+    IN p_conferenceID INT,
+    OUT p_result INT
+)
+BEGIN
+    DECLARE v_rows_affected INT;
+
+    -- Inicializar el resultado
+    SET p_result = 0;
+
+    -- Actualizar el Status a 0
+    UPDATE `conferencesdb`.`conference`
+    SET Status = 0
+    WHERE conferenceID = p_conferenceID 
+    AND Status = 1;
+
+    -- Obtener el número de filas afectadas
+    SELECT ROW_COUNT() INTO v_rows_affected;
+
+    -- Si se actualizaron filas, setear el resultado a 1
+    IF v_rows_affected > 0 THEN
+        SET p_result = 1;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_update_temp_conferencetopics` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -2808,20 +3059,47 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_temp_conferencetopics`(
     IN p_conferenceID INT,
     IN p_userID INT,
     IN p_TotalAttendees INT,
-	IN p_TotalSpeakers INT,
+    IN p_TotalSpeakers INT,
+    IN p_nameSpeaker VARCHAR(250),
     OUT result INT
 )
 BEGIN
     DECLARE v_exists INT DEFAULT 0;
+    DECLARE v_existst INT DEFAULT 0;
 
-    -- Verificar si el registro existe
+    -- Verificar si el registro en temp-conferencetopics existe
     SELECT COUNT(*)
     INTO v_exists
     FROM `temp-conferencetopics`
     WHERE TopicsID = p_TopicsID;
 
     IF v_exists = 1 THEN
-        -- Si existe, realizar la actualización
+        -- Verificar si el registro en tempspeakerconference existe
+        SELECT COUNT(*)
+        INTO v_existst
+        FROM `tempspeakerconference`
+        WHERE TopicsID = p_TopicsID;
+        
+        IF v_existst > 0 THEN
+            -- Eliminar registros si p_nameSpeaker es NULL
+            IF p_nameSpeaker IS NULL THEN
+                DELETE FROM `tempspeakerconference`
+                WHERE TopicsID = p_TopicsID;
+            ELSE
+                -- Actualizar registro en tempspeakerconference
+                UPDATE `tempspeakerconference`
+                SET NameSpeaker = p_nameSpeaker
+                WHERE TopicsID = p_TopicsID;
+            END IF;
+        ELSE
+            -- Insertar nuevo registro en tempspeakerconference si p_nameSpeaker no es NULL
+            IF p_nameSpeaker IS NOT NULL THEN
+                INSERT INTO `tempspeakerconference` (TopicsID, NameSpeaker)
+                VALUES (p_TopicsID, p_nameSpeaker);
+            END IF;
+        END IF;
+
+        -- Actualizar el registro en temp-conferencetopics
         UPDATE `temp-conferencetopics`
         SET Name = p_Name,
             Description = p_Description,
@@ -2830,8 +3108,8 @@ BEGIN
             StartEnd = p_StartEnd,
             conferenceID = p_conferenceID,
             userID = p_userID,
-            TotalAttendees=p_TotalAttendees,
-            TotalSpeakers =p_TotalSpeakers 
+            TotalAttendees = p_TotalAttendees,
+            TotalSpeakers = p_TotalSpeakers 
         WHERE TopicsID = p_TopicsID;
         
         SET result = 1;
@@ -3126,4 +3404,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-18 22:16:48
+-- Dump completed on 2024-08-24 16:32:00

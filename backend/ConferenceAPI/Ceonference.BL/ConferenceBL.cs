@@ -31,32 +31,32 @@ namespace Conference.BL
 
 
         public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID,string nameConference,
-            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
+            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt, string location, string urlconference)
         {
 
 
 
-            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, institucionID, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt);
+            var (result, conferenceID) = _conferenceDAL.RegisterConference(userID, RollID, institucionID, nameConference, typeConference, description, beggingDate, finishDate, areaID, docuementAttempt,  location,  urlconference);
             return (result, conferenceID);
 
         }
 
-        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId,int TotalAttendees, int TotalSpeakers)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId,int TotalAttendees, int TotalSpeakers,string nameSpeaker)
         {
 
             int result = 0;
 
-            result = _conferenceDAL.RegisterConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId,TotalAttendees,TotalSpeakers);
+            result = _conferenceDAL.RegisterConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId,TotalAttendees,TotalSpeakers, nameSpeaker);
             return result;
 
         }
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees,int TotalSpeakers)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees,int TotalSpeakers,string nameSpeaker)
         {
 
             int result = 0;
 
-            result = _conferenceDAL.UpdateConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId, topicsID,TotalAttendees,TotalSpeakers);
+            result = _conferenceDAL.UpdateConferenceTopics(name, description, location, startHour, startEnd, conferenceId, userId, topicsID,TotalAttendees,TotalSpeakers, nameSpeaker);
             return result;
 
         }
@@ -204,6 +204,26 @@ namespace Conference.BL
             List<EvaluationCriteriaConference> conference = new List<EvaluationCriteriaConference>();
             conference = _conferenceDAL.GetEvaluationCriteriaByConference(conferenceID, userID);
             return conference;
+        }
+
+        public int update_conference_status_to_inactive(int conferenceID, int userId)
+        {
+
+            int result = 0;
+
+            result = _conferenceDAL.update_conference_status_to_inactive(conferenceID, userId);
+            return result;
+
+        }
+
+        public int RegisterUserAssignedConference(int conferenceID, int userId)
+        {
+
+            int result = 0;
+
+            result = _conferenceDAL.RegisterUserAssignedConference(conferenceID, userId);
+            return result;
+
         }
     }
 }
