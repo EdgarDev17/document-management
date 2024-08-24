@@ -8,6 +8,7 @@ using Dapper;
 using System.Data;
 using Conference.Entities;
 using MySql.Data.MySqlClient;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 namespace Conference.DAL
 {
     public class conferenceDAL
@@ -45,7 +46,7 @@ namespace Conference.DAL
         //Registrar una conferencia 
 
         public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID, string nameConference,
-            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
+            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt,string location,string urlconference)
         {
             int result = 0;
             int conferenceID = 0;
@@ -64,6 +65,24 @@ namespace Conference.DAL
                 parameters.Add("@p_finishDate", finishDate);
                 parameters.Add("@p_areaID", areaID);
                 parameters.Add("@p_documentAttempt", docuementAttempt);
+                // Manejar el parámetro location
+                if (string.IsNullOrEmpty(location))
+                {
+                    parameters.Add("@p_Location", DBNull.Value, DbType.String);
+                }
+                else
+                {
+                    parameters.Add("@p_Location", location);
+                }
+                // Manejar el parámetro urlconference
+                if (string.IsNullOrEmpty(urlconference))
+                {
+                    parameters.Add("@p_urlconference", DBNull.Value, DbType.String);
+                }
+                else
+                {
+                    parameters.Add("@p_urlconference", urlconference);
+                }
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@conferenceID", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 _connection.Cnn.Execute("sp_registration_conferences", parameters, commandType: CommandType.StoredProcedure);
@@ -88,7 +107,7 @@ namespace Conference.DAL
 
         //Registrar una conferencia topics
 
-        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers,string nameSpeaker)
         {
             int result = 0;
             try
@@ -106,6 +125,7 @@ namespace Conference.DAL
                 parameters.Add("@p_userID", userId);
                 parameters.Add("@p_TotalAttendees", TotalAttendees);
                 parameters.Add("@p_TotalSpeakers", TotalSpeakers);
+                parameters.Add("@p_nameSpeaker", nameSpeaker);
 
                 //  parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -130,7 +150,7 @@ namespace Conference.DAL
 
         //actualizar una conferencia topics
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees, int TotalSpeakers)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees, int TotalSpeakers,string nameSpeaker)
         {
             int result = 0;
             try
@@ -148,7 +168,7 @@ namespace Conference.DAL
                 parameters.Add("@p_userID", userId);
                 parameters.Add("@p_TotalAttendees", TotalAttendees);
                 parameters.Add("@p_TotalSpeakers", TotalSpeakers);
-
+                parameters.Add("@p_nameSpeaker", nameSpeaker);
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
 

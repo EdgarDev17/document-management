@@ -18,10 +18,17 @@ namespace Conference.Entities
         public int documentAttempt { get; set; }
         public int institutionID { get; set; }
         public int Status { get; set; }
+        public string? Location { get; set; }
+        public string? urlconference { get; set; }
         public string institution_name { get; set; }
         public string institution_website { get; set; }
         public string institution_contact_phone { get; set; }
         public int? rolID { get; set; }
+
+        public int? TotalCupos { get; set; }
+        public int? TotalRegistrados { get; set; }
+
+
 
 
 

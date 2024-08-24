@@ -15,6 +15,7 @@ namespace Conference.Entities
         public string StartHour { get; set; }
         public string StartEnd { get; set; }
         public int ConferenceID { get; set; }
+        public string? NameSpeaker { get; set; }
     }
 
     public class ListTopicsENU

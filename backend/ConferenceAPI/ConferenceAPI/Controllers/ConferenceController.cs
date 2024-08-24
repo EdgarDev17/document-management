@@ -78,12 +78,11 @@ namespace ConferenceAPI.Controllers
 
             UserEN user = _userBL.VerifyPersonAuthentication(token);
 
-            if (data.documentAttempt > 3)
-            {
+           
 
                 if (user != null)
                 {
-                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.institucionID, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt);
+                    var (result, conferenceID) = _conferenceBL.RegisterConference(user.UserID, data.RollID, data.institucionID, data.nameConference, data.typeConference, data.description, data.beggingDate, data.finishDate, data.areaID, data.documentAttempt,data.location,data.urlconference);
                     if (result == 1)
                     {
                         return Ok(new ConferenceResponse
@@ -98,7 +97,7 @@ namespace ConferenceAPI.Controllers
                         return Conflict(new ConferenceResponse
                         {
                             ConferenceID = 0,
-                            Message = "usuario no encontrado"
+                            Message = "Algo salio mal!"
                         });
                     }
                     else
@@ -120,18 +119,7 @@ namespace ConferenceAPI.Controllers
                     });
                 }
 
-            }
-            else
-            {
-
-                return StatusCode(StatusCodes.Status406NotAcceptable, new GenericApiRespons
-                {
-                    HttpCode = 406,
-                    Message = "The number of participants must be greater than 3"
-                });
-
-
-            }
+            
 
 
         }
@@ -151,11 +139,11 @@ namespace ConferenceAPI.Controllers
 
             UserEN user = _userBL.VerifyPersonAuthentication(token);
 
-            if (data.TotalSpeakers>3) { 
+            
 
             if (user != null)
             {
-                var result = _conferenceBL.RegisterConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID,data.TotalAttendees,data.TotalSpeakers);
+                var result = _conferenceBL.RegisterConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID,data.TotalAttendees,data.TotalSpeakers,data.nameSpeaker);
                 if (result == 0)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
@@ -187,15 +175,7 @@ namespace ConferenceAPI.Controllers
             }
 
 
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status406NotAcceptable, new GenericApiRespons
-                {
-                    HttpCode = 406,
-                    Message = "The number of participants Speakers must be greater than 3"
-                });
-            }
+          
 
 
         }
@@ -216,7 +196,7 @@ namespace ConferenceAPI.Controllers
 
             if (user != null)
             {
-                var result = _conferenceBL.UpdateConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID, data.topicsID,data.TotalAttendees,data.TotalSpeakers);
+                var result = _conferenceBL.UpdateConferenceTopics(data.name, data.description, data.location, data.startHour, data.StartEnd, data.conferenceID, user.UserID, data.topicsID,data.TotalAttendees,data.TotalSpeakers,data.nameSpeaker);
                 if (result == 1)
                 {
                     var response = new GenericApiRespons { HttpCode = 200, Message = "Success" };
