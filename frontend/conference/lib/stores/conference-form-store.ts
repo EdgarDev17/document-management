@@ -5,6 +5,7 @@ export type NewConferenceFormState = {
   eventName: string;
   eventDescription: string;
   eventArea: string;
+  eventUrl: string;
   startingDate: Date | null;
   finishingDate: Date | null;
   eventType: string;
@@ -40,10 +41,11 @@ export const defaultStateValues: NewConferenceFormState = {
   eventDescription: "",
   eventName: "",
   eventType: "",
+  eventUrl: "",
   finishingDate: null,
   startingDate: null,
   institutionId: "",
-  documentAttempt: 1,
+  documentAttempt: 0,
 };
 
 export const initNewConferenceFormStore = (): NewConferenceFormState => {
@@ -58,23 +60,23 @@ export const createNewConferenceFormStore = (
     updateStepOne: (
       pEventName: string,
       pEventDescription: string,
-      pEventArea: string,
+      pEventType: string,
     ) =>
       set((state) => ({
         eventName: pEventName,
         eventDescription: pEventDescription,
-        eventArea: pEventArea,
+        eventType: pEventType,
       })),
     updateStepTwo: (
       pStartingDate: Date,
       pFinishingDate: Date,
-      pEventType: string,
+      pEventUrl: string,
       pEventAddress: string,
     ) =>
       set((state) => ({
         startingDate: pStartingDate,
         finishingDate: pFinishingDate,
-        eventType: pEventType,
+        eventUrl: pEventUrl,
         eventAddress: pEventAddress,
       })),
     updateStepThree: (pInstitutionName: string, pPaperAttemps: number) =>

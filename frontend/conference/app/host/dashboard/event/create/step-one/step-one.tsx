@@ -47,16 +47,17 @@ import {
   AlertDialogTrigger,
 } from "@/app/components/ui/alert-dialog";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { Textarea } from "@/app/components/ui/textarea";
 
 const formSchema = z.object({
   eventName: z.string().min(1, {
-    message: "Username must be at least 2 characters.",
+    message: "Ingrese un nombre válido para el evento",
   }),
-  eventDescription: z.string().min(1, {
-    message: "Username must be at least 2 characters.",
+  eventDescription: z.string().min(100, {
+    message: "La descripción debe tener un minimo de 100 caracteres",
   }),
-  eventArea: z.string().min(1, {
-    message: "Username must be at least 2 characters.",
+  eventType: z.string().min(1, {
+    message: "Ingrese una opción válida.",
   }),
 });
 
@@ -75,7 +76,7 @@ export default function StepOne() {
   const windowSize = useWindowSize();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    updateStepOne(values.eventName, values.eventDescription, values.eventArea);
+    updateStepOne(values.eventName, values.eventDescription, values.eventType);
     router.push("/host/dashboard/event/create/step-two");
   }
 
@@ -111,7 +112,11 @@ export default function StepOne() {
                   <FormItem>
                     <FormLabel>Descripción del evento</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Textarea
+                        {...field}
+                        className="h-[140px] resize-none"
+                        maxLength={240}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,27 +125,22 @@ export default function StepOne() {
 
               <FormField
                 control={form.control}
-                name="eventArea"
+                name="eventType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Area</FormLabel>
+                    <FormLabel>Modalidad del evento</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecciona un área" />
+                          <SelectValue placeholder="Selecciona la modalidad" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="m@example.com">
-                          Desarrollo de software
-                        </SelectItem>
-                        <SelectItem value="m@google.com">Leyes</SelectItem>
-                        <SelectItem value="m@support.com">
-                          Matematicas
-                        </SelectItem>
+                        <SelectItem value="virtual">Virtual</SelectItem>
+                        <SelectItem value="presencial">Presencial</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

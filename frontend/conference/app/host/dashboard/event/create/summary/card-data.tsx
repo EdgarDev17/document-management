@@ -43,7 +43,7 @@ const EventSummary = ({ token }: { token: string }) => {
   const ROL_ADMIN = 1;
   React.useEffect(() => {
     if (
-      !formSummary.eventArea ||
+      !formSummary.eventType ||
       !formSummary.eventName ||
       !formSummary.eventDescription
     ) {

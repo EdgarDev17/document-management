@@ -24,6 +24,7 @@ import { DataTable } from "./data-table";
 import { columns, Conference } from "./columns";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-service";
+import Link from "next/link";
 
 const chartConfig = {
   desktop: {
@@ -66,7 +67,15 @@ function EventsContainer({ token }: { token: string }) {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col gap-y-14">
+    <div className="w-full h-full flex flex-col gap-y-14 relative py-14">
+      <Link
+        href={"/host/dashboard/event/create/step-one"}
+        className={
+          "bg-blue-800 text-blue-50 border absolute right-0 top-0 border-blue-50 p-4 rounded-lg w-[250px] h-[50px] text-center flex justify-center items-center"
+        }
+      >
+        Crear Conferencia
+      </Link>
       <section className="w-full h-[60%] flex gap-x-6">
         <div className="w-[50%] grid grid-cols-2 gap-1  place-items-center">
           <Card className="w-[250px]  flex flex-col justify-between">
@@ -157,7 +166,7 @@ function EventsContainer({ token }: { token: string }) {
           </Card>
         </div>
       </section>
-      <section className="">
+      <section className={"flex gap-y-3 flex-col"}>
         {loading ? (
           <p>Cargando...</p>
         ) : (

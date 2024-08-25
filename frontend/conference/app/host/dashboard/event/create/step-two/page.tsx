@@ -15,7 +15,6 @@ import {
   FormField,
   FormItem,
   FormControl,
-  FormDescription,
   FormLabel,
   FormMessage,
 } from "@/app/components/ui/form";
@@ -57,12 +56,8 @@ const formSchema = z
     finishingDate: z.date({
       required_error: "Selecciona una fecha valida",
     }),
-    eventType: z.string().min(1, {
-      message: "Selecciona una opción valida",
-    }),
-    eventAddress: z
-      .string()
-      .min(1, { message: "Escriba la direccion o enlace" }),
+    eventAddress: z.string(),
+    eventUrl: z.string(),
   })
   .refine((data) => data.finishingDate >= data.startingDate, {
     message:
@@ -71,35 +66,34 @@ const formSchema = z
   });
 
 export default function StepTwo() {
-  const [eventType, setEventType] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      eventType: "",
       eventAddress: "",
+      eventUrl: "",
     },
   });
 
-  const { eventArea, eventName, eventDescription, updateStepTwo } =
+  const { eventType, eventName, eventDescription, updateStepTwo } =
     useNewConferenceFormStore((state) => state);
 
   useEffect(() => {
-    if (!eventArea || !eventName || !eventDescription) {
+    if (!eventType || !eventName || !eventDescription) {
       router.push("/host/dashboard/event/create/step-one");
       return;
     }
     setLoading(false);
-  }, [eventArea, eventDescription, eventName, router]);
+  }, [eventType, eventDescription, eventName, router]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     updateStepTwo(
       values.startingDate,
       values.finishingDate,
-      values.eventType,
+      values.eventUrl,
       values.eventAddress,
     );
     router.push("/host/dashboard/event/create/step-three");
@@ -197,69 +191,38 @@ export default function StepTwo() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
-                name="eventType"
+                name="eventAddress"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Tipo de evento</FormLabel>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>
+                      {eventType === "presencial"
+                        ? "Ingrese la ubicación del evento"
+                        : "Ingrese la URL hacia el evento"}
+                    </FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          setEventType(value);
-                        }}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="virtual" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Virtual</FormLabel>
-                        </FormItem>
+                      <div>
+                        {eventType === "presencial" && (
+                          <Input
+                            {...field}
+                            placeholder="5av sur, San Salvador, Hotel Ejemplo"
+                          />
+                        )}
 
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="presencial" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            Presencial
-                          </FormLabel>
-                        </FormItem>
-                      </RadioGroup>
+                        {eventType === "virtual" && (
+                          <Input
+                            {...field}
+                            placeholder="link de Zoom, Google Meet, Teams, etc"
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              {eventType && (
-                <FormField
-                  control={form.control}
-                  name="eventAddress"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {eventType == "virtual"
-                          ? "Ingresa el enlace al webite del evento"
-                          : "Ingresa la ubicación del evento"}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          value={field.value}
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            setEventType(e.target.value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
             </CardContent>
             <CardFooter className="h-[20%] flex gap-x-4">
               <Button

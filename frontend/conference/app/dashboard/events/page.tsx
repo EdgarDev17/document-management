@@ -23,8 +23,8 @@ const allEvents = [
   { id: 10, name: "Deep Learning Summit", date: "2024-06-10" },
 ];
 
-export default async function Page({ searchParams }) {
-  const page = Number(searchParams.page) || 1;
+export default async function Page() {
+  const page = 1;
   const pageSize = 3;
   const totalPages = Math.ceil(allEvents.length / pageSize);
 

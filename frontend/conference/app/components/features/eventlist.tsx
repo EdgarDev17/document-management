@@ -14,7 +14,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import { Conference } from "@/types/models/conference";
 
-const getDateVariant = (date) => {
+const getDateVariant = (date: string) => {
   const eventDate = new Date(date);
   const today = new Date();
   const diffTime = eventDate.getTime() - today.getTime();

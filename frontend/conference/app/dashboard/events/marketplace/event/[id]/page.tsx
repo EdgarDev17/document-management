@@ -169,7 +169,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     return "no auth";
   }
 
-  console.log({ EVENT: event });
   return (
     <div className=" p-4 space-y-8 h-[70vh]">
       <div className="flex justify-between items-start">

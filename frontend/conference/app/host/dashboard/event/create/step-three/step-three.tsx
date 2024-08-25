@@ -83,7 +83,7 @@ export default function StepThree({
     },
   });
 
-  const { eventArea, eventName, eventDescription, updateStepThree } =
+  const { eventType, eventName, eventDescription, updateStepThree } =
     useNewConferenceFormStore((state) => {
       return state;
     });
@@ -93,7 +93,7 @@ export default function StepThree({
   };
 
   useEffect(() => {
-    if (!eventArea || !eventName || !eventDescription) {
+    if (!eventType || !eventName || !eventDescription) {
       router.push("/host/dashboard/event/create/step-one");
       return;
     }
@@ -113,7 +113,7 @@ export default function StepThree({
         throw new Error("Error al obtener instituciones");
       });
   }, [
-    eventArea,
+    eventType,
     eventDescription,
     eventName,
     router,
@@ -125,17 +125,6 @@ export default function StepThree({
     updateStepThree(values.institutionId, values.paperAttempts);
     router.push("/host/dashboard/event/create/summary");
   }
-
-  const incrementAttempt = () => {
-    setPaperAttemp((prevState) => prevState + 1);
-  };
-
-  const decrementAttempt = () => {
-    if (paperAttempt <= 1) {
-      return;
-    }
-    setPaperAttemp((prevState) => prevState - 1);
-  };
 
   return (
     <div className="w-full h-[80vh] flex justify-center items-center">
