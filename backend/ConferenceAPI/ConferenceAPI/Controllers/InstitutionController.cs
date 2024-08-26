@@ -114,7 +114,7 @@ namespace ConferenceAPI.Controllers
                     Description = data.Description,
                     contact_phone = data.Phone,
                     Name = data.Name,
-                    Website = data.Wesbite,
+                    Website = data.Website,
                     UserID = data.UserID,
                     Image = data.Image
                     
