@@ -69,7 +69,7 @@ namespace Conference.BL
             }
             else if (User.ResponseCode == 2)
             {
-                ;
+                
                 var title = "Valida tu Email para hacer uso de CongresDocs";
 
                 var mensajeBody = $@"
