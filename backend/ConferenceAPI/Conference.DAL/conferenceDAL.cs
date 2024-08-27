@@ -853,7 +853,7 @@ namespace Conference.DAL
                 //Console.WriteLine("Error: " + ex.Message);
 
                 _connection.Cnn.Close();
-                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userID);
             }
             finally
             {
