@@ -6,6 +6,7 @@ import {
   ChartBarIcon,
   CurrencyDollarIcon,
   HomeIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 
 export default function DashboardLayout({
@@ -14,7 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="h-[80vh] flex gap-x-4">
+    <section className="container mx-auto h-[80vh] flex gap-x-4">
       <div className="w-[16%] h-full bg-emerald-100">
         <SideBarContainer className="flex flex-col justify-between">
           <div className="h-[50%]  flex flex-col justify-around">
@@ -42,16 +43,20 @@ export default function DashboardLayout({
                 <p>Analiticas</p>
               </div>
             </SideBarItem>
-            <SideBarItem url="/host/dashboard/sales">
+            <SideBarItem url="/host/dashboard/account">
               <div className="w-full flex justify-start items-center gap-x-4 p-3 hover:bg-accent rounded-lg">
-                <CurrencyDollarIcon className="w-6 h-6 text-zinc-700" />
-                <p>Ventas</p>
+                <UserIcon className="w-6 h-6 text-zinc-700" />
+                <p>Cuenta</p>
               </div>
             </SideBarItem>
           </div>
 
           <div className=" h-[20%] flex justify-center items-center">
-            <Button variant={"ghost"}>Volver al modo participante</Button>
+            <SideBarItem url="/dashboard">
+              <div className="w-full flex justify-start items-center gap-x-4 p-3 hover:bg-accent rounded-lg">
+                <Button variant={"ghost"}>Volver al modo participante</Button>
+              </div>
+            </SideBarItem>
           </div>
         </SideBarContainer>
       </div>

@@ -16,7 +16,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="h-[80vh] flex gap-x-4">
+    <section className="container mx-auto h-[80vh] flex gap-x-4">
       <div className="md:w-[16%] h-full hidden md:block">
         <SideBarContainer className="hidden md:flex md:flex-col md:justify-between">
           <div className="h-[50%]  flex flex-col justify-around">

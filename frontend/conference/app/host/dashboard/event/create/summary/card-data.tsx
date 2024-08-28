@@ -49,6 +49,7 @@ const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
   const ROL_ADMIN = 1;
 
   React.useEffect(() => {
+    console.log({ submitData: formSummary });
     if (
       !formSummary.eventType ||
       !formSummary.eventName ||
@@ -78,6 +79,7 @@ const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
     formSummary.institutionId,
     token,
     formSummary.eventType,
+    formSummary,
   ]);
 
   const onSubmit = async () => {

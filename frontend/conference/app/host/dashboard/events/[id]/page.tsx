@@ -105,6 +105,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     session.accessToken,
   );
 
+  if (!event) {
+    return "no auth";
+  }
+
   const agenda: [] = await getEventAgenda(params.id, session.accessToken);
 
   const institution: Institution = await getInstitution(
@@ -169,7 +173,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           <ScrollArea className="flex-grow">
             <CardContent className="w-full h-full">
               {agenda.length === 0 ? (
-                <EmptyAgendaMessage />
+                <EmptyAgendaMessage conferenceId={params.id} />
               ) : (
                 <AgendaContainer agenda={agenda} />
               )}

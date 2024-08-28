@@ -1,5 +1,5 @@
 "use client";
-
+import { signOut } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { urlRegisterUsers } from "@/lib/endpoints";
@@ -56,20 +56,24 @@ export default function Page() {
   return (
     <div>
       <div className="w-full max-w-4xl mx-auto">
-        <div className="bg-muted rounded-t-lg p-6 flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage
-              src={`data:image/jpeg;base64,${base64String}`}
-              alt="@shadcn"
-            />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <h2 className="text-2xl font-bold">
-              {userProfile.name} {userProfile.lastname}
-            </h2>
-            <p className="text-muted-foreground">Perfil de usuario</p>
+        <div className="bg-muted rounded-t-lg p-6 flex justify-between items-center gap-4">
+          <div className="flex items-center gap-x-6">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={`data:image/jpeg;base64,${base64String}`}
+                alt="@shadcn"
+              />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div className="grid gap-1">
+              <h2 className="text-2xl font-bold">
+                {userProfile.name} {userProfile.lastname}
+              </h2>
+              <p className="text-muted-foreground">Perfil de usuario</p>
+            </div>
           </div>
+
+          <Button onClick={() => signOut()}>Sign out</Button>
         </div>
         <div className="grid gap-4 py-6">
           <Card>
@@ -120,6 +124,7 @@ export default function Page() {
             </CardContent>
           </Card>
         </div>
+        <Button onClick={() => signOut()}>Cerrar Sesión</Button>
       </div>
       {/*<ImageUploader />*/}
     </div>
