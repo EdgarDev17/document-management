@@ -11,7 +11,7 @@ import { SessionProvider } from "next-auth/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Create Next App",
+  title: "EventMaster",
   description: "x",
 };
 
@@ -22,9 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "bg-gray-50")}>
+      <body className={cn(inter.className, "bg-white")}>
         <Navbar />
-        <div className="w-11/12 sm:container mx-auto py-5">{children}</div>
+        <div className="w-11/12 sm:w-full mx-auto">{children}</div>
         <Toaster richColors position={"top-center"} />
       </body>
     </html>
