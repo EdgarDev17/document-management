@@ -62,6 +62,7 @@ function EventSearch({ token }: { token: string }) {
 			})
 			.then(function (response) {
 				setEvents(response.data.conference)
+				console.log('Lista de eventos search', response.data.conference)
 			})
 			.catch(function (error) {
 				throw new Error(error)
@@ -120,13 +121,13 @@ function EventSearch({ token }: { token: string }) {
 				</Select>
 			</div>
 
-			<div className='space-y-2'>
+			<div className='flex flex-col gap-y-2'>
 				{displayedEvents.map((evento) => {
 					const randomColor = getRandomColor()
 					return (
 						<Link
 							key={evento.conferenceID}
-							className='w-fit h-fit'
+							className='w-full h-fit'
 							href={`/dashboard/events/marketplace/event/${evento.conferenceID}`}>
 							<Card className='overflow-hidden'>
 								<CardContent className='p-4 flex'>
@@ -146,7 +147,10 @@ function EventSearch({ token }: { token: string }) {
 												<GlobeAltIcon className='inline-block mr-1 h-3 w-3' />
 												{evento.conference_type}
 											</Badge>
-											<Badge variant='outline'>{'software'}</Badge>
+											<Badge variant='outline'>{'Area'}</Badge>
+											<Badge variant='outline'>
+												Anfitrión: {evento.institution_name}
+											</Badge>
 										</div>
 									</div>
 									<div className='flex flex-col justify-between items-end ml-4'>

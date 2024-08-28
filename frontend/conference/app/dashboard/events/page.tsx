@@ -139,7 +139,8 @@ export default async function Page() {
 										{formatDate(nextEvent.beggingDate)}
 									</p>
 									<Button variant='outline' size='sm' asChild>
-										<Link href={`/events/}`}>
+										<Link
+											href={`/dashboard/events/marketplace/event/${nextEvent.conferenceID}`}>
 											Ir al evento
 											<ArrowRightIcon className='ml-2 h-4 w-4' />
 										</Link>
