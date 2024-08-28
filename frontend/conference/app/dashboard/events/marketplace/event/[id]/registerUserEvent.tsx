@@ -37,7 +37,8 @@ function RegisterUserEvent({
 			toast.success('Te has registrado a la conferencia. ¡Pásalo bien!')
 			router.refresh()
 		} catch (err) {
-			toast.success('Te has registrado a la conferencia. ¡Pásalo bien!')
+			console.log('Error al registrar user al evento', err)
+			toast.error('Error al registrarte al evento')
 			router.refresh()
 			return null
 		}

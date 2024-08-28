@@ -113,19 +113,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 		session.accessToken
 	)
 	const agenda: [] = await getEventAgenda(params.id, session.accessToken)
-	const checkUserRegister = await checkIfUserIsRegistered(session.accessToken)
-
-	console.log(
-		'Conferencias a las que pertenece el user general ->',
-		checkUserRegister
-	)
+	const userEvents = await checkIfUserIsRegistered(session.accessToken)
 
 	if (!event || !agenda) {
 		return 'No se encontró el evento'
 	}
+
 	const institution: Institution = await getInstitution(
 		event.institutionID.toString()
 	)
+
+	function hasConferenceWithId(id: number): boolean {
+		return userEvents.some(
+			(conference: Conference) => conference.conferenceID === id
+		)
+	}
 
 	return (
 		<div className=' p-4 space-y-8 h-[70vh]'>
@@ -150,17 +152,19 @@ export default async function Page({ params }: { params: { id: string } }) {
 						</Badge>
 					</div>
 				</div>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button size='lg' className='bg-blue-600'>
-							Registrarme al evento
-						</Button>
-					</DialogTrigger>
-					<RegisterUserEvent
-						conferenceId={params.id}
-						token={session.accessToken}
-					/>
-				</Dialog>
+				{hasConferenceWithId(parseInt(params.id)) === false && (
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button size='lg' className='bg-blue-600'>
+								Registrarme al evento
+							</Button>
+						</DialogTrigger>
+						<RegisterUserEvent
+							conferenceId={params.id}
+							token={session.accessToken}
+						/>
+					</Dialog>
+				)}
 			</div>
 
 			<div className='grid md:grid-cols-3 gap-6'>
