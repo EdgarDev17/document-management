@@ -34,6 +34,7 @@ import { Conference } from '@/types/models/conference'
 import { formatDate } from '@/lib/utils'
 import { Institution } from '@/types/models/institution'
 import { AgendaContainer } from '@/app/components/features/agendacontainer'
+import { RegisterUserEvent } from './registerUserEvent'
 
 //funcionando bien :D
 async function getEventAgenda(id: string, token: string) {
@@ -46,6 +47,7 @@ async function getEventAgenda(id: string, token: string) {
 				},
 			}
 		)
+		console.log('AGENDA: ', response.data.conference)
 		return response.data.conference
 	} catch (err) {
 		return null
@@ -81,6 +83,24 @@ async function getInstitution(institutionId: string) {
 	}
 }
 
+async function checkIfUserIsRegistered(token: string) {
+	// ConferencesDetailsByUser
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/ConferencesDetailsByUser`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+		return response.data.conference
+	} catch (err) {
+		console.log('ERRRROR 🔥', err)
+		return null
+	}
+}
+
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 
@@ -92,13 +112,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 		params.id,
 		session.accessToken
 	)
-
 	const agenda: [] = await getEventAgenda(params.id, session.accessToken)
-	const institution: Institution = await getInstitution(event.institutionID)
+	const checkUserRegister = await checkIfUserIsRegistered(session.accessToken)
+
+	console.log(
+		'Conferencias a las que pertenece el user general ->',
+		checkUserRegister
+	)
 
 	if (!event || !agenda) {
 		return 'No se encontró el evento'
 	}
+	const institution: Institution = await getInstitution(
+		event.institutionID.toString()
+	)
+
 	return (
 		<div className=' p-4 space-y-8 h-[70vh]'>
 			<div className='flex justify-between items-start'>
@@ -118,7 +146,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 						</Badge>
 						{/*TODO: TRAER EL AREA DE LA BD */}
 						<Badge variant='outline' className='text-sm'>
-							Area aqui
+							{event.location} {event.urlConference}
 						</Badge>
 					</div>
 				</div>
@@ -128,19 +156,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 							Registrarme al evento
 						</Button>
 					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Bienvenido, Un paso más</DialogTitle>
-							<DialogDescription>
-								Selecciona como quieres registrarte al evento
-							</DialogDescription>
-						</DialogHeader>
-
-						<div className='py-3 flex gap-x-6'>
-							<Button className='bg-blue-600'>Como invitado</Button>
-							<Button variant={'outline'}>Como ponente</Button>
-						</div>
-					</DialogContent>
+					<RegisterUserEvent
+						conferenceId={params.id}
+						token={session.accessToken}
+					/>
 				</Dialog>
 			</div>
 
@@ -152,7 +171,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 					</CardHeader>
 					<ScrollArea className='flex-grow'>
 						<CardContent className='w-full'>
-							<AgendaContainer agenda={agenda} />
+							<AgendaContainer agenda={agenda} rol='general' />
 						</CardContent>
 					</ScrollArea>
 				</Card>
