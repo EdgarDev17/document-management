@@ -6,6 +6,7 @@ import {
   BuildingOfficeIcon,
   PhoneIcon,
   InboxIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -43,6 +44,7 @@ import { formatDate } from "@/lib/utils";
 import { Institution } from "@/types/models/institution";
 import { AgendaContainer } from "@/app/components/features/agendacontainer";
 import { EmptyAgendaMessage } from "@/app/components/features/empty-agenda";
+import Link from "next/link";
 
 async function getEventAgenda(id: string, token: string) {
   try {
@@ -54,7 +56,6 @@ async function getEventAgenda(id: string, token: string) {
         },
       },
     );
-
     return response.data.topics;
   } catch (err) {
     return null;
@@ -72,7 +73,6 @@ async function getEventDetailts(id: string, token: string) {
       },
     );
 
-    console.log(response);
     return response.data.conference[0];
   } catch (err) {
     console.log({ eventError: err });
@@ -117,7 +117,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   );
 
   console.log(agenda);
-  console.log({ currentEvent: event });
+  // console.log({ currentEvent: event });
 
   return (
     <div className=" p-4 space-y-8 h-[70vh]">
@@ -164,8 +164,20 @@ export default async function Page({ params }: { params: { id: string } }) {
         </Dialog>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden px-4">
+      <div className="grid md:grid-cols-3 gap-6 relative">
+        <Card className="md:col-span-2 relative w-full h-[600px] flex flex-col overflow-hidden px-4">
+          {agenda.length > 0 && (
+            <Link
+              href={`/host/dashboard/event/talks/create?conferenceId=${params.id}`}
+              className="py-6 absolute right-4 top-0"
+            >
+              <Button className="bg-blue-600">
+                <PlusCircleIcon className="mr-2 h-4 w-4" />
+                Crear charla
+              </Button>
+            </Link>
+          )}
+
           <CardHeader>
             <CardTitle>Agenda</CardTitle>
             <CardDescription>Programa detallado del evento</CardDescription>
@@ -175,7 +187,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               {agenda.length === 0 ? (
                 <EmptyAgendaMessage conferenceId={params.id} />
               ) : (
-                <AgendaContainer agenda={agenda} />
+                <AgendaContainer agenda={agenda} rol="host" />
               )}
             </CardContent>
           </ScrollArea>

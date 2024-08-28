@@ -34,6 +34,7 @@ import {
 import { apiClient } from "@/lib/api-service";
 import { HttpStatusCode } from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -74,7 +75,7 @@ function AddTalkForm({
       nameSpeaker: "",
     },
   });
-
+  const router = useRouter();
   async function onSubmit(values: FormValues) {
     const data = {
       name: values.name,
@@ -120,6 +121,7 @@ function AddTalkForm({
       }
 
       toast.success("Charla creada con éxito");
+      router.push(`/host/dashboard/events/${conferenceId}`);
       return { res, movingTopicsToTable };
     } catch (err) {
       console.error(err);

@@ -5,6 +5,8 @@ import axios from "axios";
 import { urlRegisterUsers } from "@/lib/endpoints";
 import { Label } from "@/app/components/ui/label";
 import { Input } from "@/app/components/ui/input";
+import { signOut } from "next-auth/react";
+
 import {
   Card,
   CardHeader,
@@ -32,7 +34,7 @@ export default function Page() {
       .get("http://localhost:5110/api/User/UserPerfil", {
         headers: {
           "Authorization-Token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTE0VDE0OjAxOjE3LjMyOTU5NDMtMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.mji7urX0kNp77s6-wMhFS6J36A0FqspqGcZy_hIDHXk",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoiZWRnYXJkb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6IktNVS91M0NDWmJuSWN5ek5acXJ4S0E9PSIsImNvbXBsZXRlUHJvZmlsZSI6dHJ1ZSwiY291bnRyeUlEIjoxLCJleHBpcmF0aW9uRGF0ZSI6IjIwMjQtMDgtMjhUMDk6MTc6MjAuMjUyNTU4MS0wNjowMCIsInN0YXRlIjp0cnVlfQ.PPqBWdRs0pdS4K8FLyNLgqUajS40JuwKGWKhFIu9xe4",
         },
       })
       .then((response) => {
@@ -56,20 +58,24 @@ export default function Page() {
   return (
     <div>
       <div className="w-full max-w-4xl mx-auto">
-        <div className="bg-muted rounded-t-lg p-6 flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage
-              src={`data:image/jpeg;base64,${base64String}`}
-              alt="@shadcn"
-            />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div className="grid gap-1">
-            <h2 className="text-2xl font-bold">
-              {userProfile.name} {userProfile.lastname}
-            </h2>
-            <p className="text-muted-foreground">Perfil de usuario</p>
+        <div className="bg-muted rounded-t-lg p-6 flex justify-between items-center gap-4">
+          <div className="flex items-center gap-x-6">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={`data:image/jpeg;base64,${base64String}`}
+                alt="@shadcn"
+              />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div className="grid gap-1">
+              <h2 className="text-2xl font-bold">
+                {userProfile.name} {userProfile.lastname}
+              </h2>
+              <p className="text-muted-foreground">Perfil de usuario</p>
+            </div>
           </div>
+
+          <Button onClick={() => signOut()}>Cerrar Sesión</Button>
         </div>
         <div className="grid gap-4 py-6">
           <Card>
