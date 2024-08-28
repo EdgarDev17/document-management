@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
-import { signOut } from "next-auth/react";
+import { motion } from "framer-motion";
 
 import {
   ArrowRightEndOnRectangleIcon,
@@ -19,6 +19,7 @@ import {
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { Button } from "./button";
+import { Calendar } from "lucide-react";
 
 const products = [
   {
@@ -66,12 +67,15 @@ export default function Navbar() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <p>LOGO ❤️</p>
-          </a>
-
-          <Button onClick={() => signOut()}>Sign out</Button>
+          <Link className="flex items-center justify-center" href="/">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Calendar className="h-6 w-6 mr-2" />
+            </motion.div>
+            <span className="font-bold">EventMaster</span>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button

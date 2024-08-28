@@ -31,23 +31,35 @@ import {
   UserIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
+import { apiClient } from "@/lib/api-service";
+import { HttpStatusCode } from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   location: z.string().min(1, "Location is required"),
-  startHour: z.string().datetime({ message: "Invalid start date and time" }),
-  startEnd: z.string().datetime({ message: "Invalid end date and time" }),
+  startHour: z.string(),
+  startEnd: z.string(),
   conferenceID: z.number().int().nonnegative(),
   totalSpeakers: z.number().int().nonnegative(),
   totalAttendees: z.number().int().nonnegative(),
-  topicsID: z.number().int().nonnegative(),
   nameSpeaker: z.string().min(1, "Speaker name is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-function AddTalkForm() {
+function AddTalkForm({
+  minDate,
+  maxDate,
+  token,
+  conferenceId,
+}: {
+  minDate: string;
+  maxDate: string;
+  conferenceId: string;
+  token: string;
+}) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,20 +71,82 @@ function AddTalkForm() {
       conferenceID: 0,
       totalSpeakers: 0,
       totalAttendees: 0,
-      topicsID: 0,
       nameSpeaker: "",
     },
   });
 
-  function onSubmit(values: FormValues) {
-    console.log(values);
-    // Here you would typically send the data to your API
+  async function onSubmit(values: FormValues) {
+    const data = {
+      name: values.name,
+      description: values.description,
+      location: values.location,
+      startHour: values.startHour,
+      startEnd: values.startEnd,
+      conferenceID: conferenceId,
+      totalSpeakers: values.totalSpeakers,
+      totalAttendees: values.totalAttendees,
+      nameSpeaker: values.nameSpeaker,
+    };
+    console.log(data);
+    try {
+      const res = await apiClient.post(
+        "/conference/registerconferencetopics",
+        data,
+        {
+          headers: {
+            "Authorization-Token": token,
+          },
+        },
+      );
+
+      if (res.status !== HttpStatusCode.Ok) {
+        throw new Error("Error al registrar la charla");
+      }
+
+      const movingTopicsToTable = await apiClient.post(
+        "/conference/moveconferencetopics",
+        {
+          conferenceID: conferenceId,
+        },
+        {
+          headers: {
+            "Authorization-Token": token,
+          },
+        },
+      );
+
+      if (movingTopicsToTable.status !== HttpStatusCode.Ok) {
+        throw new Error("Error al mover la charla a la tabla");
+      }
+
+      toast.success("Charla creada con éxito");
+      return { res, movingTopicsToTable };
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al crear la charla");
+      throw err;
+    }
   }
+
+  // Función modificada para establecer la hora a 00:00
+  // Función modificada para permitir elegir entre 00:00 y 23:00
+  const formatDateForInput = (
+    dateString: string,
+    useEndOfDay: boolean = false,
+  ): string => {
+    const date = new Date(dateString);
+    if (useEndOfDay) {
+      date.setHours(23, 0, 0, 0); // Establece la hora a 23:00:00 (11:00 PM)
+    } else {
+      date.setHours(0, 0, 0, 0); // Establece la hora a 00:00:00 (medianoche)
+    }
+    return date.toISOString().slice(0, 16); // Formato: YYYY-MM-DDTHH:mm
+  };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
+        <CardTitle className="text-2xl font-bold">Crear una charla</CardTitle>
         <CardDescription>
           Fill in the details for your upcoming event
         </CardDescription>
@@ -87,7 +161,7 @@ function AddTalkForm() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Event Name</FormLabel>
+                      <FormLabel>Titulo</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter event name"
@@ -105,7 +179,7 @@ function AddTalkForm() {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Descripción</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Enter event description"
@@ -125,7 +199,7 @@ function AddTalkForm() {
                     <FormItem>
                       <FormLabel>
                         <MapPinIcon className="w-4 h-4 inline-block mr-1" />
-                        Location
+                        Ubicación
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -149,13 +223,15 @@ function AddTalkForm() {
                       <FormItem>
                         <FormLabel>
                           <CalendarIcon className="w-4 h-4 inline-block mr-1" />
-                          Start
+                          Fecha de inicio
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            type="datetime-local"
+                          <input
                             {...field}
-                            className="bg-background"
+                            type="datetime-local"
+                            className="bg-background w-[150px]"
+                            min={formatDateForInput(minDate)}
+                            max={formatDateForInput(maxDate, true)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -170,13 +246,15 @@ function AddTalkForm() {
                       <FormItem>
                         <FormLabel>
                           <CalendarIcon className="w-4 h-4 inline-block mr-1" />
-                          End
+                          Fecha de finalización
                         </FormLabel>
                         <FormControl>
-                          <Input
+                          <input
                             type="datetime-local"
                             {...field}
                             className="bg-background"
+                            min={formatDateForInput(minDate)}
+                            max={formatDateForInput(maxDate, true)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -193,7 +271,7 @@ function AddTalkForm() {
                       <FormItem>
                         <FormLabel>
                           <UserIcon className="w-4 h-4 inline-block mr-1" />
-                          Speakers
+                          Número de ponentes
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -217,7 +295,7 @@ function AddTalkForm() {
                       <FormItem>
                         <FormLabel>
                           <UsersIcon className="w-4 h-4 inline-block mr-1" />
-                          Attendees
+                          Cupos del evento
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -237,36 +315,12 @@ function AddTalkForm() {
 
                 <FormField
                   control={form.control}
-                  name="topicsID"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        <HashtagIcon className="w-4 h-4 inline-block mr-1" />
-                        Topics ID
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
-                          }
-                          className="bg-background"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="nameSpeaker"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <UserIcon className="w-4 h-4 inline-block mr-1" />
-                        Speaker Name
+                        Nombre del ponente
                       </FormLabel>
                       <FormControl>
                         <Input
