@@ -29,6 +29,12 @@ public class InstitutionBL
         }
     }
 
+    public async Task<InstitutionDetailsEN>  GetPublicInstitutionById(int institutionId)
+    {
+        return await _institutionDal.GetPublicInstitutionById(institutionId);
+
+    }
+
     public int CreateInstitutionByUser(int userId, InstitutionDetailsEN institution)
     {
         return _institutionDal.InsertNewInstitutionByUser(userId, institution);
