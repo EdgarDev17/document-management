@@ -784,6 +784,82 @@ namespace Conference.DAL
 
             return result;
         }
+
+
+        public DateNotificationEN Emailnotification(int conferenceID, int userId)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+            
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_conferenceID", conferenceID);
+
+
+
+                email= _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>( "sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
+        }
+
+
+        public DateNotificationEN EmailnotificationTopics(int userID, int TopicsID)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_userID", userID);
+                parameters.Add("@p_TopicsID", TopicsID);
+
+
+
+                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
+        }
     }
 
 }
