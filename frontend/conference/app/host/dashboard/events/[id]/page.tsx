@@ -1,108 +1,288 @@
 import {
+  CalendarIcon,
+  MapPinIcon,
+  UsersIcon,
+  ClockIcon,
+  BuildingOfficeIcon,
+  PhoneIcon,
+  InboxIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/app/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/app/components/ui/avatar";
+import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
-import axios from "axios";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
-import { urlConference } from "@/lib/endpoints";
+import { GlobeAltIcon } from "@heroicons/react/20/solid";
+import { ScrollArea } from "@/app/components/ui/scrollarea";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/app/components/ui/dialog";
+import { auth } from "@/auth";
+import { apiClient } from "@/lib/api-service";
+import { urlConference, urlInstitutions } from "@/lib/endpoints";
+import { Conference } from "@/types/models/conference";
+import { formatDate } from "@/lib/utils";
+import { Institution } from "@/types/models/institution";
+import { AgendaContainer } from "@/app/components/features/agendacontainer";
+import { EmptyAgendaMessage } from "@/app/components/features/empty-agenda";
 
-async function fetchCurrentEvent() {
-  return axios
-    .get(`${urlConference}/ConferencesDetailsSpecific`, {
-      params: {
-        conferenceID: 1,
+async function getEventAgenda(id: string, token: string) {
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferenceslisttopicsbyconferenceid?conferenceID=${id}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
       },
-      headers: {
-        "Authorization-Token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTEzVDAwOjM0OjA2LjE5NjM2NDktMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.uEeVDHW2GpC3KhGINOu4TVsLV6LBWPGHD3d46lt90vE",
-      },
-    })
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      return error;
-    })
-    .finally(function () {
-      // always executed
-    });
+    );
+
+    return response.data.topics;
+  } catch (err) {
+    return null;
+  }
 }
 
-async function fetchTopicsById() {
-  return axios
-    .get(
-      `${urlConference}/ConferencesListTopicsByConferenceID`,
+async function getEventDetailts(id: string, token: string) {
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
       {
-        params: {
-          conferenceID: 1,
-        },
         headers: {
-          "Authorization-Token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTEzVDAwOjM0OjA2LjE5NjM2NDktMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.uEeVDHW2GpC3KhGINOu4TVsLV6LBWPGHD3d46lt90vE",
+          "Authorization-Token": token,
         },
       },
-    )
-    .then(function (response) {
-      // console.log({ ropicsR: response.data.topics });
-      return response.data.topics;
-    })
-    .catch(function (error) {
-      console.log({ ropicsE: error });
+    );
 
-      return error;
+    console.log(response);
+    return response.data.conference[0];
+  } catch (err) {
+    console.log({ eventError: err });
+    return err;
+  }
+}
+
+async function getInstitution(id: string, token: string) {
+  try {
+    const response = await apiClient.get(`${urlInstitutions}/${id}`, {
+      headers: {
+        "Authorization-Token": token,
+      },
     });
+    return response.data;
+  } catch (err) {
+    return err;
+  }
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const eventData = await fetchCurrentEvent();
-  const topicsData = await fetchTopicsById();
+  const session = await auth();
 
-  const [event, topics] = await Promise.all([eventData, topicsData]);
-
-  if (topics.length === 0 || !topics) {
-    return <p>Loading...</p>;
+  if (!session) {
+    return "no auth";
   }
 
-  console.log(topics);
+  const event: Conference = await getEventDetailts(
+    params.id,
+    session.accessToken,
+  );
+
+  const agenda: [] = await getEventAgenda(params.id, session.accessToken);
+
+  const institution: Institution = await getInstitution(
+    event.institutionID.toString(),
+    session.accessToken,
+  );
+
+  console.log(agenda);
+  console.log({ currentEvent: event });
+
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Participantes</CardTitle>
-            <CardDescription>Numero de usuarios registrados</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Charlas</CardTitle>
-            <CardDescription>Numero de charlas creadas</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Fechas</CardTitle>
-            <CardDescription>Fecha de inicio y finalización</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
+    <div className=" p-4 space-y-8 h-[70vh]">
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{event.conference_name}</h1>
+          <p className="text-xl text-muted-foreground mb-4">
+            {event.description}
+          </p>
+          <div className="flex space-x-4">
+            <Badge variant="yellow" className="text-sm">
+              <CalendarIcon className="mr-1 h-4 w-4" />
+              {formatDate(event.beggingDate)} - {formatDate(event.finishDate)}
+            </Badge>
+            <Badge variant="blue" className="text-sm">
+              <MapPinIcon className="mr-1 h-4 w-4" />
+              {event.type}
+            </Badge>
+            {/*TODO: TRAER EL AREA DE LA BD */}
+            <Badge variant="outline" className="text-sm">
+              Area aqui
+            </Badge>
+          </div>
+        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="lg" className="bg-blue-600">
+              Registrarme al evento
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Bienvenido, Un paso más</DialogTitle>
+              <DialogDescription>
+                Selecciona como quieres registrarte al evento
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-3 flex gap-x-6">
+              <Button className="bg-blue-600">Como invitado</Button>
+              <Button variant={"outline"}>Como ponente</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
-      <div>
-        <DataTable columns={columns} data={topics} />
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden px-4">
+          <CardHeader>
+            <CardTitle>Agenda</CardTitle>
+            <CardDescription>Programa detallado del evento</CardDescription>
+          </CardHeader>
+          <ScrollArea className="flex-grow">
+            <CardContent className="w-full h-full">
+              {agenda.length === 0 ? (
+                <EmptyAgendaMessage />
+              ) : (
+                <AgendaContainer agenda={agenda} />
+              )}
+            </CardContent>
+          </ScrollArea>
+        </Card>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BuildingOfficeIcon className="mr-2 h-5 w-5" />
+                Institución Anfitriona
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage
+                    src={`data:image/JPG;base64,${institution.image}`}
+                    alt={institution.name}
+                  />
+                  <AvatarFallback>
+                    {institution.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="text-lg font-semibold">{institution.name}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {institution.description}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center text-sm">
+                  <PhoneIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>{institution.contact_phone}</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <GlobeAltIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <a
+                    href={`${institution.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {institution.website}
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CalendarIcon className="mr-2 h-5 w-5" />
+                Detalles del Evento
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm text-muted-foreground">
+                  Fecha y Hora
+                </h4>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="outline" className="text-sm">
+                    <CalendarIcon className="mr-1 h-3 w-3" />
+                    {formatDate(event.beggingDate)}
+                  </Badge>
+                  <span>hasta</span>
+                  <Badge variant="outline" className="text-sm">
+                    <CalendarIcon className="mr-1 h-3 w-3" />
+                    {formatDate(event.finishDate)}
+                  </Badge>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm text-muted-foreground">
+                  Ubicación
+                </h4>
+                <div className="flex items-center">
+                  <MapPinIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>Ubicacion aqui</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm text-muted-foreground">
+                  Participantes
+                </h4>
+                {/*TODO: HACER QUE LA CONFERENCIA ACEPTA MAXIMOS DE PARTICIAPANTES */}
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-bold">5</span>
+                  <Badge variant="outline" className="text-sm">
+                    <UsersIcon className="mr-1 h-3 w-3" />
+                    100 max
+                  </Badge>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{
+                      width: `${(5 / 100) * 100}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

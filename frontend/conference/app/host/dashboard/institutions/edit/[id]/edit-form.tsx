@@ -46,7 +46,6 @@ export default function EditForm({ id, token }: { id: string; token: string }) {
         setDescriptionLength(res.data.description.length);
       })
       .catch((err) => {
-        console.log(err);
         throw new Error(err);
       })
       .finally(() => setLoading(false));
@@ -89,9 +88,7 @@ export default function EditForm({ id, token }: { id: string; token: string }) {
       callback(base64);
       // callback(reader.result as string);
     };
-    reader.onerror = (error) => {
-      console.log("Error: ", error);
-    };
+    reader.onerror = (error) => {};
   };
 
   const handleSave = () => {
@@ -112,7 +109,6 @@ export default function EditForm({ id, token }: { id: string; token: string }) {
 
     if (allFieldsFilled) {
       if (institution.institutionID == id) {
-        console.log("estas enviando estos datos....", institution);
         apiClient
           .put("/Institutions/update", institution, { headers })
           .then((res) => {
@@ -121,12 +117,9 @@ export default function EditForm({ id, token }: { id: string; token: string }) {
               router.push("/host/dashboard/institutions/");
             }, 1000);
           })
-          .catch((err) => {
-            console.log(err.response.data);
-          });
+          .catch((err) => {});
       }
     } else {
-      console.log("Hay campos vacíos.");
     }
   };
 

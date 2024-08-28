@@ -416,6 +416,7 @@ namespace ConferenceAPI.Controllers
                     Message = "Authorization-Token must be provided"
                 });
             }
+            
 
             var user = _userBL.VerifyPersonAuthentication(token);
             if (user != null)
@@ -482,6 +483,8 @@ namespace ConferenceAPI.Controllers
             });
 
         }
+        
+        
         [HttpGet]
         [Route("ConferencesListTopicsByConferenceID")]
         public ActionResult<IResponse> get_ListTopicsByConferenceID(int ConferenceID)
@@ -862,7 +865,7 @@ namespace ConferenceAPI.Controllers
                 }
                 else
                 {
-                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "ï¿½Algo salio mal!" };
                     return Conflict(response);
                 }
             }
@@ -902,7 +905,7 @@ namespace ConferenceAPI.Controllers
                 }
                 else
                 {
-                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "ï¿½Algo salio mal!" };
                     return Conflict(response);
                 }
             }

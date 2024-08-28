@@ -8,8 +8,6 @@ export default async function Page() {
     return "no auth";
   }
 
-  console.log(session);
-
   return (
     <div>
       <EventSearch token={session.accessToken} />

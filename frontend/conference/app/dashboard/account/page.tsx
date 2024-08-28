@@ -36,13 +36,11 @@ export default function Page() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setBase64String(response.data.imagenBase);
         setUserProfile(response.data);
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
       });
   }, []);
@@ -179,7 +177,6 @@ const ImageUploader: React.FC = () => {
             },
           },
         );
-        console.log("Response:", response.data);
       } catch (error) {
         console.error("Error uploading image:", error);
       }

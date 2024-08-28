@@ -23,6 +23,12 @@ import {
   AlertDialogOverlay,
   AlertDialogPortal,
 } from "@/app/components/ui/alert-dialog";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/app/components/ui/hover-card";
+
 import { Button } from "@/app/components/ui/button";
 import { Drawer } from "vaul";
 import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
@@ -34,13 +40,14 @@ import { Institution } from "@/types/models/institution";
 import { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 
-const EventSummary = ({ token }: { token: string }) => {
+const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
   const formSummary = useNewConferenceFormStore((state) => state);
   const [currentInstitution, setCurrentInstitution] =
     React.useState<Institution | null>(null);
   const windowsSize = useWindowSize();
   const router = useRouter();
   const ROL_ADMIN = 1;
+
   React.useEffect(() => {
     if (
       !formSummary.eventType ||
@@ -70,13 +77,16 @@ const EventSummary = ({ token }: { token: string }) => {
     router,
     formSummary.institutionId,
     token,
+    formSummary.eventType,
   ]);
 
   const onSubmit = async () => {
+    console.log(userId, currentInstitution?.institutionID, formSummary);
     await apiClient
       .post(
         "/conference/registerconference",
         {
+          userID: userId,
           rollID: ROL_ADMIN,
           institucionID: currentInstitution?.institutionID,
           nameConference: formSummary.eventName,
@@ -84,8 +94,10 @@ const EventSummary = ({ token }: { token: string }) => {
           description: formSummary.eventDescription,
           beggingDate: formSummary.startingDate,
           finishDate: formSummary.finishingDate,
-          areaID: 26,
-          documentAttempt: 0,
+          areaID: 26, //TODO: HACER QUE TOME EL AREA DESDE EL FORM STEPS
+          documentAttempt: formSummary.documentAttempt,
+          location: formSummary.location,
+          urlconference: formSummary.eventUrl,
         },
         {
           headers: {
@@ -131,7 +143,24 @@ const EventSummary = ({ token }: { token: string }) => {
           </div>
           <div>
             <span className="text-sm text-muted-foreground">Descripción</span>
-            <p className="font-medium">{formSummary.eventDescription}</p>
+            <p className="font-medium break-words line-clamp-3">
+              {formSummary.eventDescription.length > 100 ? (
+                <span>
+                  {formSummary.eventDescription.slice(0, 60)} ...
+                  <HoverCard openDelay={0}>
+                    <HoverCardTrigger className="text-sm text-blue-800 cursor-pointer">
+                      Ver más
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      <h3 className="font-bold">Descripción completa</h3>
+                      {formSummary.eventDescription}
+                    </HoverCardContent>
+                  </HoverCard>
+                </span>
+              ) : (
+                formSummary.eventDescription
+              )}
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-0 py-1">
             <div>
@@ -143,7 +172,7 @@ const EventSummary = ({ token }: { token: string }) => {
             <div>
               <span className="text-sm text-muted-foreground">Final</span>
               <p className="font-medium">
-                {format(formSummary.startingDate, "dd/MMM/yyyy")}
+                {format(formSummary.finishingDate, "dd/MMM/yyyy")}
               </p>
             </div>
           </div>
@@ -162,7 +191,7 @@ const EventSummary = ({ token }: { token: string }) => {
           <img
             src={`data:image/jpeg;base64,${currentInstitution?.image}`}
             className="w-[400px] h-[200px] object-cover rounded-lg"
-          />{" "}
+          />
         </div>
       </CardContent>
       <CardFooter className="h-[10%]">

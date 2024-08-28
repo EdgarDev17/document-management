@@ -66,7 +66,7 @@ export default function StepOne() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      eventArea: "",
+      eventType: "",
       eventName: "",
       eventDescription: "",
     },

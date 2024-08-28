@@ -47,7 +47,6 @@ function EventsContainer({ token }: { token: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(token);
     apiClient
       .get("/Conference/ConferencesDetailsByUser", {
         headers: {
@@ -55,12 +54,9 @@ function EventsContainer({ token }: { token: string }) {
         },
       })
       .then((response) => {
-        console.log(response.data.conference);
         setEvents(response.data.conference);
       })
-      .catch((error) => {
-        console.log(error);
-      })
+      .catch((error) => {})
       .finally(() => {
         setLoading(false);
       });
@@ -98,7 +94,7 @@ function EventsContainer({ token }: { token: string }) {
               <CardTitle className="text-white">Participantes</CardTitle>
             </CardHeader>
             <CardContent className="w-full h-full flex justify-center items-center py-4">
-              <p className="text-5xl font-bold text-zinc-800">80</p>
+              <p className="text-5xl font-bold text-zinc-800">0</p>
             </CardContent>
           </Card>
 
@@ -107,7 +103,7 @@ function EventsContainer({ token }: { token: string }) {
               <CardTitle className="text-white">Cancelaciones</CardTitle>
             </CardHeader>
             <CardContent className="w-full h-full flex justify-center items-center py-4">
-              <p className="text-5xl font-bold text-zinc-800">8</p>
+              <p className="text-5xl font-bold text-zinc-800">0</p>
             </CardContent>
           </Card>
           <Card className="w-[250px]  flex flex-col justify-between">
@@ -115,7 +111,7 @@ function EventsContainer({ token }: { token: string }) {
               <CardTitle className="text-white">Ventas</CardTitle>
             </CardHeader>
             <CardContent className="w-full h-full flex justify-center items-center py-4">
-              <p className="text-5xl font-bold text-zinc-800">$190</p>
+              <p className="text-5xl font-bold text-zinc-800">0</p>
             </CardContent>
           </Card>
         </div>

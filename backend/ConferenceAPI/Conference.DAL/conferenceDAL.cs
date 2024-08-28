@@ -92,7 +92,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
 
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en registerConference en conferenceDAL en  sp_registration_conference BD", ex.Message, userID);
@@ -311,7 +311,7 @@ namespace Conference.DAL
             catch (Exception ex)
             {
                
-               
+                Console.WriteLine(ex);
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_list_temp_conferencetopics", ex.Message, userID);
             }

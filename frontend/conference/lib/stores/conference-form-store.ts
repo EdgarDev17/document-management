@@ -12,6 +12,8 @@ export type NewConferenceFormState = {
   eventAddress: string;
   institutionId: string;
   documentAttempt: number;
+  location: string;
+  urlConference: string;
 };
 
 // acciones que modifican el estado del formulario
@@ -24,7 +26,7 @@ export type NewConferenceFormActions = {
   updateStepTwo: (
     startingDate: Date,
     finishingDate: Date,
-    eventType: string,
+    eventUrl: string,
     eventAddress: string,
   ) => void;
 
@@ -45,6 +47,8 @@ export const defaultStateValues: NewConferenceFormState = {
   finishingDate: null,
   startingDate: null,
   institutionId: "",
+  location: "",
+  urlConference: "",
   documentAttempt: 0,
 };
 

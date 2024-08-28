@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/app/components/ui/form";
 import { authenticate } from "@/actions/auth";
+import { useSearchParams } from "next/navigation";
 
 // definimos el schema que debe seguir el formulario
 const formSchema = z.object({
@@ -31,6 +32,11 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+  // obtemos las queries de la url
+  const searchParams = useSearchParams();
+  const search = searchParams.get("rol");
+
+  console.log(search);
   // creamos el formulario y asignamos valores predeterminados
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,12 +51,11 @@ export default function Login() {
     formData.append("email", values.email);
     formData.append("password", values.password);
 
-    console.log("verificando el usuario..");
     authenticate(formData);
   }
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="w-full flex justify-center items-center">
       <div className="hidden w-1/2 h-[800px] bg-black md:flex flex-col justify-center gap-y-4 px-5">
         <p className="text-5xl">👋</p>
         <H2 className="text-5xl text-white">Bienvenido de nuevo</H2>

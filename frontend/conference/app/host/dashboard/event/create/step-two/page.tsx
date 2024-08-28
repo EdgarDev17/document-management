@@ -136,7 +136,7 @@ export default function StepTwo() {
                             {field.value ? (
                               format(field.value, "dd/MM/yyyy")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Seleccione una fecha</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -173,7 +173,7 @@ export default function StepTwo() {
                             {field.value ? (
                               format(field.value, "dd/MM/yyyy")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Seleccione una fecha</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>

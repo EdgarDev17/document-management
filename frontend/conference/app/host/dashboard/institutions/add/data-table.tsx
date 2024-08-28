@@ -40,12 +40,8 @@ export function DataTable<TData, TValue>({
         firstName: "Fred",
         lastName: "Flintstone",
       })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .then(function (response) {})
+      .catch(function (error) {});
   };
 
   return (

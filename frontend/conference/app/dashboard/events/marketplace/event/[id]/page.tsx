@@ -118,7 +118,6 @@ async function getEventAgenda(id: string, token: string) {
 
     return response.data.conference;
   } catch (err) {
-    console.log(err);
     return null;
   }
 }
@@ -136,7 +135,6 @@ async function getEventDetailts(id: string, token: string) {
 
     return response.data.conference[0];
   } catch (err) {
-    console.log(err);
     return null;
   }
 }
@@ -145,7 +143,6 @@ async function getInstitution(id: string) {
     const response = await apiClient.get(`${urlInstitutions}/public/${id}`);
     return response.data;
   } catch (err) {
-    console.log(err);
     return null;
   }
 }

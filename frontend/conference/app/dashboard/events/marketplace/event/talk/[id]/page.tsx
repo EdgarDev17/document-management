@@ -54,7 +54,6 @@ async function getEvenDetails(eventId: number, token: string) {
         },
       },
     );
-    console.log(response.data);
     return response.data.conference[0];
   } catch (err) {
     console.error(err);

@@ -9,7 +9,10 @@ export default async function Page() {
   }
   return (
     <div className="w-full h-full md:h-[80vh] flex justify-center items-center">
-      <EventSummary token={session.accessToken} />
+      <EventSummary
+        token={session.accessToken}
+        userId={parseInt(session.userId)}
+      />
     </div>
   );
 }

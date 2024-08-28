@@ -125,11 +125,9 @@ function EventSearch({ token }: { token: string }) {
         },
       })
       .then(function (response) {
-        console.log("DATAAAAAAAAAAAAAA", response.data.conference);
         setEvents(response.data.conference);
       })
       .catch(function (error) {
-        console.log(error);
         throw new Error(error);
       })
       .finally(() => {

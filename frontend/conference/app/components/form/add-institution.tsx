@@ -65,30 +65,35 @@ function AddInstitution({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     isInstitutionLoading(true);
 
-    const response = await apiClient.post(
-      "/Institutions/create",
-      {
-        Name: values.name,
-        Website: values.website,
-        Phone: values.contact_phone,
-        Description: values.description,
-        Image: values.image,
-        serID: userId,
-      },
-      {
-        headers: {
-          "Authorization-Token": token,
+    try {
+      const response = await apiClient.post(
+        "/Institutions/create",
+        {
+          Name: values.name,
+          Website: values.website,
+          Phone: values.contact_phone,
+          Description: values.description,
+          Image: values.image,
+          userID: userId,
         },
-      },
-    );
+        {
+          headers: {
+            "Authorization-Token": token,
+          },
+        },
+      );
 
-    if (response.status == HttpStatusCode.Ok) {
+      if (response.status == HttpStatusCode.Ok) {
+        isInstitutionLoading(false);
+        toast.success("Institucion creada con éxito");
+        return;
+      }
       isInstitutionLoading(false);
-      toast.success("Institucion creada con éxito");
-      return;
+      toast.error("Error al crear la institución, intente de nuevo mas tarde");
+    } catch (err) {
+      console.log(err);
+      return null;
     }
-    isInstitutionLoading(false);
-    toast.error("Error al crear la institución, intente de nuevo mas tarde");
   }
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {

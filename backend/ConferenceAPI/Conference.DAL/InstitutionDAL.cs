@@ -137,6 +137,7 @@ public class InstitutionDAL
         }
         catch (FormatException ex)
         {
+            Console.WriteLine(ex);
             Console.WriteLine($"Error en el formato Base64: {ex.Message}");
         }
         catch (Exception ex)

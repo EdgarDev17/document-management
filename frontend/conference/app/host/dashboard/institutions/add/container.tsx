@@ -43,13 +43,10 @@ function Container({ userId, token }: { userId: string; token: string }) {
       },
     })
       .then((response) => {
-        console.log(response.data);
         setInstitutions(response.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
-      })
+      .catch((error) => {})
       .finally(() => {
         setLoading(false);
       });

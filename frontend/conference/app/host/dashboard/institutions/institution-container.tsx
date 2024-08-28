@@ -28,21 +28,14 @@ function InstitutionContinaer({ token }: { token: string }) {
       },
     })
       .then((response) => {
-        console.log(response);
         setInstitutions(response.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
-      })
+      .catch((error) => {})
       .finally(() => {
         setLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    console.log(institutions);
-  }, [institutions]);
 
   return (
     <div className={"w-11/12 mx-auto flex flex-col gap-y-6"}>

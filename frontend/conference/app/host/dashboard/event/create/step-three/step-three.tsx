@@ -50,7 +50,6 @@ import {
 import { Label } from "@/app/components/ui/label";
 import { AddInstitution } from "@/app/components/form/add-institution";
 import { apiClient } from "@/lib/api-service";
-import { HttpStatusCode } from "axios";
 import { Institution } from "@/types/models/institution";
 
 const formSchema = z.object({
@@ -79,7 +78,7 @@ export default function StepThree({
     resolver: zodResolver(formSchema),
     defaultValues: {
       institutionId: "0",
-      paperAttempts: paperAttempt,
+      paperAttempts: 1,
     },
   });
 
@@ -105,11 +104,9 @@ export default function StepThree({
         },
       })
       .then((res) => {
-        console.log("esta es la data puto", res.data);
         setInstitutions(res.data);
       })
       .catch((err) => {
-        console.log(err);
         throw new Error("Error al obtener instituciones");
       });
   }, [
@@ -122,7 +119,7 @@ export default function StepThree({
   ]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    updateStepThree(values.institutionId, values.paperAttempts);
+    updateStepThree(values.institutionId, paperAttempt);
     router.push("/host/dashboard/event/create/summary");
   }
 
@@ -180,7 +177,11 @@ export default function StepThree({
                       onOpenChange={setLoadingInstitution}
                     >
                       <DialogTrigger asChild>
-                        <Button variant="outline" className={"text-sm"}>
+                        <Button
+                          variant="outline"
+                          type="button"
+                          className={"text-sm"}
+                        >
                           Crear Institución
                         </Button>
                       </DialogTrigger>
@@ -213,7 +214,11 @@ export default function StepThree({
                       ¿Aceptará la conferencia ponentes y papers?
                     </FormLabel>
                     <FormControl>
-                      <Select>
+                      <Select
+                        onValueChange={(value) => {
+                          setPaperAttemp(parseInt(value));
+                        }}
+                      >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Selecciona una opción" />
                         </SelectTrigger>
@@ -240,7 +245,9 @@ export default function StepThree({
               >
                 Volver
               </Button>
-              <Button variant={"default"}>Continuar</Button>
+              <Button type="submit" variant={"default"}>
+                Continuar
+              </Button>
             </CardFooter>
           </Card>
         </form>
