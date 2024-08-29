@@ -14,12 +14,13 @@ namespace Conference.DAL
     {
         private readonly Connection _connection;
 
-        public ConferenceDocumentDAL(Connection connection) {
+        public ConferenceDocumentDAL(Connection connection)
+        {
             _connection = connection;
         }
 
         //Registrar documento a tema 
-        public(int result, string message) RegisterDocumentConference(int userID, int TopicsID, string NameDocument, byte[] Document, string DocumentExtension)
+        public (int result, string message) RegisterDocumentConference(int userID, int TopicsID, string NameDocument, byte[] Document, string DocumentExtension)
         {
             int response = -1;
             string message = string.Empty;
@@ -57,7 +58,7 @@ namespace Conference.DAL
                         connection.Execute("sp_document_event", parameters, commandType: CommandType.StoredProcedure);
                         message = parameters.Get<string>("@message");
                         response = parameters.Get<int>("@result");
-                       
+
 
                         if (response == 1)
                         {
@@ -88,7 +89,7 @@ namespace Conference.DAL
                 InsertErrorLogSession("Error en RegisterDocument en userDAL en sp_document_event BD", ex.Message, userID);
             }
 
-            return (response,message);
+            return (response, message);
         }
         //REGRASAR LOS DATOS DEL USUARIO Y DOCUMENTO
 
@@ -120,7 +121,7 @@ namespace Conference.DAL
             catch (Exception ex)
             {
                 // Manejo de la excepción
-               // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+                // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
             }
             finally
             {
@@ -143,13 +144,13 @@ namespace Conference.DAL
         }
         //REGRASAR LOS DATOS DEL  DOCUMENTO por rolID
 
-        public List<DocumentRolIdEN> GetDocumentsByRolID(int userId,int TopicsID,int RolId )
+        public List<DocumentRolIdEN> GetDocumentsByRolID(int userId, int TopicsID, int RolId)
         {
             List<DocumentRolIdEN> users = new List<DocumentRolIdEN>();
             try
             {
 
-                
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_UserID", userId);
                 parameters.Add("@p_TopicsID", TopicsID);
@@ -165,7 +166,7 @@ namespace Conference.DAL
                     }
                 }
 
-               
+
             }
 
             catch (Exception ex)
@@ -244,9 +245,10 @@ namespace Conference.DAL
 
         //Registrar veredicto del documento
 
-        public  (int result, string message) RegisterDocumentVeredict(int documentID, int veredictID, int userId)
+        public (int result, string message, int calification) RegisterDocumentVeredict(int documentID, int veredictID, int userId)
         {
             int result = 0;
+            int calification = 0;
             string message = string.Empty;
             try
             {
@@ -259,12 +261,14 @@ namespace Conference.DAL
 
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@calification", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
 
                 _connection.Cnn.Execute("sp_RegisterDocumentVeredict", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
                 message = parameters.Get<string>("@message");
+                calification = parameters.Get<int>("@calification");
 
             }
             catch (Exception ex)
@@ -279,7 +283,7 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
 
-            return (result, message);
+            return (result, message, calification);
         }
 
         //listar los criterios evaluados del documento 
@@ -319,9 +323,9 @@ namespace Conference.DAL
             return documentEvaluationDetails;
         }
         //estado del documento 
-        public string  GetValidateDocumentVerdict(int documentID, int userID)
+        public string GetValidateDocumentVerdict(int documentID, int userID)
         {
-           
+
             string message = string.Empty;
             try
             {
@@ -329,14 +333,14 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
 
-                parameters.Add("@p_documentID",documentID);
-               
+                parameters.Add("@p_documentID", documentID);
 
-               
+
+
                 parameters.Add("@p_status", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
                 _connection.Cnn.Execute("GetValidateDocumentVerdict", parameters, commandType: CommandType.StoredProcedure);
 
-              
+
                 message = parameters.Get<string>("@p_status");
             }
             catch (Exception ex)
@@ -351,7 +355,78 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
 
-            return  message;
+            return message;
+        }
+
+        public DateNotificationEN Emailnotification(int conferenceID, int userId)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_conferenceID", conferenceID);
+
+
+
+                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
+
+
+
+
+
+        }
+
+        public DateNotificationEN EmailnotificationDocument(int documentID, int userId)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_documentID", documentID);
+
+
+
+                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_and_names_by_user_and_document", parameters, commandType: CommandType.StoredProcedure);
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL sp_get_emails_and_names_by_user_and_document", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
         }
     }
 }

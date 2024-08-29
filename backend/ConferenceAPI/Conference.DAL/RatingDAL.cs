@@ -19,7 +19,7 @@ namespace Conference.DAL
             this._connection = _connection;
         }
 
-        public int ManageRating(int UserConferenceID, int UserID, int TopicID, decimal Score, ref string message)
+        public int ManageRating( int UserID, int TopicID, decimal Score, ref string message)
         {
             int result = 0;
             try
@@ -27,7 +27,7 @@ namespace Conference.DAL
                 _connection.Cnn.Open();
 
                 var parameters = new DynamicParameters();
-                parameters.Add("@p_UserConferenceID", UserConferenceID);
+                
                 parameters.Add("@p_UserID", UserID);
                 parameters.Add("@p_TopicsID", TopicID);
                 parameters.Add("@p_Score", Score);

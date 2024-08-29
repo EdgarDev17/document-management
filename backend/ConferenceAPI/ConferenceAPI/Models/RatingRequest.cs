@@ -4,8 +4,8 @@ namespace ConferenceAPI.Models
 {
     public class RatingRequest
     {
-        [Required(ErrorMessage = "Este campo es requerido")]
-        public int UserConferenceID { get; set; }
+       // [Required(ErrorMessage = "Este campo es requerido")]
+       // public int UserConferenceID { get; set; }
         [Required(ErrorMessage = "Este campo es requerido")]
         public int UserID { get; set; }
         [Required(ErrorMessage = "Este campo es requerido")]

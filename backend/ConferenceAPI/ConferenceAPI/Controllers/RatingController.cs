@@ -36,7 +36,7 @@ namespace ConferenceAPI.Controllers
                 string message = string.Empty;
                 int result = 0;
 
-                result = this.ratingBL.ManageRating(ratingRequest.UserConferenceID, ratingRequest.UserID, ratingRequest.TopicID, ratingRequest.score,
+                result = this.ratingBL.ManageRating( ratingRequest.UserID, ratingRequest.TopicID, ratingRequest.score,
                     ref message);
 
                 if (result == 1)

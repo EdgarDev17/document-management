@@ -499,7 +499,7 @@ CREATE TABLE `temp-conferencetopics` (
   `TotalAttendees` int NOT NULL,
   `TotalSpeakers` int NOT NULL,
   PRIMARY KEY (`TopicsID`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -514,7 +514,7 @@ CREATE TABLE `tempspeakerconference` (
   `TopicsID` int DEFAULT NULL,
   `NameSpeaker` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`SpeakerConferenceID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -565,7 +565,7 @@ CREATE TABLE `userassignedconference` (
   KEY `fk_conferenceID_UserAssignedConference` (`conferenceID`),
   CONSTRAINT `fk_conferenceID_UserAssignedConference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`),
   CONSTRAINT `FK_UserID_UserAssignedConference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -755,56 +755,6 @@ BEGIN
         SET p_status = 'Rechazado';
     ELSE
         SET p_status = 'Pendiente';
-    END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `MoveTopics` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `MoveTopics`(IN p_conferenceID INT,IN p_userID INT, OUT result INT)
-BEGIN
-    DECLARE v_count INT;
-
-    -- Inicializar el valor de resultado en 0 (por defecto no exitoso)
-    SET result = 0;
-
-    -- Verificar si hay registros en temp-conferencetopics para el conferenceID dado
-    SELECT COUNT(*) INTO v_count
-    FROM `temp-conferencetopics`
-    WHERE conferenceID = p_conferenceID and userID = p_userID;
-
-    IF v_count = 0 THEN
-        -- No hay registros para el conferenceID proporcionado
-        SET result = 0;
-    ELSE
-        -- Insertar los datos seleccionados de temp-conferencetopics a conferencetopics
-        INSERT INTO conferencesdb.conferencetopics (
-            TopicsID, Name, Description, Location, StartHour, StartEnd, conferenceID, RegDate
-        )
-        SELECT
-            TopicsID, Name, Description, Location, StartHour, StartEnd, conferenceID, NOW() AS RegDate
-        FROM
-            `temp-conferencetopics`
-        WHERE
-            conferenceID = p_conferenceID   and userID = p_userID;
-
-        -- Eliminar los datos de temp-conferencetopics después de la inserción
-        DELETE FROM `temp-conferencetopics`
-        WHERE conferenceID = p_conferenceID  and userID = p_userID;
-
-        -- Si la inserción fue exitosa, actualizar el resultado a 1
-        SET result = 1;
     END IF;
 END ;;
 DELIMITER ;
@@ -1230,16 +1180,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetConferenceAgenda`(
 )
 BEGIN
     SELECT 
-        TopicsID,
-        name,
-        Description,
-        Location,
-		DATE_FORMAT(StartHour, '%h:%i %p') AS StartHour,  -- Formato 12 horas (HH:MM AM/PM)
-        DATE_FORMAT(StartEnd, '%h:%i %p') AS StartEnd     -- Formato 12 horas (HH:MM AM/PM)
+        ct.TopicsID,
+        ct.name,
+        ct.Description,
+        ct.Location,
+        DATE_FORMAT(ct.StartHour, '%h:%i %p') AS StartHour,  -- Formato 12 horas (HH:MM AM/PM)
+        DATE_FORMAT(ct.StartEnd, '%h:%i %p') AS StartEnd,    -- Formato 12 horas (HH:MM AM/PM)
+        GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
-        `conferencesdb`.`conferencetopics`
+        `conferencesdb`.`conferencetopics` ct
+    LEFT JOIN 
+        `conferencesdb`.`speakerconference` tsc 
+    ON 
+        ct.TopicsID = tsc.TopicsID
     WHERE 
-        conferenceID = p_ConferenceID;
+        ct.conferenceID = p_ConferenceID
+    GROUP BY 
+        ct.TopicsID, 
+        ct.name, 
+        ct.Description, 
+        ct.Location, 
+        ct.StartHour, 
+        ct.StartEnd;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1490,7 +1452,7 @@ BEGIN
     DECLARE conference_cursor CURSOR FOR
     SELECT conferenceID
     FROM `conferencesdb`.`conference`
-    WHERE NOW() NOT BETWEEN beggingDate AND finishDate 
+    WHERE NOW() NOT BETWEEN NOW() AND finishDate 
     AND Status = 1;
 
     -- Manejo de la finalización del cursor
@@ -1836,6 +1798,234 @@ ELSE
 END IF;
 
 
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_get_emails_and_names_by_user_and_document` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_emails_and_names_by_user_and_document`(
+    IN p_userID INT,
+    IN p_documentID INT
+)
+BEGIN
+    DECLARE v_TopicsID INT;
+    DECLARE v_conferenceID INT;
+    DECLARE v_userID1 INT;
+    DECLARE v_userID2 INT;
+    DECLARE v_userID3 INT;
+    DECLARE v_name VARCHAR(255);
+    DECLARE v_name2 VARCHAR(255);
+    DECLARE v_nameadmin VARCHAR(255);
+    DECLARE v_nameuser VARCHAR(255);
+    DECLARE v_emailAdmin VARCHAR(255);
+    DECLARE v_emailuser VARCHAR(255);
+
+    -- Variables para los jurados
+    DECLARE v_emailJury1 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_nameJury1 VARCHAR(255) DEFAULT NULL;
+  
+
+    -- Obtener el TopicsID y UserID basado en el documentID
+    SELECT UserID, TopicsID INTO v_userID1, v_TopicsID
+    FROM `conferencesdb`.`document`
+    WHERE documentID = p_documentID
+    LIMIT 1;
+
+    -- Obtener el conferenceID y el nombre del topic basado en el TopicsID
+    SELECT conferenceID, Name INTO v_conferenceID, v_name
+    FROM `conferencesdb`.`conferencetopics`
+    WHERE TopicsID = v_TopicsID
+    LIMIT 1;
+
+    -- Obtener el UserID y nombre del conferenceID obtenido
+    SELECT UserID, name INTO v_userID2, v_name2 
+    FROM `conferencesdb`.`conference`
+    WHERE conferenceID = v_conferenceID
+    LIMIT 1;
+
+    -- Obtener el email y nombre del administrador (UserID1)
+    SELECT email, name INTO v_emailAdmin, v_nameadmin
+    FROM `conferencesdb`.`user`
+    WHERE UserID = v_userID2
+    LIMIT 1;
+
+    -- Obtener el email y nombre del usuario pasado como parámetro (p_userID)
+    SELECT email, name INTO v_emailuser, v_nameuser
+    FROM `conferencesdb`.`user`
+    WHERE UserID = v_userID1
+    LIMIT 1;
+    
+    SELECT email, name INTO v_emailJury1, v_nameJury1
+    FROM `conferencesdb`.`user`
+    WHERE UserID = p_userID
+    LIMIT 1;
+
+   
+
+    -- Devolver los resultados
+    SELECT 
+        v_name2 AS ConferenceName, 
+        v_name AS NameTopics, 
+        v_emailAdmin AS EmailAdmin, 
+        v_nameadmin AS NameAdmin, 
+        v_emailuser AS EmailUser, 
+        v_nameuser AS NameUser,
+        v_emailJury1 AS EmailJury1, 
+        v_nameJury1 AS NameJury1;
+        
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_get_emails_and_names_by_user_and_topic` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_emails_and_names_by_user_and_topic`(
+    IN p_userID INT,
+    IN p_TopicsID INT
+)
+BEGIN
+    DECLARE v_conferenceID INT;
+    DECLARE v_userID1 INT;
+    DECLARE v_name VARCHAR(255);
+    DECLARE v_name2 VARCHAR(255);
+    DECLARE v_nameadmin VARCHAR(255);
+    DECLARE v_nameuser VARCHAR(255);
+    DECLARE v_emailAdmin VARCHAR(255);
+    DECLARE v_emailuser VARCHAR(255);
+
+    -- Variables para los jurados
+    DECLARE v_emailJury1 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_nameJury1 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_emailJury2 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_nameJury2 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_emailJury3 VARCHAR(255) DEFAULT NULL;
+    DECLARE v_nameJury3 VARCHAR(255) DEFAULT NULL;
+
+    -- Buscar el conferenceID basado en TopicsID
+    SELECT conferenceID, Name INTO v_conferenceID, v_name
+    FROM `conferencesdb`.`conferencetopics`
+    WHERE TopicsID = p_TopicsID
+    LIMIT 1;
+
+    -- Buscar el UserID del conferenceID obtenido
+    SELECT UserID, name INTO v_userID1, v_name2 
+    FROM `conferencesdb`.`conference`
+    WHERE conferenceID = v_conferenceID
+    LIMIT 1;
+
+    -- Buscar el email y name del primer UserID (administrador)
+    SELECT email, name INTO v_emailAdmin, v_nameadmin
+    FROM `conferencesdb`.`user`
+    WHERE UserID = v_userID1
+    LIMIT 1;
+
+    -- Buscar el email y name del segundo UserID (usuario pasado como parámetro)
+    SELECT email, name INTO v_emailuser, v_nameuser
+    FROM `conferencesdb`.`user`
+    WHERE UserID = p_userID
+    LIMIT 1;
+
+    -- Buscar los emails y nombres de los jurados
+    SELECT 
+        MAX(CASE WHEN rnk = 1 THEN email END) AS EmailJury1,
+        MAX(CASE WHEN rnk = 1 THEN name END) AS NameJury1,
+        MAX(CASE WHEN rnk = 2 THEN email END) AS EmailJury2,
+        MAX(CASE WHEN rnk = 2 THEN name END) AS NameJury2,
+        MAX(CASE WHEN rnk = 3 THEN email END) AS EmailJury3,
+        MAX(CASE WHEN rnk = 3 THEN name END) AS NameJury3
+    INTO 
+        v_emailJury1, v_nameJury1,
+        v_emailJury2, v_nameJury2,
+        v_emailJury3, v_nameJury3
+    FROM (
+        SELECT u.email, u.name, 
+               ROW_NUMBER() OVER (ORDER BY u.UserID) AS rnk
+        FROM `conferencesdb`.`userconference` uc
+        JOIN `conferencesdb`.`user` u ON uc.UserID = u.UserID
+        WHERE uc.TopicsID = p_TopicsID AND uc.RolID = 2
+    ) AS jurors;
+
+    -- Devolver los resultados
+    SELECT 
+        v_name2 AS ConferenceName, 
+        v_name AS NameTopics, 
+        v_emailAdmin AS EmailAdmin, 
+        v_nameadmin AS NameAdmin, 
+        v_emailuser AS EmailUser, 
+        v_nameuser AS NameUser,
+        v_emailJury1 AS EmailJury1, v_nameJury1 AS NameJury1,
+        v_emailJury2 AS EmailJury2, v_nameJury2 AS NameJury2,
+        v_emailJury3 AS EmailJury3, v_nameJury3 AS NameJury3;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_get_emails_by_conference` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_emails_by_conference`(
+    IN p_conferenceID INT,
+    IN p_userID INT
+)
+BEGIN
+    DECLARE v_userID1 INT;
+    DECLARE v_userID2 INT;
+    DECLARE v_name VARCHAR(255);
+     DECLARE v_nameadmin VARCHAR(255);
+      DECLARE v_nameuser VARCHAR(255);
+    DECLARE v_emailAdmin VARCHAR(255);
+    DECLARE v_emailuser VARCHAR(255);
+
+    -- Obtener el UserID y name de la conferencia
+    SELECT UserID, name INTO v_userID1, v_name
+    FROM `conferencesdb`.`conference`
+    WHERE conferenceID = p_conferenceID
+    LIMIT 1;
+
+    -- Obtener el email del primer UserID
+    SELECT email,name INTO v_emailAdmin,v_nameadmin 
+    FROM `conferencesdb`.`user`
+    WHERE UserID = v_userID1
+    LIMIT 1;
+
+    -- Obtener el email del segundo UserID (el pasado como parámetro)
+    SELECT email,name INTO v_emailuser,v_nameuser
+    FROM `conferencesdb`.`user`
+    WHERE UserID = p_userID
+    LIMIT 1;
+
+    -- Devolver los resultados
+    SELECT v_name AS ConferenceName, v_emailAdmin AS EmailAdmin,v_nameadmin AS NameAdmin, v_emailuser AS EmailUser,v_nameuser AS NameUser;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2261,7 +2451,7 @@ BEGIN
     -- Verificar si p_nameSpeaker no es NULL antes de insertar en TempSpeakerConference
     IF p_nameSpeaker IS NOT NULL THEN
         -- Insertar en la tabla TempSpeakerConference con el TopicsID y nameSpeaker
-        INSERT INTO TempSpeakerConference (TopicsID, NameSpeaker)
+        INSERT INTO `conferencesdb`.`tempspeakerconference` (TopicsID, NameSpeaker)
         VALUES (v_TopicsID, p_nameSpeaker);
     END IF;
 
@@ -2292,12 +2482,14 @@ BEGIN
         tct.Location, 
         tct.StartHour, 
         tct.StartEnd, 
-        tct.conferenceID, 
+        tct.conferenceID,
+        tct.TotalAttendees,
+        tct.TotalSpeakers,
         GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
         `conferencetopics` tct
     LEFT JOIN 
-        `SpeakerConference` tsc ON tct.TopicsID = tsc.TopicsID
+        `conferencesdb`.`speakerconference` tsc ON tct.TopicsID = tsc.TopicsID
     WHERE 
         tct.conferenceID = p_conferenceID
     GROUP BY 
@@ -2328,11 +2520,13 @@ BEGIN
         tct.StartHour, 
         tct.StartEnd, 
         tct.conferenceID, 
+         tct.TotalAttendees,
+        tct.TotalSpeakers,
         GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
         `conferencetopics` tct
     LEFT JOIN 
-        `SpeakerConference` tsc ON tct.TopicsID = tsc.TopicsID
+        `conferencesdb`.`speakerconference` tsc ON tct.TopicsID = tsc.TopicsID
     WHERE 
         tct.TopicsID = p_topicsID
     GROUP BY 
@@ -2363,6 +2557,8 @@ BEGIN
         ct.StartHour, 
         ct.StartEnd, 
         ct.conferenceID,
+		ct.TotalAttendees,
+        ct.TotalSpeakers,
         uc.RolID,
         GROUP_CONCAT(tsc.NameSpeaker ORDER BY tsc.NameSpeaker SEPARATOR ', ') AS nameSpeaker
     FROM 
@@ -2372,7 +2568,7 @@ BEGIN
     ON 
         ct.TopicsID = uc.TopicsID
     LEFT JOIN 
-        SpeakerConference tsc 
+        `conferencesdb`.`speakerconference` tsc 
     ON 
         ct.TopicsID = tsc.TopicsID
     WHERE 
@@ -2441,7 +2637,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_manage_score`(
-in p_UserConferenceID INT, 
+
 in p_UserID INT, 
 in p_TopicsID INT,
 in p_Score DECIMAL(3,2),
@@ -2465,6 +2661,7 @@ DECLARE v_TopicExists INT DEFAULT 0;
 DECLARE v_IsValid INT DEFAULT 1;	
 DECLARE v_CurrentScore DECIMAL(3,2) DEFAULT 0;
 DECLARE v_UserConferenceExists INT DEFAULT 0;
+declare  p_UserConferenceID INT;
 
 	-- Verificar si existe el usuario y si está activo
     SELECT COUNT(1) INTO v_UserExists 
@@ -2485,7 +2682,7 @@ DECLARE v_UserConferenceExists INT DEFAULT 0;
 		SET message = 'El tema no existe';
         SET v_IsValid = 0;
     END IF;
-    
+ 
     -- Consultar si el usuario tiene asignada la conferencia
     SELECT COUNT(1) INTO v_UserConferenceExists
 		FROM conferencesdb.userconference WHERE UserID = p_UserID
@@ -2499,6 +2696,10 @@ DECLARE v_UserConferenceExists INT DEFAULT 0;
 
 IF v_UserExists = 1 AND v_TopicExists = 1 AND v_IsValid = 1 THEN
 	
+    
+    select userConferenceID into p_UserConferenceID   from `conferencesdb`.`userconference` 
+    where UserID=p_UserID and TopicsID=p_TopicsID; 
+    
     -- Consultar puntaje de la conferencia
     SELECT Score INTO v_CurrentScore
 		FROM conferencesdb.userconference WHERE UserID = p_UserID
@@ -2690,7 +2891,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_RegisterDocumentVeredict`(
     IN p_veredictID INT,
     IN p_UserID INT,
     OUT result INT,
-    OUT message VARCHAR(250)
+    OUT message VARCHAR(250),
+    out calification INT 
 )
 BEGIN
     DECLARE v_count INT DEFAULT 0;
@@ -2699,7 +2901,8 @@ BEGIN
     DECLARE v_RolName VARCHAR(50) DEFAULT '';
     DECLARE v_TopicsID INT DEFAULT 0;
     DECLARE v_approvalCount INT DEFAULT 0;
-
+	DECLARE v_userID1 int;
+    DECLARE v_NameSpeaker VARCHAR(255);
     -- Obtener el TopicsID del documento
     SELECT TopicsID INTO v_TopicsID 
     FROM conferencesdb.document 
@@ -2761,7 +2964,25 @@ BEGIN
                     UPDATE conferencesdb.document
                     SET qualification = 1
                     WHERE documentID = p_documentID;
+                   SET calification = 1;
+                   -- asinar usuaerio como ponente
+                   
+					SELECT UserID INTO v_userID1
+					FROM `conferencesdb`.`document`
+					WHERE documentID = p_documentID
+					LIMIT 1;
+                    sELECT CONCAT(name, ' ', lastname) INTO v_NameSpeaker
+					FROM `conferencesdb`.`user`
+					WHERE UserID=v_userID1
+					LIMIT 1;  
+                    INSERT INTO `conferencesdb`.`speakerconference` (TopicsID, NameSpeaker)
+                    values (v_TopicsID,v_NameSpeaker);
+					
+                    ELSE
+                        SET calification = 0;
+                    
                 END IF;
+
                 END IF;
 
               
@@ -3404,4 +3625,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-24 16:32:00
+-- Dump completed on 2024-08-28 21:45:41
