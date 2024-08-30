@@ -339,5 +339,83 @@ namespace ConferenceAPI.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetDocumentsByUser")]
+        public ActionResult<IResponse> GetDocumentsByUser(int UserID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<DocumentUserEN> User = _conferenceDocumentBL.GetDocumentsByUser(UserID);
+
+
+
+                if (User != null)
+                {
+                    return Ok(new { Document = User });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen documentos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+        [HttpGet]
+        [Route("GetDocumentsByUserTopics")]
+        public ActionResult<IResponse> GetDocumentsByUserTopics(int UserID,int TopicsID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<DocumentUserEN> User = _conferenceDocumentBL.GetDocumentsByUserTopics(UserID, TopicsID);
+
+
+
+                if (User != null)
+                {
+                    return Ok(new { Document = User });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen documentos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
     }
 }

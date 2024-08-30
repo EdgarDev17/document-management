@@ -428,5 +428,87 @@ namespace Conference.DAL
 
             return email;
         }
+
+        //REGRASAR LOS DATOS  DE TODOS LOS DOCUMENTOS POR USURIO
+
+        public List<DocumentUserEN> GetDocumentsByUser( int userId)
+        {
+            List<DocumentUserEN> users = new List<DocumentUserEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_userID", userId);
+
+                users = _connection.Cnn.Query<DocumentUserEN>("sp_GetDocumentAndUserDetailsByUserID", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+
+                foreach (var user in users)
+                {
+                    if (user != null && !string.IsNullOrEmpty(user.Url))
+                    {
+                        user.DocumentBase = ConvertFileToBase64(user.Url, user.FileName);
+                    }
+                }
+
+                //if (user != null && !string.IsNullOrEmpty(user.profilePictureUrl))
+                //{
+                //    user.imagenBase = ConvertFileToBase64(user.profilePictureUrl, user.profilePictureFile);
+                //}
+            }
+
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+                // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return users!;
+        }
+
+
+        //REGRASAR LOS DATOS  DEL DOCUMENTO POR USURIO DEL TOPIC
+
+        public List<DocumentUserEN> GetDocumentsByUserTopics(int userId,int TopicsID)
+        {
+            List<DocumentUserEN> users = new List<DocumentUserEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_userID", userId);
+                parameters.Add("@p_TopicsID",TopicsID);
+
+                users = _connection.Cnn.Query<DocumentUserEN>("sp_GetDocumentAndUserDetailsByUserID_TopicsID", parameters, commandType: CommandType.StoredProcedure).ToList();
+
+
+                foreach (var user in users)
+                {
+                    if (user != null && !string.IsNullOrEmpty(user.Url))
+                    {
+                        user.DocumentBase = ConvertFileToBase64(user.Url, user.FileName);
+                    }
+                }
+
+                //if (user != null && !string.IsNullOrEmpty(user.profilePictureUrl))
+                //{
+                //    user.imagenBase = ConvertFileToBase64(user.profilePictureUrl, user.profilePictureFile);
+                //}
+            }
+
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+                // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return users!;
+        }
     }
 }

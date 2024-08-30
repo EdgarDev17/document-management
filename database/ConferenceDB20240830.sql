@@ -1344,6 +1344,232 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_GetDocumentAndUserDetailsByUserID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetDocumentAndUserDetailsByUserID`(IN p_userID INT)
+BEGIN
+    -- Declaración de variables
+    DECLARE v_documentID INT;
+    DECLARE v_name VARCHAR(255);
+    DECLARE v_RegDate DATETIME;
+    DECLARE v_review TINYINT;
+    DECLARE v_UserID INT;
+    DECLARE v_TopicsID INT;
+    DECLARE v_url VARCHAR(255);
+    DECLARE v_FileName VARCHAR(255);
+    DECLARE v_status VARCHAR(20);
+
+    DECLARE v_approvalCount INT DEFAULT 0;
+    DECLARE v_rejectionCount INT DEFAULT 0;
+    DECLARE done INT DEFAULT 0;
+
+    -- Declaración del cursor para recorrer los documentos
+    DECLARE doc_cursor CURSOR FOR
+    SELECT 
+        d.documentID,
+        d.name,
+        d.RegDate,
+        d.review,
+        d.UserID,
+        d.TopicsID,
+        d.url,
+        d.FileName
+    FROM 
+        document d
+    WHERE 
+        d.UserID = p_userID;
+
+    -- Handler para manejar el final del cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Crear una tabla temporal para almacenar los resultados
+    CREATE TEMPORARY TABLE TempDocumentResults (
+        documentID INT,
+        name VARCHAR(255),
+        RegDate DATETIME,
+        review TINYINT,
+        UserID INT,
+        TopicsID INT,
+        url VARCHAR(255),
+        FileName VARCHAR(255),
+        status VARCHAR(20)
+    );
+
+    -- Abrir el cursor
+    OPEN doc_cursor;
+
+    -- Bucle para recorrer los resultados del cursor
+    read_loop: LOOP
+        FETCH doc_cursor INTO v_documentID, v_name, v_RegDate, v_review, v_UserID, v_TopicsID, v_url, v_FileName;
+        
+        -- Salir del bucle si no hay más datos
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        -- Contar los veredictos "Aprobado" para el documento
+        SELECT COUNT(*) INTO v_approvalCount
+        FROM conferencesdb.documentveredict dv
+        JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+        WHERE dv.documentID = v_documentID AND v.veredict = 'Aprobado';
+
+        -- Contar los veredictos "Rechazado" para el documento
+        SELECT COUNT(*) INTO v_rejectionCount
+        FROM conferencesdb.documentveredict dv
+        JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+        WHERE dv.documentID = v_documentID AND v.veredict = 'Rechazado';
+
+        -- Validar el estatus del documento basado en el conteo de veredictos
+        IF v_approvalCount >= 2 THEN
+            SET v_status = 'Aprobado';
+        ELSEIF v_rejectionCount >= 2 THEN
+            SET v_status = 'Rechazado';
+        ELSE
+            SET v_status = 'Pendiente';
+        END IF;
+
+        -- Insertar los resultados en la tabla temporal
+        INSERT INTO TempDocumentResults (documentID, name, RegDate, review, UserID, TopicsID, url, FileName, status)
+        VALUES (v_documentID, v_name, v_RegDate, v_review, v_UserID, v_TopicsID, v_url, v_FileName, v_status);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE doc_cursor;
+
+    -- Devolver todos los resultados en un solo SELECT
+    SELECT * FROM TempDocumentResults;
+
+    -- Eliminar la tabla temporal
+    DROP TEMPORARY TABLE TempDocumentResults;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_GetDocumentAndUserDetailsByUserID_TopicsID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetDocumentAndUserDetailsByUserID_TopicsID`(
+    IN p_userID INT, 
+    IN p_TopicsID INT
+)
+BEGIN
+    -- Declaración de variables
+    DECLARE v_documentID INT;
+    DECLARE v_name VARCHAR(255);
+    DECLARE v_RegDate DATETIME;
+    DECLARE v_review TINYINT;
+    DECLARE v_UserID INT;
+    DECLARE v_TopicsID INT;
+    DECLARE v_url VARCHAR(255);
+    DECLARE v_FileName VARCHAR(255);
+    DECLARE v_status VARCHAR(20);
+
+    DECLARE v_approvalCount INT DEFAULT 0;
+    DECLARE v_rejectionCount INT DEFAULT 0;
+    DECLARE done INT DEFAULT 0;
+
+    -- Declaración del cursor para recorrer los documentos
+    DECLARE doc_cursor CURSOR FOR
+    SELECT 
+        d.documentID,
+        d.name,
+        d.RegDate,
+        d.review,
+        d.UserID,
+        d.TopicsID,
+        d.url,
+        d.FileName
+    FROM 
+        document d
+    WHERE 
+        d.UserID = p_userID 
+        AND d.TopicsID = p_TopicsID;
+
+    -- Handler para manejar el final del cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Crear una tabla temporal para almacenar los resultados
+    CREATE TEMPORARY TABLE TempDocumentResults (
+        documentID INT,
+        name VARCHAR(255),
+        RegDate DATETIME,
+        review TINYINT,
+        UserID INT,
+        TopicsID INT,
+        url VARCHAR(255),
+        FileName VARCHAR(255),
+        status VARCHAR(20)
+    );
+
+    -- Abrir el cursor
+    OPEN doc_cursor;
+
+    -- Bucle para recorrer los resultados del cursor
+    read_loop: LOOP
+        FETCH doc_cursor INTO v_documentID, v_name, v_RegDate, v_review, v_UserID, v_TopicsID, v_url, v_FileName;
+        
+        -- Salir del bucle si no hay más datos
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        -- Contar los veredictos "Aprobado" para el documento
+        SELECT COUNT(*) INTO v_approvalCount
+        FROM conferencesdb.documentveredict dv
+        JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+        WHERE dv.documentID = v_documentID AND v.veredict = 'Aprobado';
+
+        -- Contar los veredictos "Rechazado" para el documento
+        SELECT COUNT(*) INTO v_rejectionCount
+        FROM conferencesdb.documentveredict dv
+        JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+        WHERE dv.documentID = v_documentID AND v.veredict = 'Rechazado';
+
+        -- Validar el estatus del documento basado en el conteo de veredictos
+        IF v_approvalCount >= 2 THEN
+            SET v_status = 'Aprobado';
+        ELSEIF v_rejectionCount >= 2 THEN
+            SET v_status = 'Rechazado';
+        ELSE
+            SET v_status = 'Pendiente';
+        END IF;
+
+        -- Insertar los resultados en la tabla temporal
+        INSERT INTO TempDocumentResults (documentID, name, RegDate, review, UserID, TopicsID, url, FileName, status)
+        VALUES (v_documentID, v_name, v_RegDate, v_review, v_UserID, v_TopicsID, v_url, v_FileName, v_status);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE doc_cursor;
+
+    -- Devolver todos los resultados en un solo SELECT
+    SELECT * FROM TempDocumentResults;
+
+    -- Eliminar la tabla temporal
+    DROP TEMPORARY TABLE TempDocumentResults;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_GetDocumentEvaluationDetails` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -3685,4 +3911,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-29 20:56:33
+-- Dump completed on 2024-08-30  0:34:31
