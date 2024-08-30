@@ -460,7 +460,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`sessionID`),
   KEY `FK_UserID_sessions` (`UserID`),
   CONSTRAINT `FK_UserID_sessions` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,6 +756,65 @@ BEGIN
     ELSE
         SET p_status = 'Pendiente';
     END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `obtener_promedio_score_por_topic` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `obtener_promedio_score_por_topic`(IN p_topicID INT)
+BEGIN
+    SELECT 
+        ct.TopicsID,
+        ct.conferenceID,
+        ROUND(AVG(uc.score), 0) AS promedio_score
+    FROM 
+        conferencesdb.userconference uc
+    INNER JOIN 
+        conferencesdb.conferencetopics ct ON uc.TopicsID = ct.TopicsID
+    WHERE 
+        ct.TopicsID = p_topicID
+    GROUP BY 
+        ct.TopicsID, ct.conferenceID;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `obtener_score_por_topic_UserID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `obtener_score_por_topic_UserID`(IN p_topicID INT, IN p_userID INT)
+BEGIN
+    SELECT 
+        ct.TopicsID,
+        ct.conferenceID,
+        uc.score
+    FROM 
+        conferencesdb.userconference uc
+    INNER JOIN 
+        conferencesdb.conferencetopics ct ON uc.TopicsID = ct.TopicsID
+    WHERE 
+        ct.TopicsID = p_topicID
+        AND uc.UserID = p_userID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1554,6 +1613,7 @@ BEGIN
         -- Seleccionar todos los detalles de la conferencia
         SELECT 
             c.conferenceID,
+            c.UserID,
             c.name AS conference_name,
             c.type AS conference_type,
             c.description,
@@ -1593,7 +1653,7 @@ BEGIN
             c.conferenceID = p_conferenceID;
     ELSE
         -- Si no existe, retornar NULL
-        SELECT NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description, 
+        SELECT null as UserID,NULL AS conferenceID, NULL AS conference_name, NULL AS conference_type, NULL AS description, 
                NULL AS conference_RegDate, NULL AS beggingDate, NULL AS finishDate, NULL AS documentAttempt,
                NULL AS institutionID, NULL AS Status, NULL AS institution_name, NULL AS institution_website, 
                NULL AS institution_contact_phone,null as TotalRegistrados,null as TotalRegistrados;
@@ -3625,4 +3685,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-28 21:45:41
+-- Dump completed on 2024-08-29 20:56:33

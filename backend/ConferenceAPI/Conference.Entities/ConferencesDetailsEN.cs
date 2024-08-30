@@ -9,6 +9,7 @@ namespace Conference.Entities
     public class ConferencesDetailsEN
     {
         public int conferenceID { get; set; }
+        public int? UserID { get; set; }
         public string conference_name { get; set; }
         public string conference_type { get; set; }
         public string description { get; set; }

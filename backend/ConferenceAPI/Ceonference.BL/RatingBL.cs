@@ -1,4 +1,5 @@
 ﻿using Conference.DAL;
+using Conference.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,26 @@ namespace Conference.BL
 
             return result;
         }
+
+        public PromedioScoreEN ScoreTopicsPromedio(int TopicID, int userId)
+        {
+
+            PromedioScoreEN Score = new PromedioScoreEN();
+
+           Score= this.ratingDAL.ScoreTopicsPromedio(TopicID, userId);
+            return Score;
+
+        }
+
+        public ScoreEN ScoreTopicsUser(int TopicID, int userId)
+        {
+
+            ScoreEN Score = new ScoreEN();
+
+            Score = this.ratingDAL.ScoreTopicsUser(TopicID, userId);
+            return Score;
+
+        }
+
     }
 }
