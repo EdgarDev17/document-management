@@ -383,7 +383,7 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                 _connection.Cnn.Open();
                 parameters.Add("@p_userID", userID);
-                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conference_details_by_user", parameters, commandType: CommandType.StoredProcedure).AsList();
+                    conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_conference_details_by_user", parameters, commandType: CommandType.StoredProcedure).AsList();
             }
             catch (Exception ex)
             {
@@ -551,8 +551,8 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                                                                                 
                 parameters.Add("@p_UserID", userID);
-                parameters.Add("@p_NewRolID ", RollID);
                 parameters.Add("@p_TopicsID", TopicsID);
+                parameters.Add("@p_RolID", RollID);
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
@@ -563,7 +563,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
 
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en registerConference en conferenceDAL en  sp_assign_user_topic BD", ex.Message, userID);

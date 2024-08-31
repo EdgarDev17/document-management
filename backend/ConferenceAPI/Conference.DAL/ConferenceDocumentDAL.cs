@@ -84,6 +84,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en RegisterDocument en userDAL en sp_document_event BD", ex.Message, userID);
             }

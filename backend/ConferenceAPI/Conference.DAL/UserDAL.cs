@@ -76,7 +76,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
                 _connection.Cnn.Close();
 
                 user = null!;
@@ -378,6 +378,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en RegisterImagens en userDAL en sp_register_imagens BD", ex.Message, userId);
             }

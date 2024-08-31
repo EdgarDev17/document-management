@@ -18,9 +18,6 @@ namespace Conference.BL
 
         public (int result, string message) RegisterDocumentConference(int userID, int TopicsID, string NameDocument, byte[] Document, string DocumentExtension )
         {
-
-
-
             var (result, message) = _conferenceDocumentDAL.RegisterDocumentConference(userID, TopicsID,NameDocument,Document,DocumentExtension);
             return (result, message);
 

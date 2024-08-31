@@ -21,6 +21,7 @@ namespace Conference.Entities
         public string? Location { get; set; }
         public string? urlconference { get; set; }
         public string institution_name { get; set; }
+        public int userID { get; set; }
         public string institution_website { get; set; }
         public string institution_contact_phone { get; set; }
         public int? rolID { get; set; }
