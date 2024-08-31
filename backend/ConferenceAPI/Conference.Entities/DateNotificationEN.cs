@@ -14,5 +14,11 @@ namespace Conference.Entities
         public string? EmailUser { get; set; }
         public string? NameUser { get; set; }
         public string? NameTopics { get; set; }
+        public string? EmailJury1 {  get; set; }
+        public string? NameJury1 { get; set; }
+        public string? EmailJury2 { get; set; }
+        public string? NameJury2 { get; set; }
+        public string? EmailJury3 { get; set; }
+        public string? NameJury3 { get; set; }
     }
 }

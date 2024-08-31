@@ -40,4 +40,19 @@ namespace Conference.Entities
         public string ReviewJury { get; set; }
         public string DocumentBase { get; set; }
     }
+
+    public class DocumentUserEN
+    {
+        // Datos del documento
+        public int DocumentID { get; set; }
+        public string Name { get; set; }
+        public int review {  get; set; }
+        public DateTime RegDate { get; set; }
+        public int UserID { get; set; }
+        public int TopicsID { get; set; }
+        public string Url { get; set; }
+        public string FileName { get; set; }
+        public string status  { get; set; }
+        public string DocumentBase { get; set; }
+    }
 }

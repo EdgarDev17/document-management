@@ -14,5 +14,6 @@ namespace Conference.Entities
         public string Location { get; set; }
         public string StartHour { get; set; }  // Formatted as HH:mm
         public string StartEnd { get; set; }   // Formatted as HH:mm
+        public string nameSpeaker {  get; set; }
     }
 }

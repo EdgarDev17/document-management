@@ -556,7 +556,7 @@ namespace Conference.DAL
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
-                _connection.Cnn.Execute("sp_assign_user_topic", parameters, commandType: CommandType.StoredProcedure);
+                _connection.Cnn.Execute("sp_UpdateUserConferenceRole", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
                 message = parameters.Get<string>("@message");

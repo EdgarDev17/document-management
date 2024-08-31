@@ -136,7 +136,7 @@ namespace Conference.BL
         {
 
             var (result, message) = _conferenceDAL.RegisterAssignUserTopic(userID, TopicsID, RollID);
-            return (result, message);
+            
 
             if (result == 1)
             {
@@ -147,7 +147,7 @@ namespace Conference.BL
                 // Validación para enviar correo a NameUser
                 if (!string.IsNullOrEmpty(email.NameUser))
                 {
-                    var titleUser = $@"Confirmación de Registro en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
+                    var titleUser = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
                     var mensajeBodyUser = $@"Estimado/a {email.NameUser},Nos complace informarte que has sido asignado/a como jurado para el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.{email.NameAdmin}, uno de los administradores del congreso, ha realizado esta asignación.Agradecemos tu participación y esperamos contar con tu valiosa contribución.
 ";
                     _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
@@ -156,11 +156,12 @@ namespace Conference.BL
                 // Validación para enviar correo a NameAdmin
                 if (!string.IsNullOrEmpty(email.NameAdmin))
                 {
-                    var titleAdmin = $@"Confirmación de Registro en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
+                    var titleAdmin = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
                     var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin},Te informamos que has asignado al usuario {email.NameUser} como jurado en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}.Gracias por asegurar la correcta selección del jurado para este tema.";
                     _emailSend.Send(email.EmailAdmin, titleAdmin, mensajeBodyAdmin, []);
                 }
             }
+            return (result, message);
 
         }
 
@@ -264,7 +265,7 @@ namespace Conference.BL
                 if (!string.IsNullOrEmpty(email.NameUser))
                 {
                     var titleUser = $@"Confirmación de Registro en el Congreso: {email.ConferenceName}";
-                    var mensajeBodyUser = $@"Estimado/a {email.NameUser}, Nos complace informarte que te has registrado exitosamente en el congreso {email.ConferenceName}. ¡Esperamos verte allí!";
+                    var mensajeBodyUser = $@"Estimado/a {email.NameUser}, Nos complace informarte que te has registrado exitosamente en el congreso {email.ConferenceName}. ";
                     _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
                 }
 
