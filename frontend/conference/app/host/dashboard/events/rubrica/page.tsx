@@ -1,6 +1,6 @@
 import { NoAuth } from '@/app/components/common/noauth'
 import { auth } from '@/auth'
-import { UserProfileData } from './user-profile-data'
+import { AddRubrica } from './rubrica-form'
 
 export default async function Page() {
 	const session = await auth()
@@ -9,5 +9,5 @@ export default async function Page() {
 		return <NoAuth />
 	}
 
-	return <UserProfileData token={session.accessToken} />
+	return <AddRubrica token={session.accessToken} />
 }

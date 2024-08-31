@@ -1,3 +1,20 @@
+import { NoAuth } from '@/app/components/common/noauth'
+import { EventsList } from '@/app/components/features/eventlist'
+import { Button } from '@/app/components/ui/button'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '@/app/components/ui/card'
+import { auth } from '@/auth'
+import { apiClient } from '@/lib/api-service'
+import { urlConference } from '@/lib/endpoints'
+import { formatDate } from '@/lib/utils'
+import { CalendarIcon, BookOpenIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, CalendarPlusIcon } from 'lucide-react'
+import Link from 'next/link'
+
 export interface ConferenceItem {
 	conferenceID: number
 	conference_name: string
@@ -29,6 +46,7 @@ async function getUserEvents(token: string) {
 				},
 			}
 		)
+
 		return response.data.conference
 	} catch (err) {
 		console.log('Erro al botener los eventos del participante 🔥', err)
@@ -37,7 +55,7 @@ async function getUserEvents(token: string) {
 }
 
 function getNextEvent(events: ConferenceItem[]): ConferenceItem | null {
-	if (events.length === 0) return null
+	if (!events || events.length === 0) return null
 
 	return events.reduce((closest, current) => {
 		const closestDate = new Date(closest.beggingDate).getTime()
@@ -47,30 +65,15 @@ function getNextEvent(events: ConferenceItem[]): ConferenceItem | null {
 	})
 }
 
-import { NoAuth } from '@/app/components/common/noauth'
-import { EventsList } from '@/app/components/features/eventlist'
-import { Button } from '@/app/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	CardFooter,
-} from '@/app/components/ui/card'
-import { auth } from '@/auth'
-import { apiClient } from '@/lib/api-service'
-import { urlConference } from '@/lib/endpoints'
-import { formatDate } from '@/lib/utils'
-import { Conference } from '@/types/models/conference'
-import { CalendarIcon, BookOpenIcon } from '@heroicons/react/24/outline'
-import { ArrowRightIcon, CalendarPlusIcon } from 'lucide-react'
-import Link from 'next/link'
-
 export default async function Page() {
 	const session = await auth()
 
 	if (!session) {
-		return <NoAuth />
+		return (
+			<div className='w-full h-[90vh] flex justify-center items-center'>
+				<NoAuth />
+			</div>
+		)
 	}
 
 	const allEvents: ConferenceItem[] = await getUserEvents(session.accessToken)
@@ -78,13 +81,14 @@ export default async function Page() {
 
 	const page = 1
 	const pageSize = 3
-	const totalPages = Math.ceil(allEvents.length / pageSize)
+	const totalPages = allEvents ? Math.ceil(allEvents.length / pageSize) : 1
+
+	console.log('GENERAL, dashboard/events', { allEvents })
 
 	// Simulating server-side pagination
-	const paginatedEvents = allEvents.slice(
-		(page - 1) * pageSize,
-		page * pageSize
-	)
+	const paginatedEvents = allEvents
+		? allEvents.slice((page - 1) * pageSize, page * pageSize)
+		: []
 
 	return (
 		<div className='min-h-screen w-full'>
@@ -97,20 +101,10 @@ export default async function Page() {
 							</CardTitle>
 							<CalendarIcon className='h-4 w-4 text-muted-foreground' />
 						</CardHeader>
-						<CardContent>
-							{allEvents.length === 0 ? (
-								<div className='flex flex-col items-center justify-center space-y-2'>
-									{/* <div className='text-2xl font-bold'>0</div> */}
-									<CalendarPlusIcon className='h-8 w-8 text-muted-foreground' />
-									<p className='text-center text-xs text-muted-foreground'>
-										No te has inscrito a ningún evento aún.
-									</p>
-									<Button variant='outline' size='sm' asChild>
-										<Link href='/events'>
-											Explorar eventos
-											<ArrowRightIcon className='ml-2 h-4 w-4' />
-										</Link>
-									</Button>
+						<CardContent className='h-[80%]'>
+							{!allEvents || allEvents.length === 0 ? (
+								<div className='flex h-full w-full  flex-col items-center justify-center space-y-2'>
+									<p className='text-center text-6xl font-bold'>0</p>
 								</div>
 							) : (
 								<>

@@ -1,28 +1,28 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 
-import Login from "./form";
+import Login from './form'
 
 export default async function Page({
-  params,
-  searchParams,
+	params,
+	searchParams,
 }: {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+	params: { slug: string }
+	searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const session = await auth();
-  const rol = searchParams.rol;
+	const session = await auth()
+	const rol = searchParams.rol
 
-  if (session && rol === "general") {
-    redirect("/dashboard");
-  }
+	if (session && rol === 'general') {
+		redirect('/dashboard')
+	}
 
-  if (session && rol === "admin") {
-    redirect("/host/dashboard/events");
-  }
+	if (session && rol === 'admin') {
+		redirect('/host/dashboard/events')
+	}
 
-  if (session && rol == null) {
-    redirect("/dashboard");
-  }
-  return <Login />;
+	if (session && rol == undefined) {
+		redirect('/dashboard')
+	}
+	return <Login />
 }

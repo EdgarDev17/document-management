@@ -1,263 +1,232 @@
-"use client";
+'use client'
 
-import { Fragment, useState } from "react";
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
-import { motion } from "framer-motion";
-
+import * as React from 'react'
+import Link from 'next/link'
 import {
-  ArrowRightEndOnRectangleIcon,
-  Bars3Icon,
-  PlusIcon,
-  QueueListIcon,
-  MegaphoneIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+	Menu,
+	X,
+	User,
+	FileText,
+	BarChart2,
+	Users,
+	Calendar,
+	Info,
+} from 'lucide-react'
+
+import { cn } from '@/lib/utils'
+import { Button } from '@/app/components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/app/components/ui/sheet'
 import {
-  ChevronDownIcon,
-  PhoneIcon,
-  PlayCircleIcon,
-} from "@heroicons/react/20/solid";
-import Link from "next/link";
-import { Button } from "./button";
-import { Calendar } from "lucide-react";
-
-const products = [
-  {
-    name: "Crear una conferencia",
-    description:
-      "Crea una conferencia en la cual puedas manejar la documentación.",
-    href: "/host/dashboard/event/create",
-    icon: PlusIcon,
-  },
-  {
-    name: "Unirse a una conferencia",
-    description: "Utiliza un código para unirte a una conferencia",
-    href: "#",
-    icon: ArrowRightEndOnRectangleIcon,
-  },
-  {
-    name: "Ver mis conferencias (arfitrión)",
-    description: "La lista de conferencias que has creado.",
-    href: "#",
-    icon: QueueListIcon,
-  },
-  {
-    name: "Ver conferencias (participante)",
-    description: "Conferencias en las que eres participante",
-    href: "#",
-    icon: MegaphoneIcon,
-  },
-];
-const callsToAction = [
-  { name: "Documentación", href: "#", icon: PlayCircleIcon },
-  { name: "Contactar soporte", href: "#", icon: PhoneIcon },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle,
+} from '@/app/components/ui/navigation-menu'
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  return (
-    <header className="bg-white">
-      <nav
-        className="mx-auto flex items-center justify-between px-6 py-8 lg:px-16"
-        aria-label="Global"
-      >
-        <div className="flex lg:flex-1">
-          <Link className="flex items-center justify-center" href="/">
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Calendar className="h-6 w-6 mr-2" />
-            </motion.div>
-            <span className="font-bold">EventMaster</span>
-          </Link>
-        </div>
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </div>
-        <Popover.Group className="hidden lg:flex lg:gap-x-12">
-          <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-              Producto
-              <ChevronDownIcon
-                className="h-5 w-5 flex-none text-gray-400"
-                aria-hidden="true"
-              />
-            </Popover.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
-            >
-              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-glass-light shadow-lg ring-1 ring-gray-900/5">
-                <div className="p-4">
-                  {products.map((item) => (
-                    <div
-                      key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-200/60"
-                    >
-                      <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                        <item.icon
-                          className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div className="flex-auto">
-                        <a
-                          href={item.href}
-                          className="block font-semibold text-gray-900"
-                        >
-                          {item.name}
-                          <span className="absolute inset-0" />
-                        </a>
-                        <p className="mt-1 text-gray-600">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                  {callsToAction.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
-                    >
-                      <item.icon
-                        className="h-5 w-5 flex-none text-gray-400"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
-              </Popover.Panel>
-            </Transition>
-          </Popover>
-
-          <Link
-            href="/host/dashboard"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Organizador
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Sobre nosotros
-          </Link>
-        </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link
-            href={"/account/login"}
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Iniciar sesión
-          </Link>
-        </div>
-      </nav>
-      <Dialog
-        className="lg:hidden"
-        open={mobileMenuOpen}
-        onClose={setMobileMenuOpen}
-      >
-        <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <p>LOGO</p>
-            </a>
-            <button
-              type="button"
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
-                  {({ open }) => (
-                    <>
-                      <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        Product
-                        <ChevronDownIcon
-                          className={classNames(
-                            open ? "rotate-180" : "",
-                            "h-5 w-5 flex-none",
-                          )}
-                          aria-hidden="true"
-                        />
-                      </Disclosure.Button>
-                      <Disclosure.Panel className="mt-2 space-y-2">
-                        {[...products, ...callsToAction].map((item) => (
-                          <Disclosure.Button
-                            key={item.name}
-                            as="a"
-                            href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                          >
-                            {item.name}
-                          </Disclosure.Button>
-                        ))}
-                      </Disclosure.Panel>
-                    </>
-                  )}
-                </Disclosure>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Features
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Company
-                </a>
-              </div>
-              <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
-              </div>
-            </div>
-          </div>
-        </Dialog.Panel>
-      </Dialog>
-    </header>
-  );
+	return (
+		<header className='bg-background border-b'>
+			<div className='container mx-auto px-4'>
+				<nav className='flex items-center justify-between py-4'>
+					<Link href='/' className='text-2xl font-bold'>
+						EventMaster
+					</Link>
+					<DesktopNav />
+					<MobileNav />
+				</nav>
+			</div>
+		</header>
+	)
 }
 
-export { Navbar };
+function DesktopNav() {
+	return (
+		<NavigationMenu className='hidden md:flex'>
+			<NavigationMenuList>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Organizadores</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+							<li className='row-span-3'>
+								<NavigationMenuLink asChild>
+									<a
+										className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
+										href='/'>
+										<Users className='h-6 w-6' />
+										<div className='mb-2 mt-4 text-lg font-medium'>
+											Organizadores
+										</div>
+										<p className='text-sm leading-tight text-muted-foreground'>
+											Gestiona tus conferencias e instituciones
+										</p>
+									</a>
+								</NavigationMenuLink>
+							</li>
+							<ListItem
+								href='/host/dashboard/events'
+								title='Ver mis conferencias'>
+								<Calendar className='h-4 w-4 mr-2' />
+								Gestiona tus eventos
+							</ListItem>
+							<ListItem
+								href='/host/dashboard/institutions'
+								title='Ver mis instituciones'>
+								<Users className='h-4 w-4 mr-2' />
+								Administra tus organizaciones
+							</ListItem>
+							<ListItem href='/host/dashboard/analytics' title='Ver analíticas'>
+								<BarChart2 className='h-4 w-4 mr-2' />
+								Analiza el rendimiento
+							</ListItem>
+							<ListItem href='/host/dashboard/account' title='Mi perfil'>
+								<User className='h-4 w-4 mr-2' />
+								Gestiona tu cuenta
+							</ListItem>
+						</ul>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Personas</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+							<li className='row-span-3'>
+								<NavigationMenuLink asChild>
+									<a
+										className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
+										href='/'>
+										<User className='h-6 w-6' />
+										<div className='mb-2 mt-4 text-lg font-medium'>
+											Personas
+										</div>
+										<p className='text-sm leading-tight text-muted-foreground'>
+											Gestiona tus conferencias y documentos
+										</p>
+									</a>
+								</NavigationMenuLink>
+							</li>
+							<ListItem href='/dashboard/events' title='Ver mis conferencias'>
+								<Calendar className='h-4 w-4 mr-2' />
+								Explora tus eventos
+							</ListItem>
+							<ListItem href='/dashboard/papers' title='Ver mis documentos'>
+								<FileText className='h-4 w-4 mr-2' />
+								Accede a tus archivos
+							</ListItem>
+							<ListItem href='/personas/analiticas' title='Ver analíticas'>
+								<BarChart2 className='h-4 w-4 mr-2' />
+								Revisa tus estadísticas (muy pronto...)
+							</ListItem>
+							<ListItem href='/dashboard/account' title='Mi perfil'>
+								<User className='h-4 w-4 mr-2' />
+								Actualiza tu información
+							</ListItem>
+						</ul>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<Link href='/about' legacyBehavior passHref>
+						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+							<Info className='h-4 w-4 mr-2' />
+							Acerca de nosotros
+						</NavigationMenuLink>
+					</Link>
+				</NavigationMenuItem>
+			</NavigationMenuList>
+		</NavigationMenu>
+	)
+}
+
+function MobileNav() {
+	return (
+		<Sheet>
+			<SheetTrigger asChild>
+				<Button variant='outline' size='icon' className='md:hidden'>
+					<Menu className='h-6 w-6' />
+					<span className='sr-only'>Abrir menú</span>
+				</Button>
+			</SheetTrigger>
+			<SheetContent side='right' className='w-[300px] sm:w-[400px]'>
+				<nav className='flex flex-col gap-4'>
+					<h2 className='text-lg font-semibold mb-2'>Organizadores</h2>
+					<Link
+						href='/organizadores/conferencias'
+						className='flex items-center gap-2'>
+						<Calendar className='h-4 w-4' />
+						Ver mis conferencias
+					</Link>
+					<Link
+						href='/organizadores/instituciones'
+						className='flex items-center gap-2'>
+						<Users className='h-4 w-4' />
+						Ver mis instituciones
+					</Link>
+					<Link
+						href='/organizadores/analiticas'
+						className='flex items-center gap-2'>
+						<BarChart2 className='h-4 w-4' />
+						Ver analíticas
+					</Link>
+					<Link
+						href='/organizadores/perfil'
+						className='flex items-center gap-2'>
+						<User className='h-4 w-4' />
+						Mi perfil
+					</Link>
+
+					<h2 className='text-lg font-semibold mt-4 mb-2'>Personas</h2>
+					<Link
+						href='/personas/conferencias'
+						className='flex items-center gap-2'>
+						<Calendar className='h-4 w-4' />
+						Ver mis conferencias
+					</Link>
+					<Link href='/personas/documentos' className='flex items-center gap-2'>
+						<FileText className='h-4 w-4' />
+						Ver mis documentos
+					</Link>
+					<Link href='/personas/analiticas' className='flex items-center gap-2'>
+						<BarChart2 className='h-4 w-4' />
+						Ver analíticas
+					</Link>
+					<Link href='/personas/perfil' className='flex items-center gap-2'>
+						<User className='h-4 w-4' />
+						Mi perfil
+					</Link>
+
+					<Link href='/acerca' className='flex items-center gap-2 mt-4'>
+						<Info className='h-4 w-4' />
+						Acerca de nosotros
+					</Link>
+				</nav>
+			</SheetContent>
+		</Sheet>
+	)
+}
+
+const ListItem = React.forwardRef<
+	React.ElementRef<'a'>,
+	React.ComponentPropsWithoutRef<'a'>
+>(({ className, title, children, ...props }, ref) => {
+	return (
+		<li>
+			<NavigationMenuLink asChild>
+				<a
+					ref={ref}
+					className={cn(
+						'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+						className
+					)}
+					{...props}>
+					<div className='text-sm font-medium leading-none'>{title}</div>
+					<p className='line-clamp-2 text-sm leading-snug text-muted-foreground'>
+						{children}
+					</p>
+				</a>
+			</NavigationMenuLink>
+		</li>
+	)
+})
+ListItem.displayName = 'ListItem'

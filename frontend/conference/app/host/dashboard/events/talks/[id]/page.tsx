@@ -3,6 +3,7 @@ import { DataContainer } from './data-container'
 import { NoAuth } from '@/app/components/common/noauth'
 import { apiClient } from '@/lib/api-service'
 import { TalkClientWrapper } from './wrapper'
+import { Conference } from '@/types/models/conference'
 
 async function getTalkData(token: string, talkId: string) {
 	console.log('PIDIENDO DATOS EN GETTALK...', talkId)
@@ -21,6 +22,24 @@ async function getTalkData(token: string, talkId: string) {
 	}
 }
 
+async function getEventDetailts(id: string, token: string) {
+	try {
+		const response = await apiClient.get(
+			`/conference/conferencesdetailsspecific?conferenceID=${id}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+
+		return response.data.conference[0]
+	} catch (err) {
+		console.log({ eventError: err })
+		return err
+	}
+}
+
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 
@@ -33,7 +52,20 @@ export default async function Page({ params }: { params: { id: string } }) {
 	}
 
 	const talk = await getTalkData(session.accessToken, params.id)
-	console.log(talk)
+	const event: Conference = await getEventDetailts(
+		talk.conferenceID,
+		session.accessToken
+	)
 
-	return <TalkClientWrapper initialData={talk} token={session.accessToken} />
+	console.log('HOST CHARLA', talk)
+	console.log('HOST Evento', event)
+
+	return (
+		<TalkClientWrapper
+			talk={talk}
+			event={event}
+			token={session.accessToken}
+			userId={parseInt(session.userId)}
+		/>
+	)
 }

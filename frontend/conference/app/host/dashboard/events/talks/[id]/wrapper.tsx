@@ -1,13 +1,26 @@
-"use client";
+'use client'
 
-import { DataContainer } from "./data-container";
+import { Talk } from '@/types/models/talk'
+import { DataContainer } from './data-container'
+import { Conference } from '@/types/models/conference'
 
 export function TalkClientWrapper({
-  initialData,
-  token,
+	talk,
+	token,
+	event,
+	userId,
 }: {
-  initialData: any;
-  token: string;
+	talk: any
+	event: Conference
+	token: string
+	userId: number
 }) {
-  return <DataContainer talkData={initialData} token={token} />;
+	return (
+		<DataContainer
+			talkData={talk}
+			eventData={event}
+			token={token}
+			currentUserId={userId}
+		/>
+	)
 }

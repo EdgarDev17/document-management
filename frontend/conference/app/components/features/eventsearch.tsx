@@ -84,7 +84,7 @@ function EventSearch({ token }: { token: string }) {
 			(selectedArea === '' || event.conference_name === selectedArea)
 	)
 
-	const eventsPerPage = 5
+	const eventsPerPage = 4
 	const totalPages = Math.ceil(filteredEvents.length / eventsPerPage)
 	const displayedEvents = filteredEvents.slice(
 		(currentPage - 1) * eventsPerPage,
