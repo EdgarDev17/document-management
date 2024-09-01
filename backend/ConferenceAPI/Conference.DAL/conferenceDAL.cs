@@ -553,12 +553,12 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                                                                                 
                 parameters.Add("@p_UserID", userID);
-                parameters.Add("@p_NewRolID ", RollID);
+                parameters.Add("@p_NewRolID", RollID);
                 parameters.Add("@p_TopicsID", TopicsID);
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
-                _connection.Cnn.Execute("sp_UpdateUserConferenceRole", parameters, commandType: CommandType.StoredProcedure);
+                _connection.Cnn.Execute("UpdateUserConferenceRole", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
                 message = parameters.Get<string>("@message");
