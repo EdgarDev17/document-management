@@ -417,5 +417,45 @@ namespace ConferenceAPI.Controllers
             });
 
         }
+
+        [HttpGet]
+        [Route("GetDocumentsBydocumentID")]
+        public ActionResult<IResponse> GetDocumentsBydocumentID(int documentID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<DocumentUserEN> User = _conferenceDocumentBL.GetDocumentsBydocumentID(user.UserID, documentID);
+
+
+
+                if (User != null)
+                {
+                    return Ok(new { Document = User });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "No existen documentos" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
     }
 }
