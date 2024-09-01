@@ -164,7 +164,7 @@ namespace ConferenceAPI.Controllers
 
         }
         [HttpPost("RegisterDocumentEvaluationCriteria")]
-        public ActionResult<IResponse> RegisterDocumentEvaluationCriteria([FromBody] List<RegisterEvaluationCriteriaDocument> data)
+        public ActionResult RegisterDocumentEvaluationCriteria([FromBody] List<RegisterEvaluationCriteriaDocument> data)
         {
             if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
             {

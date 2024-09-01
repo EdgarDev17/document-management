@@ -32,24 +32,24 @@ function Container({ userId, token }: { userId: string; token: string }) {
 	>(null)
 	const [institutionModal, setInstitutionModal] = React.useState<boolean>(false)
 
-	const handleCreatingInstitution = async (state: boolean) => {
-		setInstitutionModal(state)
-	}
-	React.useEffect(() => {
-		axios('http://localhost:5110/api/Institutions', {
-			headers: {
-				'Authorization-Token': token,
-			},
-		})
-			.then((response) => {
-				setInstitutions(response.data)
-				setLoading(false)
-			})
-			.catch((error) => {})
-			.finally(() => {
-				setLoading(false)
-			})
-	}, [institutionModal, token])
+  const handleCreatingInstitution = async (state: boolean) => {
+    setInstitutionModal(state);
+  };
+  React.useEffect(() => {
+    axios("http://localhost:5110/api/Institutions", {
+      headers: {
+        "Authorization-Token": token,
+      },
+    })
+      .then((response) => {
+        setInstitutions(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {})
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [institutionModal, token]);
 
 	return (
 		<div className={'flex flex-col gap-y-16 py-8'}>

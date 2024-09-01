@@ -21,111 +21,80 @@ export function InstitutionContainer({ token }: { token: string }) {
 		null
 	)
 
-	useEffect(() => {
-		axios('http://localhost:5110/api/Institutions', {
-			headers: {
-				'Authorization-Token': token,
-			},
-		})
-			.then((response) => {
-				setInstitutions(response.data)
-			})
-			.catch((error) => {
-				console.error('Error fetching institutions:', error)
-			})
-			.finally(() => {
-				setLoading(false)
-			})
-	}, [token])
+  useEffect(() => {
+    axios("http://localhost:5110/api/Institutions", {
+      headers: {
+        "Authorization-Token": token,
+      },
+    })
+      .then((response) => {
+        setInstitutions(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {})
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-	const CreateButton = () => (
-		<Link href='/host/dashboard/institutions/add'>
-			<Button variant='default'>
-				<PlusCircle className='mr-2 h-4 w-4' />
-				Crear
-			</Button>
-		</Link>
-	)
-
-	const NoInstitutionsMessage = () => (
-		<div className='flex flex-col items-center justify-center h-[60vh]'>
-			<svg
-				className='w-48 h-48 text-gray-400'
-				fill='none'
-				viewBox='0 0 24 24'
-				stroke='currentColor'
-				aria-hidden='true'>
-				<path
-					strokeLinecap='round'
-					strokeLinejoin='round'
-					strokeWidth={2}
-					d='M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'
-				/>
-			</svg>
-			<p className='mt-4 text-xl font-semibold text-gray-700'>
-				No ha añadido ninguna institución aún
-			</p>
-			<p className='mt-2 text-gray-500'>
-				Puede agregar una institución en cualquier momento
-			</p>
-			<div className='mt-6'>
-				<CreateButton />
-			</div>
-		</div>
-	)
-
-	return (
-		<div className='w-11/12 mx-auto flex flex-col gap-y-6'>
-			{institutions && institutions.length > 0 && (
-				<div className='w-full flex justify-end items-center'>
-					<CreateButton />
-				</div>
-			)}
-			<ScrollArea className='w-full h-[70vh] rounded-md border border-none'>
-				{loading ? (
-					<p className='text-center'>Cargando datos...</p>
-				) : !institutions || institutions.length === 0 ? (
-					<NoInstitutionsMessage />
-				) : (
-					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-						{institutions.map((institution) => (
-							<Card className='w-full relative' key={institution.institutionID}>
-								<div className='absolute right-4 top-[34%] -translate-y-1/2'>
-									<img
-										src={
-											!institution.image
-												? '/pfp_i.png'
-												: `data:image/jpeg;base64,${institution.image}`
-										}
-										alt={`Logo de ${institution.name}`}
-										className='w-24 h-24 rounded-full object-cover'
-									/>
-								</div>
-								<CardHeader className='bg-tertiary rounded-t-lg pt-4 h-32'>
-									<CardTitle className='text-lg text-white'>
-										{institution.name}
-									</CardTitle>
-								</CardHeader>
-								<CardContent className='flex flex-col justify-center items-start h-40 py-6'>
-									<p className='text-sm'>
-										{institution.description.length > 100
-											? `${institution.description.substring(0, 100)}...`
-											: institution.description}
-									</p>
-								</CardContent>
-								<CardFooter className='flex justify-end'>
-									<Button size='sm' variant='outline' asChild>
-										<Link
-											href={`institutions/edit/${institution.institutionID}`}>
-											Editar
-										</Link>
-									</Button>
-								</CardFooter>
-							</Card>
-						))}
-					</div>
-				)}
-			</ScrollArea>
-		</div>
-	)
+  return (
+    <div className={"w-11/12 mx-auto flex flex-col gap-y-6"}>
+      <div className={"w-full flex justify-end items-center"}>
+        <Link href={"/host/dashboard/institutions/add"}>
+          <Button variant={"default"}>Crear</Button>
+        </Link>
+      </div>
+      <ScrollArea className="w-full h-[70vh] rounded-md border border-none">
+        <div className={"grid grid-cols-3 grid-rows-2 gap-y-6"}>
+          {loading ? (
+            <p>cargando datos...</p>
+          ) : (
+            <>
+              {institutions?.map((institution) => {
+                return (
+                  <Card
+                    className="w-80 relative"
+                    key={institution.institutionID}
+                  >
+                    <div className="absolute right-4 top-[34%] -translate-y-1/2">
+                      <img
+                        src={
+                          !institution.image
+                            ? "/pfp_i.png"
+                            : `data:image/jpeg;base64,${institution.image}`
+                        }
+                        alt="Descripción de la imagen"
+                        className="w-24 h-24 rounded-full object-cover"
+                      />
+                    </div>
+                    <CardHeader className="bg-tertiary rounded-t-lg pt-4 h-32">
+                      <CardTitle className="text-lg text-white">
+                        {institution.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col justify-center items-start h-40 py-6">
+                      <p className="text-sm">
+                        {institution.description.length > 100
+                          ? `${institution.description.substring(0, 100)}...`
+                          : institution.description}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex justify-end">
+                      <Button size="sm" variant={"outline"} asChild>
+                        <Link
+                          href={`institutions/edit/${institution.institutionID}`}
+                        >
+                          Editar
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
+  );
 }

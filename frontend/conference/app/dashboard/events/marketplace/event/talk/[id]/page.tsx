@@ -22,64 +22,20 @@ async function getTalkDetails(talkId: string, token: string) {
 }
 
 async function getEvenDetails(eventId: number, token: string) {
-	try {
-		const response = await apiClient.get(
-			`${urlConference}/conferencesdetailsspecific?conferenceID=${eventId}`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-		return response.data.conference[0]
-	} catch (err) {
-		return null
-	}
-}
-
-async function checkIfUserIsRegistered(token: string, targetTopicId: string) {
-	try {
-		const response = await apiClient.get(
-			`${urlConference}/conferenceslisttopicsbyuserid`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-
-		console.info(response.data.topics)
-		const foundTopic = response.data.topics.find(
-			(topic: Talk) => topic.topicsID == targetTopicId
-		)
-
-		return {
-			isRegistered: !!foundTopic,
-			topic: foundTopic || null,
-		}
-	} catch (err) {
-		return {
-			isRegistered: false,
-			topic: null,
-		}
-	}
-}
-
-async function getEventPapers(talkId: string, token: string) {
-	try {
-		const response = await apiClient.get(
-			`/document/getdocumentsbyconference?TopicsID=${talkId}`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-		console.log('PAPERS 😭', response.data.document)
-		return response.data.document
-	} catch (err) {
-		console.log('error al obtener los papers de la charla')
-	}
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesdetailsspecific?conferenceID=${eventId}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
+      },
+    );
+    return response.data.conference[0];
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 }
 
 export default async function Page({ params }: { params: { id: string } }) {

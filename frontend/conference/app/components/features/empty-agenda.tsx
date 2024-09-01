@@ -1,8 +1,7 @@
 import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 import { Button } from "../ui/button";
-import Link from "next/link";
 
-const EmptyAgendaMessage = ({ conferenceId }: { conferenceId: string }) => (
+const EmptyAgendaMessage = () => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6">
     <svg
       className="w-48 h-48 mb-6 text-gray-400"
@@ -23,14 +22,10 @@ const EmptyAgendaMessage = ({ conferenceId }: { conferenceId: string }) => (
     <p className="text-gray-500 mb-6">
       Crea una haciendo clic en el botón crear charla.
     </p>
-    <Link
-      href={`/host/dashboard/event/talks/create?conferenceId=${conferenceId}`}
-    >
-      <Button>
-        <PlusCircleIcon className="mr-2 h-4 w-4" />
-        Crear charla
-      </Button>
-    </Link>
+    <Button>
+      <PlusCircleIcon className="mr-2 h-4 w-4" />
+      Crear charla
+    </Button>
   </div>
 );
 

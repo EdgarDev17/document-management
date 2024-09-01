@@ -5,17 +5,13 @@ import { auth } from '@/auth'
 export default async function Page() {
 	const session = await auth()
 
-	if (!session) {
-		return (
-			<div className='w-full h-screen flex justify-center items-center'>
-				<NoAuth />
-			</div>
-		)
-	}
+  if (!session) {
+    return "no auth";
+  }
 
-	return (
-		<div>
-			<EventSearch token={session.accessToken} />
-		</div>
-	)
+  return (
+    <div>
+      <EventSearch token={session.accessToken} />
+    </div>
+  );
 }

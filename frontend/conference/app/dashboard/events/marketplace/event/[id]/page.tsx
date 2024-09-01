@@ -38,67 +38,46 @@ import { RegisterUserEvent } from './registerUserEvent'
 
 //funcionando bien :D
 async function getEventAgenda(id: string, token: string) {
-	try {
-		const response = await apiClient.get(
-			`${urlConference}/conferencesagenda?conferenceID=${id}`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-		console.log('AGENDA: ', response.data.conference)
-		return response.data.conference
-	} catch (err) {
-		return null
-	}
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesagenda?conferenceID=${id}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
+      },
+    );
+
+    return response.data.conference;
+  } catch (err) {
+    return null;
+  }
 }
 
 //funcionando bien :D
 async function getEventDetailts(id: string, token: string) {
-	try {
-		const response = await apiClient.get(
-			`${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-		return response.data.conference[0]
-	} catch (err) {
-		return null
-	}
-}
+  try {
+    const response = await apiClient.get(
+      `${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
+      {
+        headers: {
+          "Authorization-Token": token,
+        },
+      },
+    );
 
-//funcionando bien :D
-async function getInstitution(institutionId: string) {
-	try {
-		const response = await apiClient.get(
-			`/institutions/public/${institutionId}`
-		)
-		return response.data
-	} catch (err) {
-		return null
-	}
+    return response.data.conference[0];
+  } catch (err) {
+    return null;
+  }
 }
-
-async function checkIfUserIsRegistered(token: string) {
-	// ConferencesDetailsByUser
-	try {
-		const response = await apiClient.get(
-			`${urlConference}/ConferencesDetailsByUser`,
-			{
-				headers: {
-					'Authorization-Token': token,
-				},
-			}
-		)
-		return response.data.conference
-	} catch (err) {
-		console.log('ERRRROR 🔥', err)
-		return null
-	}
+async function getInstitution(id: string) {
+  try {
+    const response = await apiClient.get(`${urlInstitutions}/public/${id}`);
+    return response.data;
+  } catch (err) {
+    return null;
+  }
 }
 
 export default async function Page({ params }: { params: { id: string } }) {

@@ -231,7 +231,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
 
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en conferenceDAL en sp_RegisterDocumentEvaluationCriteria", ex.Message, UserID);

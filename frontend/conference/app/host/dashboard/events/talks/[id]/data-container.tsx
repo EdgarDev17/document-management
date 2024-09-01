@@ -169,7 +169,7 @@ export function DataContainer({
   const handleConvertToJury = async (userId: number) => {
     try {
       const response = await apiClient.post(
-        "/conference/updateuserconferencerole",
+        "/Conference/UpdateUserConferenceRole",
         {
           topicsID: talkData.topicsID,
           userID: userId,

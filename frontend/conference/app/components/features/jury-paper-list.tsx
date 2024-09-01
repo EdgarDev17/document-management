@@ -12,6 +12,7 @@ import {
 } from '@/app/components/ui/hover-card'
 import { FileText, Star } from 'lucide-react'
 import { formatDistanceToNow, es } from 'date-fns'
+import Link from 'next/link'
 
 type Document = {
 	documentID: number
@@ -80,13 +81,15 @@ export function JuryModeContent({ documents }: { documents: Document[] }) {
 										className='text-xs'>
 										{doc.review === '0' ? 'Pendiente' : 'Revisado'}
 									</Badge>
-									<Button
-										variant='outline'
-										size='sm'
-										className='flex items-center text-xs'>
-										<Star className='h-3 w-3 mr-1' />
-										Calificar
-									</Button>
+									<Link href={`/documents/${doc.documentID}`}>
+										<Button
+											variant='outline'
+											size='sm'
+											className='flex items-center text-xs'>
+											<Star className='h-3 w-3 mr-1' />
+											Calificar
+										</Button>
+									</Link>
 								</div>
 							</motion.div>
 						))}

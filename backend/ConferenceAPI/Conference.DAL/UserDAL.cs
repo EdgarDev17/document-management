@@ -69,7 +69,7 @@ namespace Conference.DAL
                 parameters.Add("@p_Lastname", lastname);
                 parameters.Add("@p_Email", email);
                 parameters.Add("@p_Birthdate", birthdate);
-                parameters.Add("@p_passwordSalt", passwordSalt);
+                parameters.Add("@p_passwordSalt", passwordSalt);    
                 parameters.Add("@p_passwordHash", passwordHash);
 
                 user = _connection.Cnn.Query<UserEN>("user_data_registration", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault()!;
