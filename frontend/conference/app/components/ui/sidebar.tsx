@@ -12,7 +12,7 @@ const SideBarContainer = ({ children, className }: SideBarContainer) => {
 	return (
 		<div
 			className={cn(
-				'w-full h-full flex flex-col bg-white p-3 rounded-lg border border-gray-50 shadow-sm',
+				'hidden sm:flex w-full h-full  flex-col bg-white p-3 rounded-lg border border-gray-50 shadow-sm',
 				className
 			)}>
 			{children}
@@ -27,7 +27,7 @@ type SideBarItemProps = {
 
 const SideBarItem = ({ url, children }: SideBarItemProps) => {
 	return (
-		<div className='w-full'>
+		<div className='w-full hidden sm:block'>
 			<Link href={url}>{children}</Link>
 		</div>
 	)

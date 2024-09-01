@@ -16,7 +16,7 @@ export default function DashboardLayout({
 }) {
 	return (
 		<section className='container mx-auto h-[80vh] flex gap-x-4'>
-			<div className='w-[16%] h-full'>
+			<div className='hidden md:block md:w-[16%] h-full'>
 				<SideBarContainer className='flex flex-col justify-between'>
 					<div className='h-[50%]  flex flex-col justify-around'>
 						<SideBarItem url='/host/dashboard/'>
@@ -64,7 +64,7 @@ export default function DashboardLayout({
 					</div>
 				</SideBarContainer>
 			</div>
-			<div className='w-[84%]'>{children}</div>
+			<div className='w-full md:w-[84%]'>{children}</div>
 		</section>
 	)
 }

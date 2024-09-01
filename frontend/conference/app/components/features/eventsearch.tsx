@@ -65,6 +65,7 @@ function EventSearch({ token }: { token: string }) {
 				console.log('Lista de eventos search', response.data.conference)
 			})
 			.catch(function (error) {
+				console.log(error)
 				throw new Error(error)
 			})
 			.finally(() => {

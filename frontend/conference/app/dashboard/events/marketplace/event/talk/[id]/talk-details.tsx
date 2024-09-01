@@ -37,12 +37,17 @@ import { RegisterUserToTalk } from '@/app/components/features/register-user-talk
 import { Talk } from '@/types/models/talk'
 import { Conference } from '@/types/models/conference'
 import { PaperSubmissionDialog } from '@/app/components/features/paper-submission'
+import {
+	Document,
+	JuryModeContent,
+} from '@/app/components/features/jury-paper-list'
 
 type Props = {
 	talk: Talk
 	event: Conference
 	token: string
 	userId: string
+	papers: Document[]
 	isUserAlreadyRegistered: {
 		isRegistered: boolean | null
 		topic: any | null
@@ -54,6 +59,7 @@ export function TalkDetails({
 	isUserAlreadyRegistered,
 	event,
 	token,
+	papers,
 	userId,
 }: Props) {
 	const [juryMode, setJuryMode] = React.useState(false)
@@ -173,29 +179,7 @@ export function TalkDetails({
 							</TabsContent>
 							{juryMode && (
 								<TabsContent value='jury' className='space-y-6'>
-									<div>
-										<h3 className='font-semibold mb-2 text-lg'>
-											Papers para Evaluación
-										</h3>
-										{talk.papers && talk.papers.length > 0 ? (
-											<ul className='space-y-2'>
-												{talk.papers.map((paper, index) => (
-													<li
-														key={index}
-														className='flex justify-between items-center'>
-														<span>{paper.title}</span>
-														<Button variant='outline' size='sm'>
-															Ver Detalles
-														</Button>
-													</li>
-												))}
-											</ul>
-										) : (
-											<p className='text-muted-foreground'>
-												No hay papers enviados para esta charla aún.
-											</p>
-										)}
-									</div>
+									<JuryModeContent documents={papers || []} />
 								</TabsContent>
 							)}
 						</CardContent>

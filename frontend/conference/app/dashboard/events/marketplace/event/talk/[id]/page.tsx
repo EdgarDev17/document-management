@@ -65,6 +65,23 @@ async function checkIfUserIsRegistered(token: string, targetTopicId: string) {
 	}
 }
 
+async function getEventPapers(talkId: string, token: string) {
+	try {
+		const response = await apiClient.get(
+			`/document/getdocumentsbyconference?TopicsID=${talkId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+		console.log('PAPERS 😭', response.data.document)
+		return response.data.document
+	} catch (err) {
+		console.log('error al obtener los papers de la charla')
+	}
+}
+
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 
@@ -85,6 +102,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 		talk.conferenceID,
 		session.accessToken
 	)
+	const papers = await getEventPapers(params.id, session.accessToken)
 
 	return (
 		<TalkDetails
@@ -93,6 +111,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 			talk={talk}
 			token={session.accessToken}
 			userId={session.userId}
+			papers={papers}
 		/>
 	)
 }
