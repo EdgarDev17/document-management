@@ -460,7 +460,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`sessionID`),
   KEY `FK_UserID_sessions` (`UserID`),
   CONSTRAINT `FK_UserID_sessions` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1564,6 +1564,91 @@ BEGIN
 
     -- Eliminar la tabla temporal
     DROP TEMPORARY TABLE TempDocumentResults;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_GetDocumentDetailsByDocumentID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetDocumentDetailsByDocumentID`(IN p_documentID INT)
+BEGIN
+    -- Declaración de variables
+    DECLARE v_name VARCHAR(255);
+    DECLARE v_RegDate DATETIME;
+    DECLARE v_review TINYINT;
+    DECLARE v_UserID INT;
+    DECLARE v_TopicsID INT;
+    DECLARE v_url VARCHAR(255);
+    DECLARE v_FileName VARCHAR(255);
+    DECLARE v_status VARCHAR(20);
+
+    DECLARE v_approvalCount INT DEFAULT 0;
+    DECLARE v_rejectionCount INT DEFAULT 0;
+
+    -- Obtener los detalles del documento
+    SELECT 
+        d.name,
+        d.RegDate,
+        d.review,
+        d.UserID,
+        d.TopicsID,
+        d.url,
+        d.FileName
+    INTO
+        v_name,
+        v_RegDate,
+        v_review,
+        v_UserID,
+        v_TopicsID,
+        v_url,
+        v_FileName
+    FROM 
+        document d
+    WHERE 
+        d.documentID = p_documentID;
+
+    -- Contar los veredictos "Aprobado" para el documento
+    SELECT COUNT(*) INTO v_approvalCount
+    FROM conferencesdb.documentveredict dv
+    JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+    WHERE dv.documentID = p_documentID AND v.veredict = 'Aprobado';
+
+    -- Contar los veredictos "Rechazado" para el documento
+    SELECT COUNT(*) INTO v_rejectionCount
+    FROM conferencesdb.documentveredict dv
+    JOIN conferencesdb.veredict v ON dv.veredictID = v.veredictID
+    WHERE dv.documentID = p_documentID AND v.veredict = 'Rechazado';
+
+    -- Validar el estatus del documento basado en el conteo de veredictos
+    IF v_approvalCount >= 2 THEN
+        SET v_status = 'Aprobado';
+    ELSEIF v_rejectionCount >= 2 THEN
+        SET v_status = 'Rechazado';
+    ELSE
+        SET v_status = 'Pendiente';
+    END IF;
+
+    -- Devolver el resultado
+    SELECT 
+        p_documentID AS documentID,
+        v_name AS name,
+        v_RegDate AS RegDate,
+        v_review AS review,
+        v_UserID AS UserID,
+        v_TopicsID AS TopicsID,
+        v_url AS url,
+        v_FileName AS FileName,
+        v_status AS status;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -3911,4 +3996,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-30  0:34:31
+-- Dump completed on 2024-08-31 21:22:24
