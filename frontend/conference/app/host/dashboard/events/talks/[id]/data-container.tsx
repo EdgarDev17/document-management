@@ -44,6 +44,8 @@ import {
 	MapPin,
 	Clock,
 	User,
+	FileSpreadsheet,
+	Send,
 	Edit,
 	Trash2,
 	Users,
@@ -58,6 +60,7 @@ import { ScrollArea } from '@/app/components/ui/scrollarea'
 import { Role } from '@/types/models/role'
 import { Conference } from '@/types/models/conference'
 import { CertificateFormDialog } from '@/app/components/features/generate-certificate'
+import { DocumentIcon } from '@heroicons/react/24/outline'
 
 const talkSchema = z.object({
 	name: z.string().min(1, 'El nombre es requerido'),
@@ -175,6 +178,24 @@ export function DataContainer({
 			getParticipants() // Refresh the participants list
 		} catch (error) {
 			toast.error('Ocurrió un error al asignar jurado, intente de nuevo')
+		}
+	}
+
+	async function sendCertificates() {
+		try {
+			const response = await apiClient.get(
+				`/Certificate/GenerateCertificates/${currentUserId}/${talkData.topicsID}`,
+				{
+					headers: {
+						'Authorization-Token': token,
+					},
+				}
+			)
+
+			toast.success('Diplomas enviados exitosamente')
+			getParticipants()
+		} catch (error) {
+			toast.error('Ocurrió un error al enviar los diplomas, intente de nuevo')
 		}
 	}
 
@@ -383,159 +404,183 @@ export function DataContainer({
 									: 'Acciones disponibles para esta charla.'}
 							</CardDescription>
 						</CardHeader>
-						<CardContent className='flex flex-col gap-y-4'>
-							<Link
-								href={`/host/dashboard/events/rubrica?conferenceId=${talkData.conferenceID}&talkId=${talkData.topicsID}`}>
-								<Button size={'full'} disabled={!isAdmin}>
-									Asignar rúbrica
-								</Button>
-							</Link>
+						<CardContent className='space-y-6'>
+							<div className='space-y-2'>
+								<h3 className='text-sm font-medium'>Gestión de Charla</h3>
+								<div className='grid grid-cols-2 gap-2'>
+									<Dialog
+										open={isEditDialogOpen}
+										onOpenChange={setIsEditDialogOpen}>
+										<DialogTrigger asChild>
+											<Button
+												variant='outline'
+												className='w-full'
+												disabled={!isAdmin}>
+												<Edit className='w-4 h-4 mr-2' />
+												Editar
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Editar Charla</DialogTitle>
+												<DialogDescription>
+													Modifica los detalles de la charla aquí.
+												</DialogDescription>
+											</DialogHeader>
+											<Form {...form}>
+												<form
+													onSubmit={form.handleSubmit(onSubmit)}
+													className='space-y-4'>
+													<FormField
+														control={form.control}
+														name='name'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Nombre</FormLabel>
+																<FormControl>
+																	<Input {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name='description'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Descripción</FormLabel>
+																<FormControl>
+																	<Textarea {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name='location'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Ubicación</FormLabel>
+																<FormControl>
+																	<Input {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name='startHour'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Hora de inicio</FormLabel>
+																<FormControl>
+																	<Input {...field} type='datetime-local' />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name='startEnd'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Hora de finalización</FormLabel>
+																<FormControl>
+																	<Input {...field} type='datetime-local' />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name='nameSpeaker'
+														render={({ field }) => (
+															<FormItem>
+																<FormLabel>Nombre del ponente</FormLabel>
+																<FormControl>
+																	<Input {...field} />
+																</FormControl>
+																<FormMessage />
+															</FormItem>
+														)}
+													/>
+													<Button type='submit'>Guardar cambios</Button>
+												</form>
+											</Form>
+										</DialogContent>
+									</Dialog>
+									<Dialog
+										open={isDeleteDialogOpen}
+										onOpenChange={setIsDeleteDialogOpen}>
+										<DialogTrigger asChild>
+											<Button
+												variant='destructive'
+												className='w-full'
+												disabled={!isAdmin}>
+												<Trash2 className='w-4 h-4 mr-2' />
+												Eliminar
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Confirmar eliminación</DialogTitle>
+												<DialogDescription>
+													¿Estás seguro de que quieres eliminar esta charla?
+													Esta acción no se puede deshacer.
+												</DialogDescription>
+											</DialogHeader>
+											<DialogFooter>
+												<Button
+													variant='outline'
+													onClick={() => setIsDeleteDialogOpen(false)}>
+													Cancelar
+												</Button>
+												<Button variant='destructive' onClick={handleDelete}>
+													Eliminar
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
+								</div>
+							</div>
 
-							<CertificateFormDialog
-								token={token}
-								userId={currentUserId}
-								topicId={talkData.topicsID}
-								institutionName={eventData.institution_name}
-							/>
+							<div className='space-y-2'>
+								<h3 className='text-sm font-medium'>Evaluación</h3>
+								<Link
+									href={`/host/dashboard/events/rubrica?conferenceId=${talkData.conferenceID}&talkId=${talkData.topicsID}`}>
+									<Button size='lg' className='w-full' disabled={!isAdmin}>
+										<FileSpreadsheet className='w-4 h-4 mr-2' />
+										Asignar rúbrica
+									</Button>
+								</Link>
+							</div>
 
-							<Dialog
-								open={isEditDialogOpen}
-								onOpenChange={setIsEditDialogOpen}>
-								<DialogTrigger asChild>
+							<div className='space-y-2'>
+								<h3 className='text-sm font-medium'>Certificados</h3>
+								<div className='grid grid-cols-1 gap-2'>
+									<CertificateFormDialog
+										token={token}
+										userId={currentUserId}
+										topicId={talkData.topicsID}
+										institutionName={eventData.institution_name}
+									/>
+
 									<Button
-										variant='outline'
+										size='lg'
 										className='w-full'
-										disabled={!isAdmin}>
-										<Edit className='w-4 h-4 mr-2' />
-										Editar
+										variant={'outline'}
+										onClick={sendCertificates}>
+										<Send className='w-4 h-4 mr-2' />
+										Enviar certificados a ponentes
 									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Editar Charla</DialogTitle>
-										<DialogDescription>
-											Modifica los detalles de la charla aquí.
-										</DialogDescription>
-									</DialogHeader>
-									<Form {...form}>
-										<form
-											onSubmit={form.handleSubmit(onSubmit)}
-											className='space-y-4'>
-											<FormField
-												control={form.control}
-												name='name'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Nombre</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='description'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Descripción</FormLabel>
-														<FormControl>
-															<Textarea {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='location'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Ubicación</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='startHour'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Hora de inicio</FormLabel>
-														<FormControl>
-															<Input {...field} type='datetime-local' />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='startEnd'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Hora de finalización</FormLabel>
-														<FormControl>
-															<Input {...field} type='datetime-local' />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='nameSpeaker'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Nombre del ponente</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<Button type='submit'>Guardar cambios</Button>
-										</form>
-									</Form>
-								</DialogContent>
-							</Dialog>
-							<Dialog
-								open={isDeleteDialogOpen}
-								onOpenChange={setIsDeleteDialogOpen}>
-								<DialogTrigger asChild>
-									<Button
-										variant='destructive'
-										className='w-full'
-										disabled={!isAdmin}>
-										<Trash2 className='w-4 h-4 mr-2' />
-										Eliminar
-									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Confirmar eliminación</DialogTitle>
-										<DialogDescription>
-											¿Estás seguro de que quieres eliminar esta charla? Esta
-											acción no se puede deshacer.
-										</DialogDescription>
-									</DialogHeader>
-									<DialogFooter>
-										<Button
-											variant='outline'
-											onClick={() => setIsDeleteDialogOpen(false)}>
-											Cancelar
-										</Button>
-										<Button variant='destructive' onClick={handleDelete}>
-											Eliminar
-										</Button>
-									</DialogFooter>
-								</DialogContent>
-							</Dialog>
+								</div>
+							</div>
+
 							{!isAdmin && (
 								<p className='text-sm text-muted-foreground text-center mt-2'>
 									Solo el administrador puede realizar estas acciones.

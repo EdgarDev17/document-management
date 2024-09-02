@@ -65,7 +65,7 @@ namespace Conference.DAL
                 parameters.Add("@p_finishDate", finishDate);
                 parameters.Add("@p_areaID", areaID);
                 parameters.Add("@p_documentAttempt", docuementAttempt);
-                // Manejar el parï¿½metro location
+                // Manejar el parámetro location
                 if (string.IsNullOrEmpty(location))
                 {
                     parameters.Add("@p_Location", DBNull.Value, DbType.String);
@@ -74,7 +74,7 @@ namespace Conference.DAL
                 {
                     parameters.Add("@p_Location", location);
                 }
-                // Manejar el parï¿½metro urlconference
+                // Manejar el parámetro urlconference
                 if (string.IsNullOrEmpty(urlconference))
                 {
                     parameters.Add("@p_urlconference", DBNull.Value, DbType.String);
