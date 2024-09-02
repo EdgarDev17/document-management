@@ -38,46 +38,60 @@ import { RegisterUserEvent } from './registerUserEvent'
 
 //funcionando bien :D
 async function getEventAgenda(id: string, token: string) {
-  try {
-    const response = await apiClient.get(
-      `${urlConference}/conferencesagenda?conferenceID=${id}`,
-      {
-        headers: {
-          "Authorization-Token": token,
-        },
-      },
-    );
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/conferencesagenda?conferenceID=${id}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
 
-    return response.data.conference;
-  } catch (err) {
-    return null;
-  }
+		return response.data.conference
+	} catch (err) {
+		return null
+	}
 }
 
 //funcionando bien :D
 async function getEventDetailts(id: string, token: string) {
-  try {
-    const response = await apiClient.get(
-      `${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
-      {
-        headers: {
-          "Authorization-Token": token,
-        },
-      },
-    );
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
 
-    return response.data.conference[0];
-  } catch (err) {
-    return null;
-  }
+		return response.data.conference[0]
+	} catch (err) {
+		return null
+	}
 }
 async function getInstitution(id: string) {
-  try {
-    const response = await apiClient.get(`${urlInstitutions}/public/${id}`);
-    return response.data;
-  } catch (err) {
-    return null;
-  }
+	try {
+		const response = await apiClient.get(`${urlInstitutions}/public/${id}`)
+		return response.data
+	} catch (err) {
+		return null
+	}
+}
+
+async function checkIfUserIsRegistered(token: string) {
+	try {
+		const res = await apiClient.get('/conference/conferencesdetailsbyuser', {
+			headers: {
+				'Authorization-Token': token,
+			},
+		})
+
+		return res.data.conference
+	} catch (error) {
+		return null
+	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -91,6 +105,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 		params.id,
 		session.accessToken
 	)
+
 	const agenda: [] = await getEventAgenda(params.id, session.accessToken)
 	const userEvents = await checkIfUserIsRegistered(session.accessToken)
 

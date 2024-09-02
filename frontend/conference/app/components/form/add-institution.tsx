@@ -69,36 +69,35 @@ function AddInstitution({
 		event.preventDefault() // Previene la propagación del evento
 		isInstitutionLoading(true)
 
-    try {
-      const response = await apiClient.post(
-        "/Institutions/create",
-        {
-          Name: values.name,
-          Website: values.website,
-          Phone: values.contact_phone,
-          Description: values.description,
-          Image: values.image,
-          userID: userId,
-        },
-        {
-          headers: {
-            "Authorization-Token": token,
-          },
-        },
-      );
+		try {
+			const response = await apiClient.post(
+				'/Institutions/create',
+				{
+					Name: values.name,
+					Website: values.website,
+					Phone: values.contact_phone,
+					Description: values.description,
+					Image: values.image,
+					userID: userId,
+				},
+				{
+					headers: {
+						'Authorization-Token': token,
+					},
+				}
+			)
 
-      if (response.status == HttpStatusCode.Ok) {
-        isInstitutionLoading(false);
-        toast.success("Institucion creada con éxito");
-        return;
-      }
-      isInstitutionLoading(false);
-      toast.error("Error al crear la institución, intente de nuevo mas tarde");
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
-  }
+			if (response.status == HttpStatusCode.Ok) {
+				isInstitutionLoading(false)
+				toast.success('Institucion creada con éxito')
+				return
+			}
+			isInstitutionLoading(false)
+			toast.error('Error al crear la institución, intente de nuevo mas tarde')
+		} catch (err) {
+			return null
+		}
+	}
 
 	function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0]

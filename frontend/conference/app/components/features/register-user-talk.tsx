@@ -54,7 +54,6 @@ export function RegisterUserToTalk({
 				setIsOpen(false)
 			}
 		} catch (err) {
-			console.log(err)
 			toast.error('Error al intentar registrarte en el evento')
 
 			setIsOpen(false)

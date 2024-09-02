@@ -63,6 +63,7 @@ export function TalkDetails({
 	const [isJury, setIsJury] = React.useState(false)
 	const [userRole, setUserRole] = React.useState<Role | null>(null)
 	const [isRegistered, setIsRegistered] = React.useState(false)
+	const isSpeakerInfoEmpty = !talk.speakerImage && !talk.nameSpeaker
 
 	React.useEffect(() => {
 		setIsRegistered(isUserAlreadyRegistered.isRegistered ?? false)
@@ -186,26 +187,41 @@ export function TalkDetails({
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-4'>
-							<div className='flex items-center space-x-4'>
-								<Avatar className='h-20 w-20 ring-2 ring-primary ring-offset-2'>
-									<AvatarImage
-										src={talk.speakerImage || ''}
-										alt={talk.nameSpeaker}
-									/>
-									<AvatarFallback>
-										{talk.nameSpeaker
-											.split(' ')
-											.map((n) => n[0])
-											.join('')}
-									</AvatarFallback>
-								</Avatar>
-								<div>
-									<h3 className='text-lg font-semibold'>{talk.nameSpeaker}</h3>
-									<p className='text-sm text-muted-foreground'>
-										Ponente confirmado para el evento
+							{isSpeakerInfoEmpty ? (
+								<div className='flex flex-col items-center space-y-4'>
+									<div className='flex justify-center items-center relative w-32 h-32 group'>
+										<UserIcon className='h-52 w-52 text-blue-300' />
+										<div className='absolute inset-0 bg-primary/10 rounded-full transition-opacity duration-300 opacity-0 group-hover:opacity-100'></div>
+									</div>
+									<p className='text-center text-sm text-muted-foreground'>
+										Por favor, espera a que el jurado seleccione un ponente para
+										esta charla.
 									</p>
 								</div>
-							</div>
+							) : (
+								<div className='flex items-center space-x-4'>
+									<Avatar className='h-20 w-20 ring-2 ring-primary ring-offset-2'>
+										<AvatarImage
+											src={talk.speakerImage || ''}
+											alt={talk.nameSpeaker}
+										/>
+										<AvatarFallback>
+											{talk.nameSpeaker
+												.split(' ')
+												.map((n) => n[0])
+												.join('')}
+										</AvatarFallback>
+									</Avatar>
+									<div>
+										<h3 className='text-lg font-semibold'>
+											{talk.nameSpeaker}
+										</h3>
+										<p className='text-sm text-muted-foreground'>
+											Ponente confirmado para el evento
+										</p>
+									</div>
+								</div>
+							)}
 						</CardContent>
 					</Card>
 

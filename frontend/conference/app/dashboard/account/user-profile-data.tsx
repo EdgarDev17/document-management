@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { urlRegisterUsers } from '@/lib/endpoints'
-import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import { signOut } from 'next-auth/react'
 import {
@@ -42,7 +41,6 @@ function UserProfileData({ token }: { token: string }) {
 				setLoading(false)
 			})
 			.catch((err) => {
-				console.log('error al obtener perfil', err)
 				setLoading(false)
 			})
 	}
@@ -63,7 +61,6 @@ function UserProfileData({ token }: { token: string }) {
 				}
 			)
 			toast.success('Foto actualizada correctamente')
-			console.log(response.data)
 			fetchUserProfile() // Actualizar el perfil después de subir la imagen
 		} catch (error) {
 			console.error('Error uploading image:', error)
@@ -157,7 +154,7 @@ function UserProfileData({ token }: { token: string }) {
 						icon={<MapPin className='h-5 w-5 text-primary' />}
 						title='País'
 						description='Es tu país de residencia'
-						value={userProfile.countryName}
+						value={'El Salvador'}
 					/>
 					<ProfileCard
 						icon={<Calendar className='h-5 w-5 text-primary' />}

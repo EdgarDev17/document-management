@@ -11,195 +11,73 @@ import {
 	CardDescription,
 } from '@/app/components/ui/card'
 import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogOverlay,
-  AlertDialogPortal,
-} from "@/app/components/ui/alert-dialog";
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+	AlertDialogDescription,
+	AlertDialogAction,
+	AlertDialogOverlay,
+	AlertDialogPortal,
+} from '@/app/components/ui/alert-dialog'
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/app/components/ui/hover-card";
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from '@/app/components/ui/hover-card'
 
-import { Button } from "@/app/components/ui/button";
-import { Drawer } from "vaul";
-import { useNewConferenceFormStore } from "@/lib/providers/conference-form-provider";
-import { useWindowSize } from "@uidotdev/usehooks";
-import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/api-service";
-import { Separator } from "@/app/components/ui/separator";
-import { Institution } from "@/types/models/institution";
-import { HttpStatusCode } from "axios";
-import { toast } from "sonner";
+import { Button } from '@/app/components/ui/button'
+import { Drawer } from 'vaul'
+import { useNewConferenceFormStore } from '@/lib/providers/conference-form-provider'
+import { useWindowSize } from '@uidotdev/usehooks'
+import { useRouter } from 'next/navigation'
+import { apiClient } from '@/lib/api-service'
+import { Separator } from '@/app/components/ui/separator'
+import { Institution } from '@/types/models/institution'
+import { HttpStatusCode } from 'axios'
+import { toast } from 'sonner'
 
 const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
-  const formSummary = useNewConferenceFormStore((state) => state);
-  const [currentInstitution, setCurrentInstitution] =
-    React.useState<Institution | null>(null);
-  const windowsSize = useWindowSize();
-  const router = useRouter();
-  const ROL_ADMIN = 1;
+	const formSummary = useNewConferenceFormStore((state) => state)
+	const [currentInstitution, setCurrentInstitution] =
+		React.useState<Institution | null>(null)
+	const windowsSize = useWindowSize()
+	const router = useRouter()
+	const ROL_ADMIN = 1
 
-  React.useEffect(() => {
-    if (
-      !formSummary.eventArea ||
-      !formSummary.eventName ||
-      !formSummary.eventDescription
-    ) {
-      router.push("/host/dashboard/event/create/step-one");
-      return;
-    }
+	React.useEffect(() => {
+		if (
+			!formSummary.eventType ||
+			!formSummary.eventName ||
+			!formSummary.eventDescription
+		) {
+			router.push('/host/dashboard/event/create/step-one')
+			return
+		}
 
-    apiClient
-      .get(`/institutions/${formSummary.institutionId}`, {
-        headers: {
-          "Authorization-Token": token,
-        },
-      })
-      .then((res) => {
-        setCurrentInstitution(res.data);
-      })
-      .catch((err) => {
-        throw new Error("Error al obtener la institcion en el summary");
-      });
-  }, [
-    formSummary.eventArea,
-    formSummary.eventDescription,
-    formSummary.eventName,
-    router,
-    formSummary.institutionId,
-    token,
-    formSummary.eventType,
-  ]);
-
-  const onSubmit = async () => {
-    await apiClient
-      .post(
-        "/conference/registerconference",
-        {
-          userID: userId,
-          rollID: ROL_ADMIN,
-          institucionID: currentInstitution?.institutionID,
-          nameConference: formSummary.eventName,
-          typeConference: formSummary.eventType,
-          description: formSummary.eventDescription,
-          beggingDate: formSummary.startingDate,
-          finishDate: formSummary.finishingDate,
-          areaID: 26, //TODO: HACER QUE TOME EL AREA DESDE EL FORM STEPS
-          documentAttempt: formSummary.documentAttempt,
-          location: formSummary.location,
-          urlconference: formSummary.eventUrl,
-        },
-        {
-          headers: {
-            "Authorization-Token": token,
-          },
-        },
-      )
-      .then((res) => {
-        if (res.status === HttpStatusCode.Ok) {
-          toast.success("Conferencia creada con exito");
-          router.push("/host/dashboard/events");
-          return;
-        }
-        toast.error("Error al crear la conferencia. intente mas tarde");
-      });
-  };
-
-  if (
-    !formSummary.startingDate ||
-    !formSummary.finishingDate ||
-    !windowsSize.width
-  ) {
-    return <p>Cargando...</p>;
-  }
-  return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <VideoIcon className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm font-medium">Tu conferencia</span>
-          </div>
-          <div className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-            Resumen
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-8">
-        <div className="space-y-6">
-          <div>
-            <span className="text-sm text-muted-foreground">Titulo</span>
-            <h3 className="text-lg font-semibold">{formSummary.eventName}</h3>
-          </div>
-          <div>
-            <span className="text-sm text-muted-foreground">Descripción</span>
-            <p className="font-medium break-words line-clamp-3">
-              {formSummary.eventDescription.length > 100 ? (
-                <span>
-                  {formSummary.eventDescription.slice(0, 60)} ...
-                  <HoverCard openDelay={0}>
-                    <HoverCardTrigger className="text-sm text-blue-800 cursor-pointer">
-                      Ver más
-                    </HoverCardTrigger>
-                    <HoverCardContent>
-                      <h3 className="font-bold">Descripción completa</h3>
-                      {formSummary.eventDescription}
-                    </HoverCardContent>
-                  </HoverCard>
-                </span>
-              ) : (
-                formSummary.eventDescription
-              )}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-0 py-1">
-            <div>
-              <span className="text-sm text-muted-foreground">Inicio</span>
-              <p className="font-medium">
-                {format(formSummary.startingDate, "dd/MMM/yyyy")}
-              </p>
-            </div>
-            <div>
-              <span className="text-sm text-muted-foreground">Final</span>
-              <p className="font-medium">
-                {format(formSummary.finishingDate, "dd/MMM/yyyy")}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-0 ">
-          <div>
-            <div className="text-sm text-muted-foreground">Anfitrión</div>
-            <p className="font-medium">{currentInstitution?.name}</p>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground">Modalidad</div>
-            <p className="font-medium">{formSummary.eventType}</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-center py-6">
-          <img
-            src={`data:image/jpeg;base64,${currentInstitution?.image}`}
-            className="w-[400px] h-[200px] object-cover rounded-lg"
-          />
-        </div>
-      </CardContent>
-      <CardFooter className="h-[10%]">
-        <Button
-          variant={"ghost"}
-          onClick={() => router.push("/host/dashboard/event/create/step-three")}
-        >
-          Volver
-        </Button>
+		apiClient
+			.get(`/institutions/${formSummary.institutionId}`, {
+				headers: {
+					'Authorization-Token': token,
+				},
+			})
+			.then((res) => {
+				setCurrentInstitution(res.data)
+			})
+			.catch((err) => {
+				throw new Error('Error al obtener la institcion en el summary')
+			})
+	}, [
+		formSummary.eventDescription,
+		formSummary.eventName,
+		router,
+		formSummary.institutionId,
+		token,
+		formSummary.eventType,
+	])
 
 	const onSubmit = async () => {
 		await apiClient
@@ -405,4 +283,4 @@ function VideoIcon(props: any) {
 	)
 }
 
-export default EventSummary
+export { EventSummary }

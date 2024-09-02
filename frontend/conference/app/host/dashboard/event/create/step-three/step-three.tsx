@@ -1,6 +1,4 @@
 'use client'
-
-import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
 import { Button } from '@/app/components/ui/button'
 import {
 	Card,
@@ -68,13 +66,12 @@ export default function StepThree({
 	const [loadingInstitution, setLoadingInstitution] = useState<boolean>(false)
 	const [isInstitutionSelected, setIsInstitutionSelected] = useState<string>('')
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      institutionId: "0",
-      paperAttempts: 1,
-    },
-  });
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			institutionId: '0',
+		},
+	})
 
 	const { eventType, eventName, eventDescription, updateStepThree } =
 		useNewConferenceFormStore((state) => {
@@ -91,31 +88,31 @@ export default function StepThree({
 			return
 		}
 
-    apiClient
-      .get("/institutions/", {
-        headers: {
-          "Authorization-Token": token,
-        },
-      })
-      .then((res) => {
-        setInstitutions(res.data);
-      })
-      .catch((err) => {
-        throw new Error("Error al obtener instituciones");
-      });
-  }, [
-    eventArea,
-    eventDescription,
-    eventName,
-    router,
-    token,
-    loadingInstitution,
-  ]);
+		apiClient
+			.get('/institutions/', {
+				headers: {
+					'Authorization-Token': token,
+				},
+			})
+			.then((res) => {
+				setInstitutions(res.data)
+			})
+			.catch((err) => {
+				throw new Error('Error al obtener instituciones')
+			})
+	}, [
+		eventDescription,
+		eventName,
+		router,
+		token,
+		loadingInstitution,
+		eventType,
+	])
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    updateStepThree(values.institutionId, paperAttempt);
-    router.push("/host/dashboard/event/create/summary");
-  }
+	function onSubmit(values: z.infer<typeof formSchema>) {
+		updateStepThree(values.institutionId)
+		router.push('/host/dashboard/event/create/step-four')
+	}
 
 	return (
 		<div className='w-full h-[80vh] flex justify-center items-center'>
@@ -140,10 +137,7 @@ export default function StepThree({
 											</FormLabel>
 											<FormControl className={'py-2'}>
 												<Select
-													onValueChange={(value) => {
-														field.onChange(value)
-														setIsInstitutionSelected(value)
-													}}
+													onValueChange={field.onChange}
 													value={field.value.toString()}>
 													<SelectTrigger className='w-[200px]'>
 														<SelectValue placeholder='Selecciona una opción' />
@@ -167,142 +161,53 @@ export default function StepThree({
 											<FormMessage />
 										</div>
 
-  const decrementAttempt = () => {
-    if (paperAttempt <= 1) {
-      return;
-    }
-    setPaperAttemp((prevState) => prevState - 1);
-  };
-
-  return (
-    <div className="w-full h-[80vh] flex justify-center items-center">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="h-[600px]">
-            <CardHeader className="h-[20%]">
-              <CardTitle>Datos de la institución</CardTitle>
-              <CardDescription>
-                Estos datos son necesario para que puedas crear un nuevo evento
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[60%] space-y-14">
-              <FormField
-                control={form.control}
-                name="institutionId"
-                render={({ field }) => (
-                  <FormItem className={"flex w-full items-end justify-between"}>
-                    <div className={"flex flex-col gap-y-4"}>
-                      <FormLabel>
-                        Selecciona la institución anfitriona
-                      </FormLabel>
-                      <FormControl className={"py-2"}>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value.toString()}
-                        >
-                          <SelectTrigger className="w-[200px]">
-                            <SelectValue placeholder="Selecciona una opción" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Tus instituciones</SelectLabel>
-                              {institutions.map((institution) => {
-                                return (
-                                  <SelectItem
-                                    key={institution.institutionID}
-                                    value={institution.institutionID.toString()}
-                                  >
-                                    {institution.name}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </div>
-
-                    <Dialog
-                      open={loadingInstitution}
-                      onOpenChange={setLoadingInstitution}
-                    >
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          type="button"
-                          className={"text-sm"}
-                        >
-                          Crear Institución
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-[700px]">
-                        <DialogHeader>
-                          <DialogTitle>Añadir nueva institución</DialogTitle>
-                          <DialogDescription>
-                            Si la institucion no aparece en la lista, puedes
-                            crearla aqui
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="">
-                          <AddInstitution
-                            token={token}
-                            userId={userId}
-                            isInstitutionLoading={handleInsitutionCreateRequest}
-                          />
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="paperAttempts"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      ¿Aceptará la conferencia ponentes y papers?
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          setPaperAttemp(parseInt(value));
-                        }}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Selecciona una opción" />
-                        </SelectTrigger>
-                        <SelectContent defaultValue={"0"}>
-                          <SelectGroup>
-                            <SelectLabel>Ponentes y papers</SelectLabel>
-                            <SelectItem value="0">NO</SelectItem>
-                            <SelectItem value="1">SI</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter className="h-[20%] flex gap-x-4">
-              <Button
-                variant={"ghost"}
-                onClick={() => {
-                  router.push("/host/dashboard/event/create/step-two");
-                }}
-              >
-                Volver
-              </Button>
-              <Button type="submit" variant={"default"}>
-                Continuar
-              </Button>
-            </CardFooter>
-          </Card>
-        </form>
-      </Form>
-    </div>
-  );
+										<Dialog
+											open={loadingInstitution}
+											onOpenChange={setLoadingInstitution}>
+											<DialogTrigger asChild>
+												<Button
+													variant='outline'
+													type='button'
+													className={'text-sm'}>
+													Crear Institución
+												</Button>
+											</DialogTrigger>
+											<DialogContent className='max-w-[700px]'>
+												<DialogHeader>
+													<DialogTitle>Añadir nueva institución</DialogTitle>
+													<DialogDescription>
+														Si la institucion no aparece en la lista, puedes
+														crearla aqui
+													</DialogDescription>
+												</DialogHeader>
+												<div className=''>
+													<AddInstitution
+														token={token}
+														userId={userId}
+														isInstitutionLoading={handleInsitutionCreateRequest}
+													/>
+												</div>
+											</DialogContent>
+										</Dialog>
+									</FormItem>
+								)}
+							/>
+						</CardContent>
+						<CardFooter className='h-[20%] flex gap-x-4'>
+							<Button
+								variant={'ghost'}
+								onClick={() => {
+									router.push('/host/dashboard/event/create/step-two')
+								}}>
+								Volver
+							</Button>
+							<Button type='submit' variant={'default'}>
+								Continuar
+							</Button>
+						</CardFooter>
+					</Card>
+				</form>
+			</Form>
+		</div>
+	)
 }

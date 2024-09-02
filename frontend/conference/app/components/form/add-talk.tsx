@@ -88,7 +88,6 @@ function AddTalkForm({
 			totalAttendees: values.totalAttendees,
 			nameSpeaker: values.nameSpeaker,
 		}
-		console.log(data)
 		try {
 			const res = await apiClient.post(
 				'/conference/registerconferencetopics',

@@ -15,6 +15,7 @@ async function getTalkDetails(talkId: string, token: string) {
 				},
 			}
 		)
+
 		return response.data.topics[0]
 	} catch (err) {
 		return null
@@ -22,20 +23,64 @@ async function getTalkDetails(talkId: string, token: string) {
 }
 
 async function getEvenDetails(eventId: number, token: string) {
-  try {
-    const response = await apiClient.get(
-      `${urlConference}/conferencesdetailsspecific?conferenceID=${eventId}`,
-      {
-        headers: {
-          "Authorization-Token": token,
-        },
-      },
-    );
-    return response.data.conference[0];
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/conferencesdetailsspecific?conferenceID=${eventId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+
+		return response.data.conference[0]
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+async function checkIfUserIsRegistered(token: string, targetTalkId: number) {
+	try {
+		const res = await apiClient.get(
+			'/conference/conferenceslisttopicsbyuserid',
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+		console.log('ESta registrado??', res.data.topics)
+
+		const foundTopic = res.data.topics.find(
+			(topic: Talk) => parseInt(topic.topicsID) === targetTalkId
+		)
+
+		return {
+			isRegistered: !!foundTopic,
+			topic: foundTopic || null,
+		}
+	} catch (error) {
+		return null
+	}
+}
+
+async function getEventPapers(talkId: number, token: string) {
+	try {
+		const res = await apiClient.get(
+			`/document/getdocumentsbyconference?TopicsID=${talkId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+
+		console.log('docs', res.data.document)
+		return res.data.document
+	} catch (error) {
+		return null
+	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -51,14 +96,17 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 	const isUserAlreadyRegistered = await checkIfUserIsRegistered(
 		session.accessToken,
-		params.id
+		parseInt(params.id)
 	)
+
+	console.log('ESta registrado??', isUserAlreadyRegistered)
 	const talk: Talk = await getTalkDetails(params.id, session.accessToken)
 	const event: Conference = await getEvenDetails(
 		talk.conferenceID,
 		session.accessToken
 	)
-	const papers = await getEventPapers(params.id, session.accessToken)
+
+	const papers = await getEventPapers(parseInt(params.id), session.accessToken)
 
 	return (
 		<TalkDetails

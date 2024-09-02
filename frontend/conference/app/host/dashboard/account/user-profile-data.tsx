@@ -155,7 +155,7 @@ function UserProfileData({ token }: { token: string }) {
 						icon={<MapPin className='h-5 w-5 text-primary' />}
 						title='País'
 						description='Es tu país de residencia'
-						value={userProfile.countryName}
+						value={'El Salvador'}
 					/>
 					<ProfileCard
 						icon={<Calendar className='h-5 w-5 text-primary' />}

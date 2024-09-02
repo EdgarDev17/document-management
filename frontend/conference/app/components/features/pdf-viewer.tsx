@@ -27,26 +27,44 @@ import { useRouter } from 'next/navigation'
 import { apiClient } from '@/lib/api-service'
 import { HttpStatusCode } from 'axios'
 
+interface RubricItem {
+	evaCritConfID: number
+	conferenceID: number
+	aspect: string
+	description: string
+}
+
+interface ScaleItem {
+	scaleID: number
+	scale: string
+	description: string
+}
+
 interface PDFViewerProps {
 	pdfBase64: string
-	rubric: {
-		_ResponseEvaluationD: {
-			_Evalutioncriteria: Array<{
-				criterionID: number
-				aspect: string
-				description: string
-			}>
-			_Evalutionscale: Array<{
-				scaleID: number
-				scale: string
-				description: string
-			}>
-		}
-	}
+	rubric: RubricItem[]
 	documentID: number
 	topicsID: number
 	token: string
 }
+
+const scaleItems: ScaleItem[] = [
+	{
+		scaleID: 1,
+		scale: 'A',
+		description: 'Se cumple adecuadamente',
+	},
+	{
+		scaleID: 2,
+		scale: 'B',
+		description: 'Se cumple parcialmente',
+	},
+	{
+		scaleID: 3,
+		scale: 'C',
+		description: 'No se cumple',
+	},
+]
 
 const RubricContent = ({
 	rubric,
@@ -54,55 +72,49 @@ const RubricContent = ({
 	handleEvaluationChange,
 	handleVerdict,
 }: {
-	rubric: any
-	evaluation: any
-	handleEvaluationChange: any
+	rubric: RubricItem[]
+	evaluation: Record<number, number>
+	handleEvaluationChange: (evaCritConfID: number, scaleID: number) => void
 	handleVerdict: (verdict: number) => void
 }) => (
 	<ScrollArea className='h-[calc(100vh-10rem)] pr-4'>
 		<div className='space-y-8 p-1'>
 			<h2 className='text-3xl font-bold'>Rúbrica de Evaluación</h2>
-			{rubric._ResponseEvaluationD._Evalutioncriteria.map((criterion) => (
-				<Card key={criterion.criterionID}>
+			{rubric.map((item) => (
+				<Card key={item.evaCritConfID}>
 					<CardHeader>
 						<CardTitle className='text-xl font-semibold'>
-							{criterion.aspect}
+							{item.aspect}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<p className='text-sm text-muted-foreground mb-4'>
-							{criterion.description}
+							{item.description}
 						</p>
 						<RadioGroup
 							onValueChange={(value) =>
-								handleEvaluationChange(criterion.criterionID, parseInt(value))
+								handleEvaluationChange(item.evaCritConfID, parseInt(value))
 							}
-							value={evaluation[criterion.criterionID]?.toString()}
+							value={evaluation[item.evaCritConfID]?.toString()}
 							className='space-y-3'>
-							{rubric._ResponseEvaluationD._Evalutionscale.map(
-								(scale, index) => (
-									<div
-										key={scale.scaleID}
-										className='flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted'>
-										<RadioGroupItem
-											value={scale.scaleID.toString()}
-											id={`${criterion.criterionID}-${scale.scaleID}`}
-										/>
-										<Label
-											htmlFor={`${criterion.criterionID}-${scale.scaleID}`}
-											className='flex flex-1 items-center justify-between'>
-											<span>{scale.description}</span>
-											<Badge
-												variant={getBadgeVariant(
-													index,
-													rubric._ResponseEvaluationD._Evalutionscale.length
-												)}>
-												{scale.scale}
-											</Badge>
-										</Label>
-									</div>
-								)
-							)}
+							{scaleItems.map((scale) => (
+								<div
+									key={scale.scaleID}
+									className='flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted'>
+									<RadioGroupItem
+										value={scale.scaleID.toString()}
+										id={`${item.evaCritConfID}-${scale.scaleID}`}
+									/>
+									<Label
+										htmlFor={`${item.evaCritConfID}-${scale.scaleID}`}
+										className='flex flex-1 items-center justify-between'>
+										<span>{scale.description}</span>
+										<Badge variant={getBadgeVariant(scale.scaleID)}>
+											{scale.scale}
+										</Badge>
+									</Label>
+								</div>
+							))}
 						</RadioGroup>
 					</CardContent>
 				</Card>
@@ -119,10 +131,17 @@ const RubricContent = ({
 	</ScrollArea>
 )
 
-const getBadgeVariant = (index: number, totalScales: number) => {
-	if (index === 0) return 'destructive'
-	if (index === totalScales - 1) return 'default'
-	return 'secondary'
+const getBadgeVariant = (scaleID: number) => {
+	switch (scaleID) {
+		case 1:
+			return 'default'
+		case 2:
+			return 'secondary'
+		case 3:
+			return 'destructive'
+		default:
+			return 'secondary'
+	}
 }
 
 export function PDFViewer({
@@ -191,13 +210,13 @@ export function PDFViewer({
 			)
 		: null
 
-	const handleEvaluationChange = (criterionID: number, scaleID: number) => {
-		setEvaluation((prev) => ({ ...prev, [criterionID]: scaleID }))
+	const handleEvaluationChange = (evaCritConfID: number, scaleID: number) => {
+		setEvaluation((prev) => ({ ...prev, [evaCritConfID]: scaleID }))
 	}
 
 	const handleVerdict = async (verdict: number) => {
 		try {
-			// Enviar datos de la rúbrica
+			// Formatear los datos de la rúbrica según el formato esperado por la API
 			const rubricData = Object.entries(evaluation).map(
 				([evaCritConfID, scaleID]) => ({
 					evaCritConfID: parseInt(evaCritConfID),
@@ -206,13 +225,12 @@ export function PDFViewer({
 				})
 			)
 
-			console.log('RUBRICA', rubricData)
+			console.log({ rubricData })
 
+			// Enviar datos de la rúbrica
 			const resRubric = await apiClient.post(
 				'/Document/RegisterDocumentEvaluationCriteria',
-				{
-					rubricData,
-				},
+				rubricData,
 				{
 					headers: {
 						'Authorization-Token': token,
@@ -220,22 +238,11 @@ export function PDFViewer({
 				}
 			)
 
-			if (resRubric.status != HttpStatusCode.Ok) {
+			if (resRubric.status !== HttpStatusCode.Ok) {
 				throw new Error('Error al enviar los datos de la rúbrica')
 			}
 
 			// Enviar veredicto
-			const verdictResponse = await fetch('/api/verdict', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					documentID,
-					veredictID: verdict,
-				}),
-			})
-
 			const resVeredict = await apiClient.post(
 				'/Document/RegisterDocumentVeredict',
 				{
@@ -249,12 +256,12 @@ export function PDFViewer({
 				}
 			)
 
-			if (!verdictResponse.ok) {
+			if (resVeredict.status !== HttpStatusCode.Ok) {
 				throw new Error('Error al enviar el veredicto')
 			}
 
-			toast.success('Calificacion enviado con éxito')
-			router.push(`/dashboard/events/marketplace/event/${topicsID}`)
+			toast.success('Calificación enviada con éxito')
+			router.push(`/dashboard/events/marketplace/event/talk/${topicsID}`)
 		} catch (error) {
 			console.error('Error:', error)
 			toast.error('Error al enviar la calificación')
