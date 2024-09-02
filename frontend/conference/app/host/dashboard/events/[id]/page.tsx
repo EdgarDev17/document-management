@@ -39,6 +39,7 @@ import { formatDate } from '@/lib/utils'
 import { Institution } from '@/types/models/institution'
 import { AgendaContainer } from '@/app/components/features/agendacontainer'
 import { EmptyAgendaMessage } from '@/app/components/features/empty-agenda'
+import { NoAccess } from '@/app/components/common/noaccess'
 
 async function getEventAgenda(id: string, token: string) {
 	try {
@@ -89,7 +90,6 @@ async function getInstitution(id: string, token: string) {
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
-
 	if (!session) {
 		return 'no auth'
 	}
@@ -105,6 +105,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 		event.institutionID.toString(),
 		session.accessToken
 	)
+
+	if (event.userID !== parseInt(session.userId)) {
+		return <NoAccess />
+	}
 
 	return (
 		<div className=' p-4 space-y-8 h-[70vh]'>

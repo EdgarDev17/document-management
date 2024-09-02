@@ -60,7 +60,6 @@ function EventsContainer({ token }: { token: string }) {
 					(event: Conference) => event.rolID === 1
 				)
 				setEvents(filteredEvents)
-				console.log('eventos filtrados del ADMIN', filteredEvents)
 			})
 			.catch((error) => {
 				console.error('Error fetching conference data:', error)
