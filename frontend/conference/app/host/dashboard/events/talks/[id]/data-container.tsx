@@ -100,8 +100,6 @@ export function DataContainer({
   const [users, setUsers] = useState<User[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // console.log(currentUserId)
-  console.log(eventData.userID);
   const isAdmin = currentUserId === eventData.userID;
 
   const form = useForm<TalkData>({
@@ -110,13 +108,10 @@ export function DataContainer({
   });
 
   const onSubmit = (data: TalkData) => {
-    console.log("editar data...");
     // Implement the edit functionality here
   };
 
   const handleDelete = async () => {
-    console.log("eliminando...", talkData.topicsID);
-
     try {
       const res = await apiClient.post(
         "/conference/deleteconferencetopics",
@@ -132,7 +127,6 @@ export function DataContainer({
 
       toast.success("Eliminado con éxito");
     } catch (err) {
-      console.log(err);
       toast.error("Error al eliminar la charla");
     }
     setIsDeleteDialogOpen(false);
@@ -153,11 +147,9 @@ export function DataContainer({
         (item: any) => item.topicsID === talkData.topicsID,
       );
 
-      console.log({ filteredItems });
       setUsers(filteredItems);
       return filteredItems;
     } catch (error) {
-      console.log(error);
       toast.error("Error al obtener los participantes");
     }
   };
@@ -182,11 +174,9 @@ export function DataContainer({
         },
       );
 
-      console.log(response);
       toast.success("Jurado asignado con éxito");
       getParticipants(); // Refresh the participants list
     } catch (error) {
-      console.log(error);
       toast.error("Ocurrió un error al asignar jurado, intente de nuevo");
     }
   };

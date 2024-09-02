@@ -37,10 +37,7 @@ import { RegisterUserToTalk } from '@/app/components/features/register-user-talk
 import { Talk } from '@/types/models/talk'
 import { Conference } from '@/types/models/conference'
 import { PaperSubmissionDialog } from '@/app/components/features/paper-submission'
-import {
-	Document,
-	JuryModeContent,
-} from '@/app/components/features/jury-paper-list'
+import { JuryModeContent } from '@/app/components/features/jury-paper-list'
 
 type Props = {
 	talk: Talk
@@ -90,12 +87,6 @@ export function TalkDetails({
 				return 'Rol no definido'
 		}
 	}
-
-	console.log('evento recibido', event)
-	console.log('charla recibida', talk)
-	console.log('userID recibida', userId)
-	console.log('userID recibida', isUserAlreadyRegistered)
-
 	return (
 		<div className='container mx-auto p-4 space-y-8'>
 			<div className='space-y-4'>

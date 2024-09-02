@@ -81,7 +81,6 @@ async function getUserEvents(token: string) {
 		)
 		return response.data.conference
 	} catch (err) {
-		console.log('Erro al botener los eventos del participante 🔥', err)
 		return null
 	}
 }

@@ -69,7 +69,6 @@ export function PaperSubmissionDialog({
 					setIsUploading(false)
 					setIsOpen(false)
 					// Aquí iría la lógica para enviar el archivo al servidor
-					console.log('Archivo en base64:', fileBase64)
 					const cleanedBase64String = fileBase64.replace(
 						'data:application/pdf;base64,',
 						''
@@ -91,7 +90,6 @@ export function PaperSubmissionDialog({
 						)
 						toast.success('Documento enviado exitosamente')
 					} catch (error) {
-						console.log(error)
 						toast.error(
 							'Error al intentar enviar el documento, intente de nuevo'
 						)

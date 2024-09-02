@@ -42,7 +42,6 @@ function UserProfileData({ token }: { token: string }) {
 				setLoading(false)
 			})
 			.catch((err) => {
-				console.log('error al obtener perfil', err)
 				setLoading(false)
 			})
 	}
@@ -63,7 +62,6 @@ function UserProfileData({ token }: { token: string }) {
 				}
 			)
 			toast.success('Foto actualizada correctamente')
-			console.log(response.data)
 			fetchUserProfile() // Actualizar el perfil después de subir la imagen
 		} catch (error) {
 			console.error('Error uploading image:', error)

@@ -49,7 +49,6 @@ async function getUserEvents(token: string) {
 
 		return response.data.conference
 	} catch (err) {
-		console.log('Erro al botener los eventos del participante 🔥', err)
 		return null
 	}
 }
@@ -82,8 +81,6 @@ export default async function Page() {
 	const page = 1
 	const pageSize = 3
 	const totalPages = allEvents ? Math.ceil(allEvents.length / pageSize) : 1
-
-	console.log('GENERAL, dashboard/events', { allEvents })
 
 	// Simulating server-side pagination
 	const paginatedEvents = allEvents

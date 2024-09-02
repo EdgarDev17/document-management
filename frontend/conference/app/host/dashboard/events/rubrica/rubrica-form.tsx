@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/app/components/ui/button'
 import { Checkbox } from '@/app/components/ui/checkbox'
 import {
@@ -140,9 +140,6 @@ function AddRubrica({ token }: { token: string }) {
 			conferenceID: parseInt(conferenceId),
 		}))
 
-		console.log('Respuesta para la API:', JSON.stringify(apiResponse, null, 2))
-		console.log('Respuesta para la API:', apiResponse)
-
 		try {
 			await apiClient.post(
 				'/conference/registerevalutioncriteriaconference',
@@ -158,7 +155,6 @@ function AddRubrica({ token }: { token: string }) {
 			router.push(`/host/dashboard/events/talks/${talkId}`)
 		} catch (error) {
 			toast.error('Ocurrio un error al enviar el criterio')
-			console.log(error)
 		}
 	}
 

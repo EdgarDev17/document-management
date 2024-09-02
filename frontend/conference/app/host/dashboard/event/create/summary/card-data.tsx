@@ -81,7 +81,6 @@ const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
   ]);
 
   const onSubmit = async () => {
-    console.log(userId, currentInstitution?.institutionID, formSummary);
     await apiClient
       .post(
         "/conference/registerconference",
@@ -203,7 +202,6 @@ const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
         </Button>
 
 	const onSubmit = async () => {
-		console.log(userId, currentInstitution?.institutionID, formSummary)
 		await apiClient
 			.post(
 				'/conference/registerconference',

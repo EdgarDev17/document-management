@@ -36,7 +36,6 @@ export default function Login() {
 	const searchParams = useSearchParams()
 	const search = searchParams.get('rol')
 
-	console.log(search)
 	// creamos el formulario y asignamos valores predeterminados
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

@@ -78,13 +78,11 @@ export default function Register() {
 			birthdate: values.birthdate.toISOString(),
 		}
 		try {
-			console.log(formattedData)
 			const response = await apiClient.post(
 				'/registerusers/registeruser',
 				formattedData
 			)
 
-			console.log('Respuesta del servidor:', response.data)
 			toast.success('Registro Completado con éxito')
 			router.push('/account/verify-email')
 		} catch (error) {

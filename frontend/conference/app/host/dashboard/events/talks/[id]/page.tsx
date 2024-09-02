@@ -6,7 +6,6 @@ import { TalkClientWrapper } from './wrapper'
 import { Conference } from '@/types/models/conference'
 
 async function getTalkData(token: string, talkId: string) {
-	console.log('PIDIENDO DATOS EN GETTALK...', talkId)
 	try {
 		const response = await apiClient.get(
 			`/conference/ConferencesListTopicsByTopicsID?TopicsID=${talkId}`,
@@ -18,7 +17,7 @@ async function getTalkData(token: string, talkId: string) {
 		)
 		return response.data.topics[0]
 	} catch (err) {
-		console.log(err)
+		return null
 	}
 }
 
@@ -35,7 +34,6 @@ async function getEventDetailts(id: string, token: string) {
 
 		return response.data.conference[0]
 	} catch (err) {
-		console.log({ eventError: err })
 		return err
 	}
 }
@@ -56,9 +54,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 		talk.conferenceID,
 		session.accessToken
 	)
-
-	console.log('HOST CHARLA', talk)
-	console.log('HOST Evento', event)
 
 	return (
 		<TalkClientWrapper
