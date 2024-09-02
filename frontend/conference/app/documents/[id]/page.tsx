@@ -45,8 +45,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 	const paper = await getDocumentById(params.id, session.accessToken)
 	const rubric = await getRubric(17, session.accessToken)
 
-	console.log('paper ->', paper)
-	console.log('rubruca->', rubric)
 	return (
 		<div className='w-full md:container mx-auto py-8'>
 			<PDFViewer

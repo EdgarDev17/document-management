@@ -225,8 +225,6 @@ export function PDFViewer({
 				})
 			)
 
-			console.log({ rubricData })
-
 			// Enviar datos de la rúbrica
 			const resRubric = await apiClient.post(
 				'/Document/RegisterDocumentEvaluationCriteria',

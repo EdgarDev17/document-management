@@ -55,8 +55,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 		session.accessToken
 	)
 
-	console.log('EVENTO PERRO', event)
-
 	return (
 		<TalkClientWrapper
 			talk={talk}

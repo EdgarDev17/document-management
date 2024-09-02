@@ -50,7 +50,6 @@ async function checkIfUserIsRegistered(token: string, targetTalkId: number) {
 				},
 			}
 		)
-		console.log('ESta registrado??', res.data.topics)
 
 		const foundTopic = res.data.topics.find(
 			(topic: Talk) => parseInt(topic.topicsID) === targetTalkId
@@ -76,7 +75,6 @@ async function getEventPapers(talkId: number, token: string) {
 			}
 		)
 
-		console.log('docs', res.data.document)
 		return res.data.document
 	} catch (error) {
 		return null
@@ -99,7 +97,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 		parseInt(params.id)
 	)
 
-	console.log('ESta registrado??', isUserAlreadyRegistered)
 	const talk: Talk = await getTalkDetails(params.id, session.accessToken)
 	const event: Conference = await getEvenDetails(
 		talk.conferenceID,
@@ -110,6 +107,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 	return (
 		<TalkDetails
+			// @ts-ignore
 			isUserAlreadyRegistered={isUserAlreadyRegistered}
 			event={event}
 			talk={talk}
