@@ -40,6 +40,18 @@ async function getEvenDetails(eventId: number, token: string) {
 	}
 }
 
+async function hasUserSubmittedPaper(
+	userId: number,
+	talkId: number,
+	token: string
+) {
+	const userPapers = await getCurrentUserPapers(userId, token)
+
+	if (!userPapers) return false
+
+	return userPapers.some((paper: any) => paper.topicsID === talkId)
+}
+
 async function checkIfUserIsRegistered(token: string, targetTalkId: number) {
 	try {
 		const res = await apiClient.get(
@@ -81,6 +93,23 @@ async function getEventPapers(talkId: number, token: string) {
 	}
 }
 
+async function getCurrentUserPapers(userId: number, token: string) {
+	try {
+		const res = await apiClient.get(
+			`/document/getdocumentsByUser?UserID=${userId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+
+		return res.data.document
+	} catch (error) {
+		return null
+	}
+}
+
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 
@@ -104,6 +133,18 @@ export default async function Page({ params }: { params: { id: string } }) {
 	)
 
 	const papers = await getEventPapers(parseInt(params.id), session.accessToken)
+	const userPapers = await getCurrentUserPapers(
+		parseInt(session.userId),
+		session.accessToken
+	)
+	// Verificar si el usuario ha enviado un paper a esta charla específica
+	const hasSubmittedPaper = await hasUserSubmittedPaper(
+		parseInt(session.userId),
+		parseInt(params.id),
+		session.accessToken
+	)
+
+	console.log('talk DEL USER LOGUEADO :D', talk)
 
 	return (
 		<TalkDetails
@@ -114,6 +155,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 			token={session.accessToken}
 			userId={session.userId}
 			papers={papers}
+			hasSubmittedPaper={hasSubmittedPaper}
 		/>
 	)
 }

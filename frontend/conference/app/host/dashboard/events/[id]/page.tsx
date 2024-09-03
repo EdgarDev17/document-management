@@ -40,6 +40,7 @@ import { Institution } from '@/types/models/institution'
 import { AgendaContainer } from '@/app/components/features/agendacontainer'
 import { EmptyAgendaMessage } from '@/app/components/features/empty-agenda'
 import { NoAccess } from '@/app/components/common/noaccess'
+import { AddTalkForm } from '@/app/components/form/add-talk'
 
 async function getEventAgenda(id: string, token: string) {
 	try {
@@ -90,6 +91,7 @@ async function getInstitution(id: string, token: string) {
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
+
 	if (!session) {
 		return 'no auth'
 	}
@@ -105,6 +107,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 		event.institutionID.toString(),
 		session.accessToken
 	)
+	const isAdmin = event.userID === parseInt(session.userId)
+
+	console.log('es admin?', event)
 
 	if (event.userID !== parseInt(session.userId)) {
 		return <NoAccess />
@@ -133,33 +138,52 @@ export default async function Page({ params }: { params: { id: string } }) {
 						</Badge>
 					</div>
 				</div>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button size='lg' className='bg-blue-600'>
-							Registrarme al evento
-						</Button>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Bienvenido, Un paso más</DialogTitle>
-							<DialogDescription>
-								Selecciona como quieres registrarte al evento
-							</DialogDescription>
-						</DialogHeader>
 
-						<div className='py-3 flex gap-x-6'>
-							<Button className='bg-blue-600'>Como invitado</Button>
-							<Button variant={'outline'}>Como ponente</Button>
-						</div>
-					</DialogContent>
-				</Dialog>
+				{!isAdmin && (
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button size='lg' className='bg-blue-600'>
+								Registrarme al evento
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Bienvenido, Un paso más</DialogTitle>
+								<DialogDescription>
+									Selecciona como quieres registrarte al evento
+								</DialogDescription>
+							</DialogHeader>
+
+							<div className='py-3 flex gap-x-6'>
+								<Button className='bg-blue-600'>Como invitado</Button>
+								<Button variant={'outline'}>Como ponente</Button>
+							</div>
+						</DialogContent>
+					</Dialog>
+				)}
 			</div>
 
 			<div className='grid md:grid-cols-3 gap-6'>
+				{/* <AddTalkForm minDate={''} maxDate={''} conferenceId={''} token={''} /> */}
 				<Card className='md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden px-4'>
-					<CardHeader>
-						<CardTitle>Agenda</CardTitle>
-						<CardDescription>Programa detallado del evento</CardDescription>
+					<CardHeader className='flex  flex-row justify-between items-center'>
+						<div>
+							<CardTitle>Agenda</CardTitle>
+							<CardDescription>Programa detallado del evento</CardDescription>
+						</div>
+						<Dialog>
+							<DialogTrigger>
+								<Button className='bg-blue-600'>Crear Charla</Button>
+							</DialogTrigger>
+							<DialogContent className='w-fit max-w-[1000px]'>
+								<AddTalkForm
+									minDate={String(event.beggingDate)}
+									maxDate={String(event.finishDate)}
+									conferenceId={event.conferenceID.toString()}
+									token={session.accessToken}
+								/>
+							</DialogContent>
+						</Dialog>
 					</CardHeader>
 					<ScrollArea className='flex-grow'>
 						<CardContent className='w-full h-full'>

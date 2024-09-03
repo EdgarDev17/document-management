@@ -100,7 +100,7 @@ export function EventsContainer({ token }: { token: string }) {
 			<section className='w-full h-[60%] flex gap-x-6'>
 				<div className='w-[50%] grid grid-cols-2 gap-1 place-items-center'>
 					<Card className='w-[250px] flex flex-col justify-between'>
-						<CardHeader className='w-full bg-primary rounded-t-lg'>
+						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
 							<CardTitle className='text-primary-foreground'>
 								Eventos creados
 							</CardTitle>
@@ -117,7 +117,7 @@ export function EventsContainer({ token }: { token: string }) {
 					</Card>
 
 					<Card className='w-[250px] flex flex-col justify-between'>
-						<CardHeader className='w-full bg-primary rounded-t-lg'>
+						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
 							<CardTitle className='text-primary-foreground'>
 								Participantes
 							</CardTitle>
@@ -130,7 +130,7 @@ export function EventsContainer({ token }: { token: string }) {
 					</Card>
 
 					<Card className='w-11/12 col-span-2 flex flex-col justify-between'>
-						<CardHeader className='w-full bg-primary rounded-t-lg'>
+						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
 							<CardTitle className='text-primary-foreground'>
 								Próximo Evento
 							</CardTitle>

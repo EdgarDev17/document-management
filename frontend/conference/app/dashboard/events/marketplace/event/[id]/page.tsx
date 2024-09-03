@@ -122,6 +122,8 @@ export default async function Page({ params }: { params: { id: string } }) {
 			(conference: Conference) => conference.conferenceID === id
 		)
 	}
+	console.log('EVENTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO', event)
+	console.log('institucion en el participanteeeeeeeeeeeeeeeeee', institution)
 
 	return (
 		<div className=' p-4 space-y-8 h-[70vh]'>
