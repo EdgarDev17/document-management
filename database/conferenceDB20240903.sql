@@ -3037,6 +3037,8 @@ declare  p_UserConferenceID INT;
 	-- Verificar si existe el usuario y si está activo
     SELECT COUNT(1) INTO v_UserExists 
 		FROM conferencesdb.user WHERE UserID = p_UserID AND state = 1;
+          select userConferenceID into p_UserConferenceID   from `conferencesdb`.`userconference` 
+    where UserID=p_UserID and TopicsID=p_TopicsID; 
         
 	IF v_UserExists = 0 THEN
 		SET result = 0;
@@ -3068,8 +3070,7 @@ declare  p_UserConferenceID INT;
 IF v_UserExists = 1 AND v_TopicExists = 1 AND v_IsValid = 1 THEN
 	
     
-    select userConferenceID into p_UserConferenceID   from `conferencesdb`.`userconference` 
-    where UserID=p_UserID and TopicsID=p_TopicsID; 
+  
     
     -- Consultar puntaje de la conferencia
     SELECT Score INTO v_CurrentScore
@@ -3999,4 +4000,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-02 20:46:59
+-- Dump completed on 2024-09-03 15:58:11
