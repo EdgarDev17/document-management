@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import {
 	Card,
 	CardHeader,
@@ -9,43 +11,32 @@ import {
 	CardDescription,
 } from '@/app/components/ui/card'
 import {
-	ArrowTrendingUpIcon,
-	ArrowTopRightOnSquareIcon,
-} from '@heroicons/react/24/outline'
-import {
 	ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/app/components/ui/charts'
-
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 import { DataTable } from './data-table'
 import { columns, Conference } from './columns'
-import { useEffect, useState } from 'react'
 import { apiClient } from '@/lib/api-service'
-import Link from 'next/link'
-import { ConferenceTable } from '@/app/components/ui/tables/conference-table'
+import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline'
 
 const chartConfig = {
-	desktop: {
-		label: 'Desktop',
+	event: {
+		label: 'Participantes',
 		color: 'hsl(var(--chart-1))',
 	},
 } satisfies ChartConfig
 
-const chartData = [
-	{ month: 'January', desktop: 186 },
-	{ month: 'February', desktop: 305 },
-	{ month: 'March', desktop: 237 },
-	{ month: 'April', desktop: 73 },
-	{ month: 'May', desktop: 209 },
-	{ month: 'June', desktop: 214 },
-]
-
-function EventsContainer({ token }: { token: string }) {
+export function EventsContainer({ token }: { token: string }) {
 	const [events, setEvents] = useState<Conference[]>([])
 	const [loading, setLoading] = useState(true)
+	const [totalParticipants, setTotalParticipants] = useState(0)
+	const [nearestEvent, setNearestEvent] = useState<Conference | null>(null)
+	const [chartData, setChartData] = useState<{ name: string; event: number }[]>(
+		[]
+	)
 
 	useEffect(() => {
 		apiClient
@@ -55,15 +46,44 @@ function EventsContainer({ token }: { token: string }) {
 				},
 			})
 			.then((response) => {
-				// Filter the conferences to only include those with rolID === 1
 				const filteredEvents = response.data.conference.filter(
 					(event: Conference) => event.rolID === 1
 				)
 				setEvents(filteredEvents)
+
+				// total participantes
+				const total = filteredEvents.reduce(
+					(sum, event) => sum + (event.totalRegistrados || 0),
+					0
+				)
+				setTotalParticipants(total)
+
+				// evento mas proximo
+				const now = new Date()
+				const upcomingEvents = filteredEvents.filter(
+					(event) => new Date(event.beggingDate) > now
+				)
+				const nearest = upcomingEvents.reduce(
+					(nearest, event) =>
+						!nearest ||
+						new Date(event.beggingDate) < new Date(nearest.beggingDate)
+							? event
+							: nearest,
+					null as Conference | null
+				)
+				setNearestEvent(nearest)
+
+				// Prepare chart data
+				const chartData = filteredEvents.slice(0, 10).map((event) => ({
+					name:
+						event.conference_name.slice(0, 20) +
+						(event.conference_name.length > 20 ? '...' : ''),
+					event: event.totalRegistrados || 0,
+				}))
+				setChartData(chartData)
 			})
 			.catch((error) => {
 				console.error('Error fetching conference data:', error)
-				// Handle the error appropriately
 			})
 			.finally(() => {
 				setLoading(false)
@@ -73,17 +93,17 @@ function EventsContainer({ token }: { token: string }) {
 	return (
 		<div className='w-full h-full flex flex-col gap-y-14 relative py-14'>
 			<Link
-				href={'/host/dashboard/event/create/step-one'}
-				className={
-					'bg-blue-800 text-blue-50 border absolute right-0 top-0 border-blue-50 p-4 rounded-lg w-[250px] h-[50px] text-center flex justify-center items-center'
-				}>
+				href='/host/dashboard/event/create/step-one'
+				className='bg-blue-800 text-blue-50 border absolute right-0 top-0 border-blue-50 p-4 rounded-lg w-[250px] h-[50px] text-center flex justify-center items-center'>
 				Crear Conferencia
 			</Link>
 			<section className='w-full h-[60%] flex gap-x-6'>
-				<div className='w-[50%] grid grid-cols-2 gap-1  place-items-center'>
-					<Card className='w-[250px]  flex flex-col justify-between'>
-						<CardHeader className='w-full bg-tertiary rounded-t-lg'>
-							<CardTitle className='text-white'>Eventos creados</CardTitle>
+				<div className='w-[50%] grid grid-cols-2 gap-1 place-items-center'>
+					<Card className='w-[250px] flex flex-col justify-between'>
+						<CardHeader className='w-full bg-primary rounded-t-lg'>
+							<CardTitle className='text-primary-foreground'>
+								Eventos creados
+							</CardTitle>
 						</CardHeader>
 						<CardContent className='w-full h-full flex justify-center items-center py-4'>
 							{loading ? (
@@ -96,62 +116,76 @@ function EventsContainer({ token }: { token: string }) {
 						</CardContent>
 					</Card>
 
-					<Card className='w-[250px]  flex flex-col justify-between'>
-						<CardHeader className='w-full bg-tertiary rounded-t-lg'>
-							<CardTitle className='text-white'>Participantes</CardTitle>
+					<Card className='w-[250px] flex flex-col justify-between'>
+						<CardHeader className='w-full bg-primary rounded-t-lg'>
+							<CardTitle className='text-primary-foreground'>
+								Participantes
+							</CardTitle>
 						</CardHeader>
 						<CardContent className='w-full h-full flex justify-center items-center py-4'>
-							<p className='text-5xl font-bold text-zinc-800'>0</p>
+							<p className='text-5xl font-bold text-zinc-800'>
+								{totalParticipants}
+							</p>
 						</CardContent>
 					</Card>
 
-					<Card className='w-[250px]  flex flex-col justify-between'>
-						<CardHeader className='w-full bg-tertiary rounded-t-lg'>
-							<CardTitle className='text-white'>Cancelaciones</CardTitle>
+					<Card className='w-11/12 col-span-2 flex flex-col justify-between'>
+						<CardHeader className='w-full bg-primary rounded-t-lg'>
+							<CardTitle className='text-primary-foreground'>
+								Próximo Evento
+							</CardTitle>
 						</CardHeader>
-						<CardContent className='w-full h-full flex justify-center items-center py-4'>
-							<p className='text-5xl font-bold text-zinc-800'>0</p>
-						</CardContent>
-					</Card>
-					<Card className='w-[250px]  flex flex-col justify-between'>
-						<CardHeader className='w-full bg-tertiary rounded-t-lg'>
-							<CardTitle className='text-white'>Ventas</CardTitle>
-						</CardHeader>
-						<CardContent className='w-full h-full flex justify-center items-center py-4'>
-							<p className='text-5xl font-bold text-zinc-800'>0</p>
+						<CardContent className='w-full h-full flex flex-col justify-center items-center py-4'>
+							{nearestEvent ? (
+								<>
+									<p className='text-xl font-bold text-zinc-800'>
+										{nearestEvent.conference_name}
+									</p>
+									<p className='text-sm text-zinc-600'>
+										{new Date(nearestEvent.beggingDate).toLocaleDateString()}
+									</p>
+								</>
+							) : (
+								<p className='text-xl text-zinc-600'>No hay eventos próximos</p>
+							)}
 						</CardContent>
 					</Card>
 				</div>
-				<div className='w-[50%] '>
+				<div className='w-[50%]'>
 					<Card className='h-fit'>
 						<CardHeader>
-							<CardTitle>Registrios</CardTitle>
-							<CardDescription>Personas registradas</CardDescription>
+							<CardTitle>Registros</CardTitle>
+							<CardDescription>Participantes por evento</CardDescription>
 						</CardHeader>
 						<CardContent className='h-[250px]'>
-							<ChartContainer config={chartConfig} className='h-full'>
-								<BarChart accessibilityLayer data={chartData}>
-									<CartesianGrid vertical={false} />
-									<XAxis
-										dataKey='month'
-										tickLine={false}
-										tickMargin={10}
-										axisLine={false}
-										tickFormatter={(value: string | any[]) => value.slice(0, 3)}
-									/>
-									{/* @ts-ignore */}
-									<ChartTooltip
-										cursor={false}
-										content={<ChartTooltipContent indicator='dashed' />}
-									/>
-									{/* @ts-ignore */}
-									<Bar
-										dataKey='desktop'
-										fill='var(--color-desktop)'
-										radius={4}
-									/>
-								</BarChart>
-							</ChartContainer>
+							{events.length > 0 ? (
+								<ChartContainer config={chartConfig} className='h-[290px] '>
+									<BarChart data={chartData}>
+										<CartesianGrid vertical={false} />
+										<XAxis
+											dataKey='name'
+											tickLine={false}
+											tick={false}
+											tickMargin={10}
+											axisLine={false}
+											angle={-45}
+											textAnchor='end'
+											height={80}
+										/>
+										<YAxis axisLine={false} tickLine={false} tickMargin={10} />
+										<Tooltip
+											content={<ChartTooltipContent indicator='dashed' />}
+										/>
+										<Bar dataKey='event' fill='var(--color-event)' radius={4} />
+									</BarChart>
+								</ChartContainer>
+							) : (
+								<div className='flex justify-center items-center h-full'>
+									<p className='text-lg text-zinc-600'>
+										Ingrese más información para ver las gráficas
+									</p>
+								</div>
+							)}
 						</CardContent>
 						<CardFooter>
 							<div className='flex w-full items-start gap-2 text-sm'>
@@ -179,5 +213,3 @@ function EventsContainer({ token }: { token: string }) {
 		</div>
 	)
 }
-
-export { EventsContainer }
