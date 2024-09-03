@@ -45,7 +45,7 @@ namespace Conference.BL
 
 
         //Registar datos del usuario
-        public int RegisterUsers(string email, string name, string lastname, DateTime birthdate, string password)
+        public int RegisterUsers(string email, string name, string lastname, DateTime birthdate, string password,string UrlValidateEmail)
         {
             string passwordHash = "";
             string passwordSalt = "";
@@ -69,7 +69,15 @@ namespace Conference.BL
             }
             else if (User.ResponseCode == 2)
             {
+                // Definir la URL base y el UserID
+              
+                string userID = User.UserID.ToString(); 
+
+                // Concatenar la URL completa
+                string completeUrl = $"{UrlValidateEmail}={userID}";
+
                 
+
                 var title = "Valida tu Email para hacer uso de CongresDocs";
 
                 var mensajeBody = $@"
@@ -142,7 +150,7 @@ namespace Conference.BL
   <div class=""container"">
     <h2>Validación de Correo Electrónico</h2>
     <p>Haga clic en el siguiente enlace para validar su correo electrónico:</p>
-    <a href=""https://localhost:44396/ValidateEmial/?userID={User.UserID}"">Validar Correo Electrónico</a>
+    <a href=""{completeUrl}"">Validar Correo Electrónico</a>
   </div>
 </body>
 </html>
