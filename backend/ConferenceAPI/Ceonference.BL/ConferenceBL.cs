@@ -136,7 +136,6 @@ namespace Conference.BL
         {
 
             var (result, message) = _conferenceDAL.RegisterAssignUserTopic(userID, TopicsID, RollID);
-            
 
             if (result == 1)
             {
@@ -147,20 +146,20 @@ namespace Conference.BL
                 // Validación para enviar correo a NameUser
                 if (!string.IsNullOrEmpty(email.NameUser))
                 {
-                    var titleUser = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},Nos complace informarte que has sido asignado/a como jurado para el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.{email.NameAdmin}, uno de los administradores del congreso, ha realizado esta asignación.Agradecemos tu participación y esperamos contar con tu valiosa contribución.
-";
+                    var titleUser = $@"Confirmación de Registro en el Tema :{email.NameTopics}  del Congreso: {email.ConferenceName}";
+                    var mensajeBodyUser = $@"Estimado/a {email.NameUser}, Nos complace informarte que te has registrado exitosamente en el Tema {email.NameTopics}. ";
                     _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
                 }
 
                 // Validación para enviar correo a NameAdmin
                 if (!string.IsNullOrEmpty(email.NameAdmin))
                 {
-                    var titleAdmin = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin},Te informamos que has asignado al usuario {email.NameUser} como jurado en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}.Gracias por asegurar la correcta selección del jurado para este tema.";
+                    var titleAdmin = $@"Notificación de Registro de Usuario en un Tema en el Congreso: {email.ConferenceName}";
+                    var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin}, Queremos informarte que el usuario {email.NameUser} se ha registrado exitosamente en el Tema: {email.NameTopics} de la conferencia: {email.ConferenceName}.";
                     _emailSend.Send(email.EmailAdmin, titleAdmin, mensajeBodyAdmin, []);
                 }
             }
+
             return (result, message);
 
         }
@@ -176,6 +175,30 @@ namespace Conference.BL
         {
 
             var (result, message) = _conferenceDAL.UpdateUserConferenceRole(userID, TopicsID, RollID);
+
+            if (result == 1)
+            {
+                DateNotificationEN email = new DateNotificationEN();
+                email = _conferenceDAL.Emailnotification(TopicsID, userID);
+
+
+                // Validación para enviar correo a NameUser
+                if (!string.IsNullOrEmpty(email.EmailUser))
+                {
+                    var titleUser = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
+                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},Nos complace informarte que has sido asignado/a como jurado para el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.{email.NameAdmin}, uno de los administradores del congreso, ha realizado esta asignación.Agradecemos tu participación y esperamos contar con tu valiosa contribución.
+";
+                    _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
+                }
+
+                // Validación para enviar correo a NameAdmin
+                if (!string.IsNullOrEmpty(email.EmailAdmin))
+                {
+                    var titleAdmin = $@"Confirmación de Asignación de jurado en el tema:{email.NameTopics} del Congreso: {email.ConferenceName}";
+                    var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin},Te informamos que has asignado al usuario {email.NameUser} como jurado en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}.Gracias por asegurar la correcta selección del jurado para este tema.";
+                    _emailSend.Send(email.EmailAdmin, titleAdmin, mensajeBodyAdmin, []);
+                }
+            }
             return (result, message);
 
 
