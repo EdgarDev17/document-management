@@ -47,5 +47,5 @@ export default async function Page() {
 
 	console.log(events)
 
-	return <AnalyticsDataContainer events={events} />
+	return <AnalyticsDataContainer events={events} token={session.accessToken} />
 }

@@ -147,7 +147,7 @@ function DesktopNav() {
 				</NavigationMenuList>
 			</NavigationMenu>
 			<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-				<DropdownMenuTrigger asChild>
+				<DropdownMenuTrigger asChild className='hidden md:flex'>
 					<Button
 						variant='outline'
 						size='icon'

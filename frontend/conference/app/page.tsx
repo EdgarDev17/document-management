@@ -64,43 +64,44 @@ export default function LandingPage() {
 	return (
 		<div className='min-h-screen bg-gray-50 text-gray-900'>
 			<main>
-				<section className='h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-blue-100 to-white'>
+				<section className='min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-blue-100 to-white px-4'>
 					<motion.div
 						className='text-center z-10'
 						initial={{ opacity: 0, y: 20 }}
 						animate={controls}>
 						<motion.h1
-							className='text-5xl md:text-7xl font-bold mb-6 text-gray-900'
+							className='text-4xl md:text-5xl lg:text-7xl font-bold mb-6 text-gray-900'
 							animate={{ opacity: [0, 1], y: [20, 0] }}
 							transition={{ duration: 0.8, delay: 0.2 }}>
 							Revoluciona tus eventos
 						</motion.h1>
 						<motion.p
-							className='text-xl md:text-2xl text-gray-600 mb-8'
+							className='text-lg md:text-xl lg:text-2xl text-gray-600 mb-8'
 							animate={{ opacity: [0, 1], y: [20, 0] }}
 							transition={{ duration: 0.8, delay: 0.4 }}>
 							Crea, gestiona y descubre experiencias extraordinarias
 						</motion.p>
-						<div className='flex gap-x-4 justify-center'>
+						<div className='flex flex-col sm:flex-row gap-4 justify-center'>
 							<motion.div
-								className='space-x-4'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}>
 								<Link href={'/account/login?rol=admin'}>
-									<Button size='lg' variant='secondary' className='text-lg'>
+									<Button
+										size='lg'
+										variant='secondary'
+										className='text-lg w-full sm:w-auto'>
 										<User className='mr-2 h-5 w-5' /> Soy organizador
 									</Button>
 								</Link>
 							</motion.div>
 							<motion.div
-								className='space-x-4'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}>
 								<Link href={'/account/login?rol=general'}>
 									<Button
 										size='lg'
 										variant='outline'
-										className='bg-white text-blue-600 hover:bg-purple-100 text-lg'>
+										className='bg-white text-blue-600 hover:bg-purple-100 text-lg w-full sm:w-auto'>
 										<Search className='mr-2 h-5 w-5' /> Explorar eventos
 									</Button>
 								</Link>
@@ -124,7 +125,6 @@ export default function LandingPage() {
 						}}
 					/>
 				</section>
-
 				<section id='features' className='py-20 bg-white'>
 					<div className='container mx-auto px-4'>
 						<h2 className='text-3xl md:text-5xl font-bold text-center mb-12 text-gray-900'>
@@ -302,35 +302,36 @@ export default function LandingPage() {
 					</div>
 				</section>
 
-				<section className='py-20 bg-blue-600 text-white h-[600px] flex justify-center items-center'>
-					<div className='container mx-auto px-4 text-center'>
-						<h2 className='text-3xl md:text-5xl font-bold mb-6'>
+				<section className='py-20 bg-blue-600 text-white px-4'>
+					<div className='container mx-auto text-center'>
+						<h2 className='text-3xl md:text-4xl lg:text-5xl font-bold mb-6'>
 							¿Listo para revolucionar tus eventos?
 						</h2>
 						<p className='text-xl mb-8'>
 							Únete a EventMaster hoy y lleva tus experiencias al siguiente
 							nivel.
 						</p>
-						<div className='flex gap-x-4 justify-center'>
+						<div className='flex flex-col sm:flex-row gap-4 justify-center'>
 							<motion.div
-								className='space-x-4'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}>
 								<Link href={'/account/login?rol=admin'}>
-									<Button size='lg' variant='secondary' className='text-lg'>
+									<Button
+										size='lg'
+										variant='secondary'
+										className='text-lg w-full sm:w-auto'>
 										<User className='mr-2 h-5 w-5' /> Soy organizador
 									</Button>
 								</Link>
 							</motion.div>
 							<motion.div
-								className='space-x-4'
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}>
 								<Link href={'/account/login?rol=general'}>
 									<Button
 										size='lg'
 										variant='outline'
-										className='bg-white text-blue-600 hover:bg-purple-100 text-lg'>
+										className='bg-white text-blue-600 hover:bg-purple-100 text-lg w-full sm:w-auto'>
 										<Search className='mr-2 h-5 w-5' /> Explorar eventos
 									</Button>
 								</Link>
@@ -446,7 +447,7 @@ export default function LandingPage() {
 					</div>
 					<div className='mt-8 border-t border-gray-200 pt-8 text-center'>
 						<p className='text-sm text-gray-600'>
-							© 2023 EventMaster. Todos los derechos reservados.
+							© 2024 EventMaster. Todos los derechos reservados.
 						</p>
 					</div>
 				</div>

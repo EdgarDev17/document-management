@@ -32,9 +32,7 @@ import {
 	ThumbsUpIcon,
 	ThumbsDownIcon,
 } from 'lucide-react'
-// import { Badge } from '@/app/components/ui/badge'
-// import { Button } from '@/app/components/ui/button'
-// import { TrendingUp } from 'lucide-react'
+
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 import {
@@ -48,9 +46,10 @@ import { Conference } from '@/types/models/conference'
 
 type Props = {
 	events: Conference[]
+	token: string
 }
 
-export function AnalyticsDataContainer({ events }: Props) {
+export function AnalyticsDataContainer({ events, token }: Props) {
 	const [selectedEvent, setSelectedEvent] = useState('Todos')
 
 	const talks = [
@@ -99,30 +98,6 @@ export function AnalyticsDataContainer({ events }: Props) {
 			rating: 4.6,
 			popularity: 0.85,
 		},
-	]
-
-	const upcomingEvents = [
-		{
-			id: 4,
-			name: 'AI Conference 2024',
-			date: '2024-02-15',
-			expectedParticipants: 800,
-		},
-		{
-			id: 5,
-			name: 'WebDev Summit 2024',
-			date: '2024-03-22',
-			expectedParticipants: 650,
-		},
-	]
-
-	const attendanceTrend = [
-		{ month: 'Ene', attendees: 300 },
-		{ month: 'Feb', attendees: 400 },
-		{ month: 'Mar', attendees: 500 },
-		{ month: 'Abr', attendees: 450 },
-		{ month: 'May', attendees: 600 },
-		{ month: 'Jun', attendees: 700 },
 	]
 
 	const filteredTalks =
