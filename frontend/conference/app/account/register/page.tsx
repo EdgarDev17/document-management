@@ -55,8 +55,6 @@ export default function Register() {
 	)
 	const [isLoading, setIsLoading] = React.useState(false)
 	const router = useRouter()
-	const VERIFY_EMAIL_URL =
-		'https://tesis-uso.vercel.app/account/verify-email?userID'
 
 	const years = Array.from(
 		{ length: 124 },
@@ -73,14 +71,16 @@ export default function Register() {
 		},
 	})
 
+	const URL_VALIDATE_EMAIL =
+		'https://tesis-uso.vercel.app/account/verify-email/?userID'
+
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		setIsLoading(true)
 		const formattedData = {
 			...values,
 			birthdate: values.birthdate.toISOString(),
-			urlValidateEmail: VERIFY_EMAIL_URL,
+			urlValidateEmail: URL_VALIDATE_EMAIL,
 		}
-		console.log(formattedData)
 		try {
 			const response = await apiClient.post(
 				'/registerusers/registeruser',
@@ -205,9 +205,7 @@ export default function Register() {
 															field.onChange(newDate)
 														}
 													}}
-													disabled={(date) =>
-														date > new Date() || date < new Date('1900-01-01')
-													}
+													disabled={(date) => date < new Date('1900-01-01')}
 													// @ts-ignore
 													initialFocus
 													year={selectedYear}
