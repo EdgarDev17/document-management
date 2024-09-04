@@ -48,6 +48,7 @@ interface FormProps {
 	handleSave: () => void
 	descriptionLength: number
 	router: ReturnType<typeof useRouter>
+	isSaving: boolean
 }
 
 const useWindowSize = () => {
@@ -79,6 +80,7 @@ const DesktopEditForm: React.FC<FormProps> = ({
 	handleSave,
 	descriptionLength,
 	router,
+	isSaving,
 }) => (
 	<div className={'w-full h-full flex flex-col justify-center items-center'}>
 		<Card className={'w-[900px] h-[650px] relative'}>
@@ -167,7 +169,9 @@ const DesktopEditForm: React.FC<FormProps> = ({
 		<div className={'w-[900px] py-6 flex gap-x-4'}>
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
-					<Button variant={'outline'}>Cancelar</Button>
+					<Button variant={'outline'} disabled={isSaving}>
+						Cancelar
+					</Button>
 				</AlertDialogTrigger>
 				<AlertDialogContent>
 					<AlertDialogHeader>
@@ -188,7 +192,9 @@ const DesktopEditForm: React.FC<FormProps> = ({
 				</AlertDialogContent>
 			</AlertDialog>
 
-			<Button onClick={handleSave}>Guardar</Button>
+			<Button onClick={handleSave} disabled={isSaving}>
+				{isSaving ? 'Guardando...' : 'Guardar'}
+			</Button>
 		</div>
 	</div>
 )
@@ -199,6 +205,7 @@ const MobileEditForm: React.FC<FormProps> = ({
 	handleSave,
 	descriptionLength,
 	router,
+	isSaving,
 }) => (
 	<div className={'w-full px-4 py-6'}>
 		<Card className={'w-full'}>
@@ -291,7 +298,7 @@ const MobileEditForm: React.FC<FormProps> = ({
 		<div className={'w-full py-6 flex flex-col gap-y-4'}>
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
-					<Button variant={'outline'} className='w-full'>
+					<Button variant={'outline'} className='w-full' disabled={isSaving}>
 						Cancelar
 					</Button>
 				</AlertDialogTrigger>
@@ -314,8 +321,8 @@ const MobileEditForm: React.FC<FormProps> = ({
 				</AlertDialogContent>
 			</AlertDialog>
 
-			<Button onClick={handleSave} className='w-full'>
-				Guardar
+			<Button onClick={handleSave} className='w-full' disabled={isSaving}>
+				{isSaving ? 'Guardando...' : 'Guardar'}
 			</Button>
 		</div>
 	</div>
@@ -330,6 +337,7 @@ const EditForm: React.FC<EditFormProps> = ({ id, token }) => {
 	const router = useRouter()
 	const [imageBase64, setImageBase64] = useState<string>('')
 	const { width } = useWindowSize()
+	const [isSaving, setIsSaving] = useState<boolean>(false)
 
 	const headers = {
 		'Authorization-Token': token,
@@ -405,6 +413,7 @@ const EditForm: React.FC<EditFormProps> = ({ id, token }) => {
 		})
 
 		if (allFieldsFilled) {
+			setIsSaving(true)
 			if (institution.institutionID === parseInt(id)) {
 				apiClient
 					.put('/Institutions/update', institution, { headers })
@@ -417,6 +426,9 @@ const EditForm: React.FC<EditFormProps> = ({ id, token }) => {
 					.catch((err) => {
 						console.error('Error updating institution: ', err)
 						toast.error('Error al actualizar la institución')
+					})
+					.finally(() => {
+						setIsSaving(false)
 					})
 			}
 		} else {
@@ -439,6 +451,7 @@ const EditForm: React.FC<EditFormProps> = ({ id, token }) => {
 			handleSave={handleSave}
 			descriptionLength={descriptionLength}
 			router={router}
+			isSaving={isSaving}
 		/>
 	) : (
 		<DesktopEditForm
@@ -447,6 +460,7 @@ const EditForm: React.FC<EditFormProps> = ({ id, token }) => {
 			handleSave={handleSave}
 			descriptionLength={descriptionLength}
 			router={router}
+			isSaving={isSaving}
 		/>
 	)
 }

@@ -9,7 +9,6 @@ import {
 } from '@/app/components/ui/card'
 import { DataTable } from './data-table'
 import { columns, InstitutionDetails } from './columns'
-import axios from 'axios'
 import {
 	Dialog,
 	DialogTrigger,
@@ -22,18 +21,30 @@ import { Button } from '@/app/components/ui/button'
 import { AddInstitution } from '@/app/components/form/add-institution'
 import { apiClient } from '@/lib/api-service'
 
-function Container({ userId, token }: { userId: string; token: string }) {
+export function Container({
+	userId,
+	token,
+}: {
+	userId: string
+	token: string
+}) {
 	const [loading, setLoading] = React.useState(true)
 	const [institutions, setInstitutions] = React.useState<
 		InstitutionDetails[] | null
 	>(null)
 	const [institutionModal, setInstitutionModal] = React.useState<boolean>(false)
+	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false)
 
 	const handleCreatingInstitution = async (state: boolean) => {
-		setInstitutionModal(state)
+		setIsSubmitting(state)
+		if (!state) {
+			setInstitutionModal(false)
+			fetchInstitutions()
+		}
 	}
 
-	React.useEffect(() => {
+	const fetchInstitutions = () => {
+		setLoading(true)
 		apiClient
 			.get('/Institutions', {
 				headers: {
@@ -42,7 +53,6 @@ function Container({ userId, token }: { userId: string; token: string }) {
 			})
 			.then((response) => {
 				setInstitutions(response.data)
-				setLoading(false)
 			})
 			.catch((error) => {
 				console.error('Error fetching institutions:', error)
@@ -50,7 +60,11 @@ function Container({ userId, token }: { userId: string; token: string }) {
 			.finally(() => {
 				setLoading(false)
 			})
-	}, [institutionModal, token])
+	}
+
+	React.useEffect(() => {
+		fetchInstitutions()
+	}, [token])
 
 	return (
 		<div className='flex flex-col gap-y-8 md:gap-y-16 py-4 md:py-8 px-4 md:px-0'>
@@ -111,5 +125,3 @@ function Container({ userId, token }: { userId: string; token: string }) {
 		</div>
 	)
 }
-
-export { Container }

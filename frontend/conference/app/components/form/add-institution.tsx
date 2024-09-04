@@ -51,6 +51,7 @@ export function AddInstitution({
 	isInstitutionLoading: (state: boolean) => void
 }) {
 	const [previewImage, setPreviewImage] = useState<string | null>(null)
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -68,6 +69,7 @@ export function AddInstitution({
 		event: React.FormEvent
 	) {
 		event.preventDefault()
+		setIsSubmitting(true)
 		isInstitutionLoading(true)
 
 		try {
@@ -89,14 +91,17 @@ export function AddInstitution({
 			)
 
 			if (response.status == HttpStatusCode.Ok) {
-				isInstitutionLoading(false)
 				toast.success('Institucion creada con éxito')
-				return
+				form.reset()
+				setPreviewImage(null)
+			} else {
+				toast.error('Error al crear la institución, intente de nuevo mas tarde')
 			}
-			isInstitutionLoading(false)
-			toast.error('Error al crear la institución, intente de nuevo mas tarde')
 		} catch (err) {
-			return null
+			toast.error('Error al crear la institución, intente de nuevo mas tarde')
+		} finally {
+			setIsSubmitting(false)
+			isInstitutionLoading(false)
 		}
 	}
 
@@ -224,8 +229,11 @@ export function AddInstitution({
 							</FormItem>
 						</div>
 					</div>
-					<Button type='submit' className='w-full md:w-auto bg-blue-600'>
-						Crear Institución
+					<Button
+						type='submit'
+						className='w-full md:w-auto bg-blue-600'
+						disabled={isSubmitting}>
+						{isSubmitting ? 'Enviando...' : 'Crear Institución'}
 					</Button>
 				</form>
 			</Form>

@@ -121,6 +121,7 @@ const responseData: { _ResponseEvaluationD: ResponseEvaluationD } = {
 function AddRubrica({ token }: { token: string }) {
 	const [selectedCriteria, setSelectedCriteria] = useState<number[]>([])
 	const searchParams = useSearchParams()
+	const [isLoading, setIsLoading] = useState(false)
 	const conferenceId = searchParams.get('conferenceId')
 	const talkId = searchParams.get('talkId') ? searchParams.get('talkId') : ''
 	const router = useRouter()
@@ -134,11 +135,10 @@ function AddRubrica({ token }: { token: string }) {
 	}
 
 	const handleConfirm = async () => {
-		// Generar la respuesta en el formato que la API espera
+		setIsLoading(true)
 		const apiResponse = selectedCriteria.map((criterionID) => ({
 			criterionID,
-			// @ts-ignore
-			conferenceID: parseInt(conferenceId),
+			conferenceID: parseInt(conferenceId || '0'),
 		}))
 
 		try {
@@ -152,10 +152,12 @@ function AddRubrica({ token }: { token: string }) {
 				}
 			)
 
-			toast.success('Rubrica asignada con éxito')
+			toast.success('Rúbrica asignada con éxito')
 			router.push(`/host/dashboard/events/talks/${talkId}`)
 		} catch (error) {
-			toast.error('Ocurrio un error al enviar el criterio')
+			toast.error('Ocurrió un error al enviar el criterio')
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -239,7 +241,9 @@ function AddRubrica({ token }: { token: string }) {
 				<Link href={`/host/dashboard/events/talks/${talkId}`}>
 					<Button variant='outline'>Cancelar</Button>
 				</Link>
-				<Button onClick={handleConfirm}>Confirmar</Button>
+				<Button onClick={handleConfirm} disabled={isLoading}>
+					{isLoading ? 'Cargando...' : 'Confirmar'}
+				</Button>
 			</footer>
 		</div>
 	)

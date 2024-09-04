@@ -111,19 +111,13 @@ export function EventContainer({
 							<CardTitle>Agenda</CardTitle>
 							<CardDescription>Programa detallado del evento</CardDescription>
 						</div>
-						<Dialog>
-							<DialogTrigger>
-								<Button className='bg-blue-600'>Crear Charla</Button>
-							</DialogTrigger>
-							<DialogContent className='w-fit max-w-[1000px]'>
-								<AddTalkForm
-									minDate={String(event.beggingDate)}
-									maxDate={String(event.finishDate)}
-									conferenceId={event.conferenceID.toString()}
-									token={token}
-								/>
-							</DialogContent>
-						</Dialog>
+
+						<AddTalkForm
+							minDate={String(event.beggingDate)}
+							maxDate={String(event.finishDate)}
+							conferenceId={event.conferenceID.toString()}
+							token={token}
+						/>
 					</CardHeader>
 					<ScrollArea className='flex-grow'>
 						<CardContent className='w-full h-full'>

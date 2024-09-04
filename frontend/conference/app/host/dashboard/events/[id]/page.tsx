@@ -1,46 +1,7 @@
-import {
-	CalendarIcon,
-	MapPinIcon,
-	UsersIcon,
-	ClockIcon,
-	BuildingOfficeIcon,
-	PhoneIcon,
-	InboxIcon,
-} from '@heroicons/react/24/outline'
-import { Button } from '@/app/components/ui/button'
-import { Badge } from '@/app/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/app/components/ui/card'
-import { GlobeAltIcon } from '@heroicons/react/20/solid'
-import { ScrollArea } from '@/app/components/ui/scrollarea'
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogOverlay,
-	DialogPortal,
-	DialogTitle,
-	DialogTrigger,
-} from '@/app/components/ui/dialog'
 import { auth } from '@/auth'
 import { apiClient } from '@/lib/api-service'
 import { urlConference, urlInstitutions } from '@/lib/endpoints'
 import { Conference } from '@/types/models/conference'
-import { formatDate } from '@/lib/utils'
-import { Institution } from '@/types/models/institution'
-import { AgendaContainer } from '@/app/components/features/agendacontainer'
-import { EmptyAgendaMessage } from '@/app/components/features/empty-agenda'
-import { NoAccess } from '@/app/components/common/noaccess'
-import { AddTalkForm } from '@/app/components/form/add-talk'
 import { EventContainer } from './EventsContainer'
 
 async function getEventAgenda(id: string, token: string) {
