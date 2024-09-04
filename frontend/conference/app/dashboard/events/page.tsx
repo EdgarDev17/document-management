@@ -154,7 +154,7 @@ export default async function Page() {
 										size='sm'
 										asChild
 										className='w-full sm:w-auto'>
-										<Link href='/events'>
+										<Link href='/dashboard/events/marketplace'>
 											Explorar eventos
 											<ArrowRightIcon className='ml-2 h-4 w-4' />
 										</Link>

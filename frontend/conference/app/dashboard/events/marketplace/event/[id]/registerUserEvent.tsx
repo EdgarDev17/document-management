@@ -24,7 +24,7 @@ function RegisterUserEvent({
 	async function handleOnRegisterClick() {
 		try {
 			const res = await apiClient.post(
-				'/conference/RegisterUserAssignedConference',
+				'/Conference/RegisterUserAssignedConference',
 				{
 					conferenceID: conferenceId,
 				},
@@ -38,7 +38,7 @@ function RegisterUserEvent({
 			router.refresh()
 		} catch (err) {
 			toast.error('Error al registrarte al evento')
-			router.refresh()
+			console.log(err)
 			return null
 		}
 	}

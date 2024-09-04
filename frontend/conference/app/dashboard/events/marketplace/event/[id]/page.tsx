@@ -122,18 +122,18 @@ export default async function Page({ params }: { params: { id: string } }) {
 			(conference: Conference) => conference.conferenceID === id
 		)
 	}
-	console.log('EVENTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO', event)
-	console.log('institucion en el participanteeeeeeeeeeeeeeeeee', institution)
 
 	return (
-		<div className=' p-4 space-y-8 h-[70vh]'>
-			<div className='flex justify-between items-start'>
-				<div>
-					<h1 className='text-3xl font-bold mb-2'>{event.conference_name}</h1>
-					<p className='text-xl text-muted-foreground mb-4'>
+		<div className='p-4 space-y-8 min-h-[70vh]'>
+			<div className='flex flex-col sm:flex-row justify-between items-start gap-4'>
+				<div className='w-full sm:w-auto'>
+					<h1 className='text-2xl sm:text-3xl font-bold mb-2'>
+						{event.conference_name}
+					</h1>
+					<p className='text-lg sm:text-xl text-muted-foreground mb-4'>
 						{event.description}
 					</p>
-					<div className='flex space-x-4'>
+					<div className='flex flex-wrap gap-2 sm:gap-4'>
 						<Badge variant='yellow' className='text-sm'>
 							<CalendarIcon className='mr-1 h-4 w-4' />
 							{formatDate(event.beggingDate)} - {formatDate(event.finishDate)}
@@ -142,7 +142,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 							<MapPinIcon className='mr-1 h-4 w-4' />
 							{event.conference_type}
 						</Badge>
-						{/*TODO: TRAER EL AREA DE LA BD */}
 						<Badge variant='outline' className='text-sm'>
 							{event.location} {event.urlconference}
 						</Badge>
@@ -151,7 +150,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 				{hasConferenceWithId(parseInt(params.id)) === false && (
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button size='lg' className='bg-blue-600'>
+							<Button size='lg' className='bg-blue-600 mt-4 sm:mt-0'>
 								Registrarme al evento
 							</Button>
 						</DialogTrigger>
@@ -163,8 +162,8 @@ export default async function Page({ params }: { params: { id: string } }) {
 				)}
 			</div>
 
-			<div className='grid md:grid-cols-3 gap-6'>
-				<Card className='md:col-span-2 w-full h-[600px] flex flex-col overflow-hidden px-4'>
+			<div className='grid sm:grid-cols-1 md:grid-cols-3 gap-6'>
+				<Card className='md:col-span-2 w-full h-[400px] sm:h-[600px] flex flex-col overflow-hidden px-4'>
 					<CardHeader>
 						<CardTitle>Agenda</CardTitle>
 						<CardDescription>Programa detallado del evento</CardDescription>
@@ -185,7 +184,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-4'>
-							<div className='flex items-center space-x-4'>
+							<div className='flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4'>
 								<Avatar className='h-20 w-20'>
 									<AvatarImage
 										src={`data:image/JPG;base64,${institution.image}`}
@@ -198,7 +197,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 											.join('')}
 									</AvatarFallback>
 								</Avatar>
-								<div>
+								<div className='text-center sm:text-left'>
 									<h3 className='text-lg font-semibold'>{institution.name}</h3>
 									<p className='text-sm text-muted-foreground'>
 										{institution.description}
@@ -236,7 +235,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 								<h4 className='font-semibold text-sm text-muted-foreground'>
 									Fecha y Hora
 								</h4>
-								<div className='flex items-center space-x-2'>
+								<div className='flex flex-wrap items-center gap-2'>
 									<Badge variant='outline' className='text-sm'>
 										<CalendarIcon className='mr-1 h-3 w-3' />
 										{formatDate(event.beggingDate)}
@@ -261,7 +260,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 								<h4 className='font-semibold text-sm text-muted-foreground'>
 									Participantes
 								</h4>
-								{/*TODO: HACER QUE LA CONFERENCIA ACEPTA MAXIMOS DE PARTICIAPANTES */}
 								<div className='flex items-center justify-between'>
 									<span className='text-2xl font-bold'>5</span>
 									<Badge variant='outline' className='text-sm'>
