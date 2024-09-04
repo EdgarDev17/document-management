@@ -8,6 +8,7 @@ using Dapper;
 using System.Data;
 using Conference.Entities;
 using MySql.Data.MySqlClient;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 namespace Conference.DAL
 {
     public class conferenceDAL
@@ -44,8 +45,9 @@ namespace Conference.DAL
 
         //Registrar una conferencia 
 
+        
         public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID, string nameConference,
-            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt)
+            string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt,string location,string urlconference)
         {
             int result = 0;
             int conferenceID = 0;
@@ -64,6 +66,24 @@ namespace Conference.DAL
                 parameters.Add("@p_finishDate", finishDate);
                 parameters.Add("@p_areaID", areaID);
                 parameters.Add("@p_documentAttempt", docuementAttempt);
+                // Manejar el par�metro location
+                if (string.IsNullOrEmpty(location))
+                {
+                    parameters.Add("@p_Location", DBNull.Value, DbType.String);
+                }
+                else
+                {
+                    parameters.Add("@p_Location", location);
+                }
+                // Manejar el par�metro urlconference
+                if (string.IsNullOrEmpty(urlconference))
+                {
+                    parameters.Add("@p_urlconference", DBNull.Value, DbType.String);
+                }
+                else
+                {
+                    parameters.Add("@p_urlconference", urlconference);
+                }
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@conferenceID", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 _connection.Cnn.Execute("sp_registration_conferences", parameters, commandType: CommandType.StoredProcedure);
@@ -88,7 +108,7 @@ namespace Conference.DAL
 
         //Registrar una conferencia topics
 
-        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers)
+        public int RegisterConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId ,int TotalAttendees,int TotalSpeakers,string nameSpeaker)
         {
             int result = 0;
             try
@@ -106,6 +126,7 @@ namespace Conference.DAL
                 parameters.Add("@p_userID", userId);
                 parameters.Add("@p_TotalAttendees", TotalAttendees);
                 parameters.Add("@p_TotalSpeakers", TotalSpeakers);
+                parameters.Add("@p_nameSpeaker", nameSpeaker);
 
                 //  parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -130,7 +151,7 @@ namespace Conference.DAL
 
         //actualizar una conferencia topics
 
-        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees, int TotalSpeakers)
+        public int UpdateConferenceTopics(string name, string description, string location, DateTime startHour, DateTime startEnd, int conferenceId, int userId, int topicsID, int TotalAttendees, int TotalSpeakers,string nameSpeaker)
         {
             int result = 0;
             try
@@ -148,7 +169,7 @@ namespace Conference.DAL
                 parameters.Add("@p_userID", userId);
                 parameters.Add("@p_TotalAttendees", TotalAttendees);
                 parameters.Add("@p_TotalSpeakers", TotalSpeakers);
-
+                parameters.Add("@p_nameSpeaker", nameSpeaker);
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
 
@@ -432,7 +453,31 @@ namespace Conference.DAL
             }
             return topics;
         }
+        //listar topics de conferencias por userID
 
+        public List<ListTopicsENU> get_ListTopicsByUserID(int userID)
+        {
+            List<ListTopicsENU> topics = new List<ListTopicsENU>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_UserID", userID);
+                topics = _connection.Cnn.Query<ListTopicsENU>("sp_ListTopicsByUserID", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_ListTopicsByUserID", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return topics;
+        }
         //Registrar una conferencia 
 
         public (int result, string message) RegisterAssignUserTopic(int userID,int TopicsID, int RollID)
@@ -445,8 +490,9 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_UserID", userID);
-                parameters.Add("@p_RollID", RollID);
                 parameters.Add("@p_TopicsID", TopicsID);
+                parameters.Add("@p_RolID", RollID);
+               
              
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String,size:255, direction: ParameterDirection.Output);
@@ -508,12 +554,12 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                                                                                 
                 parameters.Add("@p_UserID", userID);
-                parameters.Add("@p_NewRolID ", RollID);
+                parameters.Add("@p_NewRolID", RollID);
                 parameters.Add("@p_TopicsID", TopicsID);
 
                 parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@message", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
-                _connection.Cnn.Execute("sp_assign_user_topic", parameters, commandType: CommandType.StoredProcedure);
+                _connection.Cnn.Execute("UpdateUserConferenceRole", parameters, commandType: CommandType.StoredProcedure);
 
                 result = parameters.Get<int>("@result");
                 message = parameters.Get<string>("@message");
@@ -578,6 +624,244 @@ namespace Conference.DAL
                 _connection.Cnn.Close();
             }
             return areas;
+        }
+
+
+        //Registrar criterios en conferencias
+
+        public int RegisterEvalutionCriteriaConference(int conferenceID,int criterionID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                parameters.Add("@p_CriterionID", criterionID);
+               
+
+                parameters.Add("@p_Result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_InsertEvaluationCriteriaConference", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("@p_Result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en sp_InsertEvaluationCriteriaConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+        //Agenda de la conferencia
+
+        public List<ConferencesAgenda> GetConferencesAgenda(int conferenceID, int userID)
+        {
+            List<ConferencesAgenda> conferences = new List<ConferencesAgenda>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                conferences = _connection.Cnn.Query<ConferencesAgenda>("sp_GetConferenceAgenda", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en  sp_GetConferenceAgenda`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+        //Lista de evaluation criteria por conferences
+
+        public List<EvaluationCriteriaConference> GetEvaluationCriteriaByConference(int conferenceID, int userID)
+        {
+            List<EvaluationCriteriaConference> conferences = new List<EvaluationCriteriaConference>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_ConferenceID", conferenceID);
+                conferences = _connection.Cnn.Query<EvaluationCriteriaConference>("sp_GetEvaluationCriteriaByConference", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en conferenceDAL en  sp_GetConferenceAgenda`", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
+        //Actualizar el estado de la conferencia
+        public int update_conference_status_to_inactive(int conferenceID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_conferenceID", conferenceID);
+
+
+                parameters.Add("@p_result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("sp_update_conference_status_to_inactive", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("p_result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL sp_update_conference_status_to_inactive ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+
+        //registrar usurio en conferencia
+        public int RegisterUserAssignedConference(int conferenceID, int userId)
+        {
+            int result = 0;
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_conferenceID", conferenceID);
+
+                parameters.Add("@result", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                _connection.Cnn.Execute("RegisterUserAssignedConference", parameters, commandType: CommandType.StoredProcedure);
+
+                result = parameters.Get<int>("result");
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return result;
+        }
+
+
+        public DateNotificationEN Emailnotification(int conferenceID, int userId)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+            
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_UserID", userId);
+                parameters.Add("@p_conferenceID", conferenceID);
+
+
+
+                email= _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>( "sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userId);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
+        }
+
+
+        public DateNotificationEN EmailnotificationTopics(int userID, int TopicsID)
+        {
+            DateNotificationEN email = new DateNotificationEN();
+
+            try
+            {
+                _connection.Cnn.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@p_userID", userID);
+                parameters.Add("@p_TopicsID", TopicsID);
+
+
+
+                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error  en conferenceDAL RegisterUserAssignedConference ", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+
+            return email;
         }
     }
 

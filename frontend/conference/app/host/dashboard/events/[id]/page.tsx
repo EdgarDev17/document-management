@@ -1,109 +1,124 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/app/components/ui/card";
-import axios from "axios";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
-import { urlConference } from "@/lib/endpoints";
+	CalendarIcon,
+	MapPinIcon,
+	UsersIcon,
+	ClockIcon,
+	BuildingOfficeIcon,
+	PhoneIcon,
+	InboxIcon,
+} from '@heroicons/react/24/outline'
+import { Button } from '@/app/components/ui/button'
+import { Badge } from '@/app/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/app/components/ui/card'
+import { GlobeAltIcon } from '@heroicons/react/20/solid'
+import { ScrollArea } from '@/app/components/ui/scrollarea'
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogOverlay,
+	DialogPortal,
+	DialogTitle,
+	DialogTrigger,
+} from '@/app/components/ui/dialog'
+import { auth } from '@/auth'
+import { apiClient } from '@/lib/api-service'
+import { urlConference, urlInstitutions } from '@/lib/endpoints'
+import { Conference } from '@/types/models/conference'
+import { formatDate } from '@/lib/utils'
+import { Institution } from '@/types/models/institution'
+import { AgendaContainer } from '@/app/components/features/agendacontainer'
+import { EmptyAgendaMessage } from '@/app/components/features/empty-agenda'
+import { NoAccess } from '@/app/components/common/noaccess'
+import { AddTalkForm } from '@/app/components/form/add-talk'
+import { EventContainer } from './EventsContainer'
 
-async function fetchCurrentEvent() {
-  return axios
-    .get(`${urlConference}/ConferencesDetailsSpecific`, {
-      params: {
-        conferenceID: 1,
-      },
-      headers: {
-        "Authorization-Token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTEzVDAwOjM0OjA2LjE5NjM2NDktMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.uEeVDHW2GpC3KhGINOu4TVsLV6LBWPGHD3d46lt90vE",
-      },
-    })
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      return error;
-    })
-    .finally(function () {
-      // always executed
-    });
+async function getEventAgenda(id: string, token: string) {
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/conferenceslisttopicsbyconferenceid?conferenceID=${id}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+
+		return response.data.topics
+	} catch (err) {
+		return null
+	}
 }
 
-async function fetchTopicsById() {
-  return axios
-    .get(
-      `${urlConference}/ConferencesListTopicsByConferenceID`,
-      {
-        params: {
-          conferenceID: 1,
-        },
-        headers: {
-          "Authorization-Token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjQsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiWTdLbVNCeTAxaFBPejQzRkhCVUVYQXpRR1dSS3pScWk1RFE2QSs5Z1pvaz0iLCJjb21wbGV0ZVByb2ZpbGUiOnRydWUsImNvdW50cnlJRCI6MSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTA4LTEzVDAwOjM0OjA2LjE5NjM2NDktMDY6MDAiLCJzdGF0ZSI6dHJ1ZX0.uEeVDHW2GpC3KhGINOu4TVsLV6LBWPGHD3d46lt90vE",
-        },
-      },
-    )
-    .then(function (response) {
-      // console.log({ ropicsR: response.data.topics });
-      return response.data.topics;
-    })
-    .catch(function (error) {
-      console.log({ ropicsE: error });
+async function getEventDetails(id: string, token: string) {
+	try {
+		const response = await apiClient.get(
+			`${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
 
-      return error;
-    });
+		console.log('detalles host', response.data.conference[0])
+		return response.data.conference[0]
+	} catch (err) {
+		return err
+	}
+}
+
+async function getInstitution(id: string, token: string) {
+	try {
+		const response = await apiClient.get(`${urlInstitutions}/${id}`, {
+			headers: {
+				'Authorization-Token': token,
+			},
+		})
+		return response.data
+	} catch (err) {
+		return err
+	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const eventData = await fetchCurrentEvent();
-  const topicsData = await fetchTopicsById();
+	const session = await auth()
 
-  const [event, topics] = await Promise.all([eventData, topicsData]);
+	if (!session) {
+		return 'no auth'
+	}
 
-  if (topics.length === 0 || !topics) {
-    return <p>Loading...</p>;
-  }
+	const event: Conference = await getEventDetails(
+		params.id,
+		session.accessToken
+	)
+	const agenda = await getEventAgenda(params.id, session.accessToken)
+	const institution = await getInstitution(
+		event.institutionID.toString(),
+		session.accessToken
+	)
+	const isAdmin = event.userID === parseInt(session.userId)
 
-  console.log(topics);
-  return (
-    <div>
-      <div className="flex justify-between items-center">
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Participantes</CardTitle>
-            <CardDescription>Numero de usuarios registrados</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Charlas</CardTitle>
-            <CardDescription>Numero de charlas creadas</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
-        <Card className="w-[30%]">
-          <CardHeader>
-            <CardTitle>Fechas</CardTitle>
-            <CardDescription>Fecha de inicio y finalización</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div>
-        <DataTable columns={columns} data={topics} />
-      </div>
-    </div>
-  );
+	console.log('evento', event)
+	return (
+		<div className=' p-4 space-y-8 h-[70vh]'>
+			<EventContainer
+				event={event}
+				agenda={agenda}
+				institution={institution}
+				isAdmin={isAdmin}
+				token={session.accessToken}
+			/>
+		</div>
+	)
 }

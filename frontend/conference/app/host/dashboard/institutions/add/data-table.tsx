@@ -40,12 +40,8 @@ export function DataTable<TData, TValue>({
         firstName: "Fred",
         lastName: "Flintstone",
       })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .then(function (response) {})
+      .catch(function (error) {});
   };
 
   return (
@@ -71,29 +67,6 @@ export function DataTable<TData, TValue>({
         </TableHeader>
 
         <TableBody className={"bg-white w-full"}>
-          <TableRow>
-            <TableCell>
-              <Input
-                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
-                placeholder="Nombre conferencia"
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
-                placeholder="Website conferencia"
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
-                placeholder="Telefono conferencia"
-              />
-            </TableCell>
-            {/*<TableCell>*/}
-            {/*  <Button>Crear</Button>*/}
-            {/*</TableCell>*/}
-          </TableRow>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -110,7 +83,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Sin resultados
               </TableCell>
             </TableRow>
           )}
@@ -119,3 +92,30 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+/*
+
+esto es para agregar inputs al incio de la tabla
+<TableRow>
+  <TableCell>
+    <Input
+      className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+      placeholder="Nombre conferencia"
+    />
+  </TableCell>
+  <TableCell>
+    <Input
+      className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+      placeholder="Website conferencia"
+    />
+  </TableCell>
+  <TableCell>
+    <Input
+      className="bg-white w-full border border-zinc-300 shadow rounded-lg h-14 p-2"
+      placeholder="Telefono conferencia"
+    />
+  </TableCell>
+  <TableCell>
+   <Button>Crear</Button>
+  </TableCell>
+</TableRow>
+*/

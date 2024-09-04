@@ -64,7 +64,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+#.env*.local // Se comento para permitir que se suba
 
 # vercel
 .vercel

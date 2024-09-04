@@ -15,7 +15,8 @@
         public DateTime finishDate { get; set; }
         public int areaID { get; set; }
         public int documentAttempt { get; set; }
-
+        public string? location {  get; set; }
+        public string? urlconference {  get; set; }
 
     }
 

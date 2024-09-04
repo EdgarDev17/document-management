@@ -64,7 +64,7 @@ namespace ConferenceAPI.Controllers
 
                     if (resultValidate == 0)
                     {
-                        var result = _userBL.RegisterUsers(data.email, data.name, data.lastname, data.Birthdate, data.Password);
+                        var result = _userBL.RegisterUsers(data.email, data.name, data.lastname, data.Birthdate, data.Password,data.UrlValidateEmail);
 
                         if (result == 200)
                         {
