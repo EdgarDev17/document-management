@@ -71,11 +71,15 @@ export default function Register() {
 		},
 	})
 
+	const URL_VALIDATE_EMAIL =
+		'https://tesis-uso.vercel.app/account/verify-email/?userID'
+
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		setIsLoading(true)
 		const formattedData = {
 			...values,
 			birthdate: values.birthdate.toISOString(),
+			urlValidateEmail: URL_VALIDATE_EMAIL,
 		}
 		try {
 			const response = await apiClient.post(
@@ -84,7 +88,7 @@ export default function Register() {
 			)
 
 			toast.success('Registro Completado con éxito')
-			router.push('/account/verify-email')
+			router.push('/account/email-alert')
 		} catch (error) {
 			console.error('Error al registrar:', error)
 			toast.error('Error al crear usuario, intente más tarde')
@@ -201,9 +205,7 @@ export default function Register() {
 															field.onChange(newDate)
 														}
 													}}
-													disabled={(date) =>
-														date > new Date() || date < new Date('1900-01-01')
-													}
+													disabled={(date) => date < new Date('1900-01-01')}
 													// @ts-ignore
 													initialFocus
 													year={selectedYear}
