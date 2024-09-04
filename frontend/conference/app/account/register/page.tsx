@@ -55,6 +55,8 @@ export default function Register() {
 	)
 	const [isLoading, setIsLoading] = React.useState(false)
 	const router = useRouter()
+	const VERIFY_EMAIL_URL =
+		'https://tesis-uso.vercel.app/account/verify-email?userID'
 
 	const years = Array.from(
 		{ length: 124 },
@@ -76,7 +78,9 @@ export default function Register() {
 		const formattedData = {
 			...values,
 			birthdate: values.birthdate.toISOString(),
+			urlValidateEmail: VERIFY_EMAIL_URL,
 		}
+		console.log(formattedData)
 		try {
 			const response = await apiClient.post(
 				'/registerusers/registeruser',
@@ -84,7 +88,7 @@ export default function Register() {
 			)
 
 			toast.success('Registro Completado con éxito')
-			router.push('/account/verify-email')
+			router.push('/account/email-alert')
 		} catch (error) {
 			console.error('Error al registrar:', error)
 			toast.error('Error al crear usuario, intente más tarde')
