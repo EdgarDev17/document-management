@@ -18,6 +18,7 @@ import { Progress } from '@/app/components/ui/progress'
 import { Badge } from '@/app/components/ui/badge'
 import { apiClient } from '@/lib/api-service'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export function PaperSubmissionDialog({
 	token,
@@ -31,6 +32,8 @@ export function PaperSubmissionDialog({
 	const [fileBase64, setFileBase64] = useState<string | null>(null)
 	const [isUploading, setIsUploading] = useState(false)
 	const [uploadProgress, setUploadProgress] = useState(0)
+	const [isPublishing, setIsPublishing] = useState(false)
+	const router = useRouter()
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,7 @@ export function PaperSubmissionDialog({
 		} else {
 			setFile(null)
 			setFileBase64(null)
-			alert('Por favor, seleccione un archivo PDF válido.')
+			toast.error('Por favor, seleccione un archivo PDF válido.')
 		}
 	}
 
@@ -53,50 +56,62 @@ export function PaperSubmissionDialog({
 		}
 		reader.onerror = (error) => {
 			console.error('Error: ', error)
+			toast.error('Error al procesar el archivo. Por favor, intente de nuevo.')
 		}
 	}
 
 	const handleSubmit = async () => {
 		if (file && fileBase64) {
 			setIsUploading(true)
-			// Simular una carga
+			try {
+				// Simular una carga
+				await simulateUpload()
+
+				// Iniciar la publicación real
+				setIsPublishing(true)
+				const cleanedBase64String = fileBase64.replace(
+					'data:application/pdf;base64,',
+					''
+				)
+				const res = await apiClient.post(
+					'/document/sendingdocumentsConference',
+					{
+						nameDocument: file.name,
+						topicsID: talkId,
+						document: cleanedBase64String,
+						documentExtension: file.type.split('/')[1].toUpperCase(),
+					},
+					{
+						headers: {
+							'Authorization-Token': token,
+						},
+					}
+				)
+				toast.success('Documento enviado exitosamente')
+				setIsOpen(false)
+			} catch (error) {
+				toast.error('Error al intentar enviar el documento, intente de nuevo')
+			} finally {
+				setIsUploading(false)
+				setIsPublishing(false)
+				setUploadProgress(0)
+				router.refresh()
+			}
+		}
+	}
+
+	const simulateUpload = () => {
+		return new Promise<void>((resolve) => {
 			let progress = 0
-			const interval = setInterval(async () => {
+			const interval = setInterval(() => {
 				progress += 10
 				setUploadProgress(progress)
 				if (progress >= 100) {
 					clearInterval(interval)
-					setIsUploading(false)
-					setIsOpen(false)
-					// Aquí iría la lógica para enviar el archivo al servidor
-					const cleanedBase64String = fileBase64.replace(
-						'data:application/pdf;base64,',
-						''
-					)
-					try {
-						const res = await apiClient.post(
-							'/document/sendingdocumentsConference',
-							{
-								nameDocument: file.name,
-								topicsID: talkId,
-								document: cleanedBase64String,
-								documentExtension: file.type.split('/')[1].toUpperCase(),
-							},
-							{
-								headers: {
-									'Authorization-Token': token,
-								},
-							}
-						)
-						toast.success('Documento enviado exitosamente')
-					} catch (error) {
-						toast.error(
-							'Error al intentar enviar el documento, intente de nuevo'
-						)
-					}
+					resolve()
 				}
 			}, 500)
-		}
+		})
 	}
 
 	const removeFile = () => {
@@ -108,7 +123,9 @@ export function PaperSubmissionDialog({
 	}
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
+		<Dialog
+			open={isOpen}
+			onOpenChange={(open) => !isUploading && !isPublishing && setIsOpen(open)}>
 			<DialogTrigger asChild>
 				<Button className='w-full'>
 					<Send className='mr-2 h-4 w-4' /> Enviar mi primer paper
@@ -144,6 +161,7 @@ export function PaperSubmissionDialog({
 								onChange={handleFileChange}
 								className='hidden'
 								ref={fileInputRef}
+								disabled={isUploading || isPublishing}
 							/>
 						</Label>
 					</div>
@@ -178,18 +196,19 @@ export function PaperSubmissionDialog({
 									variant='destructive'
 									size='sm'
 									onClick={removeFile}
-									className='mt-4'>
+									className='mt-4'
+									disabled={isUploading || isPublishing}>
 									<Trash2 className='h-4 w-4 mr-2' />
 									Eliminar archivo
 								</Button>
 							</AlertDescription>
 						</Alert>
 					)}
-					{isUploading && (
+					{(isUploading || isPublishing) && (
 						<div className='space-y-2'>
 							<Progress value={uploadProgress} className='w-full' />
 							<p className='text-sm text-muted-foreground'>
-								Subiendo: {uploadProgress}%
+								{isUploading ? `Subiendo: ${uploadProgress}%` : 'Publicando...'}
 							</p>
 						</div>
 					)}
@@ -198,8 +217,12 @@ export function PaperSubmissionDialog({
 					<Button
 						type='submit'
 						onClick={handleSubmit}
-						disabled={!file || isUploading}>
-						{isUploading ? 'Subiendo...' : 'Enviar Paper'}
+						disabled={!file || isUploading || isPublishing}>
+						{isUploading
+							? 'Subiendo...'
+							: isPublishing
+								? 'Publicando...'
+								: 'Enviar Paper'}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
