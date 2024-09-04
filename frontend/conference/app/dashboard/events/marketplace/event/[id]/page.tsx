@@ -40,7 +40,7 @@ import { RegisterUserEvent } from './registerUserEvent'
 async function getEventAgenda(id: string, token: string) {
 	try {
 		const response = await apiClient.get(
-			`${urlConference}/conferencesagenda?conferenceID=${id}`,
+			`/conference/conferencesagenda?conferenceID=${id}`,
 			{
 				headers: {
 					'Authorization-Token': token,
@@ -58,7 +58,7 @@ async function getEventAgenda(id: string, token: string) {
 async function getEventDetailts(id: string, token: string) {
 	try {
 		const response = await apiClient.get(
-			`${urlConference}/conferencesdetailsspecific?conferenceID=${id}`,
+			`/conference/conferencesdetailsspecific?conferenceID=${id}`,
 			{
 				headers: {
 					'Authorization-Token': token,

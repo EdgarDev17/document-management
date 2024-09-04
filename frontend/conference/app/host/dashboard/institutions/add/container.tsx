@@ -55,32 +55,6 @@ function Container({ userId, token }: { userId: string; token: string }) {
 	return (
 		<div className='flex flex-col gap-y-8 md:gap-y-16 py-4 md:py-8 px-4 md:px-0'>
 			<div className='flex flex-col md:flex-row justify-between gap-4 md:gap-0'>
-				<Dialog open={institutionModal} onOpenChange={setInstitutionModal}>
-					<DialogTrigger asChild>
-						<Button
-							variant='default'
-							className='text-sm md:text-base w-full md:w-auto bg-blue-600 md:hidden block'>
-							Crear Institución
-						</Button>
-					</DialogTrigger>
-					<DialogContent className='max-w-[90vw] md:max-w-[700px]'>
-						<DialogHeader>
-							<DialogTitle className='text-lg md:text-xl'>
-								Añadir nueva institución
-							</DialogTitle>
-							<DialogDescription className='text-sm md:text-base'>
-								Si la institucion no aparece en la lista, puedes crearla aqui
-							</DialogDescription>
-						</DialogHeader>
-						<div className='mt-4'>
-							<AddInstitution
-								token={token}
-								userId={userId}
-								isInstitutionLoading={handleCreatingInstitution}
-							/>
-						</div>
-					</DialogContent>
-				</Dialog>
 				<Card className='w-full md:max-w-[400px]'>
 					<CardHeader className='bg-tertiary'>
 						<CardTitle className='text-white font-bold text-lg md:text-xl'>
@@ -101,7 +75,7 @@ function Container({ userId, token }: { userId: string; token: string }) {
 					<DialogTrigger asChild>
 						<Button
 							variant='default'
-							className='text-sm md:text-base w-full md:w-auto bg-blue-600 hidden md:block'>
+							className='text-sm md:text-base w-full md:w-auto bg-blue-600'>
 							Crear Institución
 						</Button>
 					</DialogTrigger>

@@ -65,6 +65,10 @@ function UserProfileData({ token }: { token: string }) {
 	const handleImageUpload = async (file: File) => {
 		try {
 			const base64 = await convertToBase64(file)
+			console.log({
+				Image: base64,
+				ImageExtension: `${file.name.split('.').pop()}`,
+			})
 			const response = await apiClient.post(
 				`/Registerusers/Imagen`,
 				{
