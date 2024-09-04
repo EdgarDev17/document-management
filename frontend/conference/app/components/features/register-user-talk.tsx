@@ -29,7 +29,7 @@ export function RegisterUserToTalk({
 	userId,
 }: RegisterUserToTalkProps) {
 	const [isOpen, setIsOpen] = useState(false)
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(false)
 
 	const handleRegister = async (role: 'participant' | 'speaker') => {
 		setLoading(true)
