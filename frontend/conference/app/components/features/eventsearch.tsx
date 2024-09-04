@@ -21,6 +21,7 @@ import { urlConference } from '@/lib/endpoints'
 import { Conference } from '@/types/models/conference'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
+import { WaveLoading } from '../common/wave-loading'
 
 const bgColors = [
 	'bg-red-100',
@@ -67,10 +68,14 @@ function EventSearch({ token }: { token: string }) {
 			.finally(() => {
 				setLoading(false)
 			})
-	}, [])
+	}, [token])
 
 	if (loading) {
-		return <div className='text-center py-8'>LOADING DATA...</div>
+		return (
+			<div className='text-center py-8 flex justify-center items-center h-[80vh]'>
+				<WaveLoading />
+			</div>
+		)
 	}
 
 	const filteredEvents = events.filter(

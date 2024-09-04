@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { Toaster } from 'sonner'
 import { SessionProvider } from 'next-auth/react'
+import { auth } from '@/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,15 +16,17 @@ export const metadata: Metadata = {
 	description: 'x',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const session = await auth()
+
 	return (
 		<html lang='en'>
 			<body className={cn(inter.className, 'bg-white')}>
-				<Navbar />
+				<Navbar session={session} />
 				<div className='w-full mx-auto'>{children}</div>
 				<Toaster richColors position={'top-center'} />
 			</body>

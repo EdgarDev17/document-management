@@ -15,6 +15,8 @@ import {
 	LogOut,
 	ChevronDown,
 	ChevronUp,
+	LogIn,
+	UserPlus,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -38,8 +40,9 @@ import {
 	DropdownMenuTrigger,
 } from './dropdown-menu'
 import { useRouter } from 'next/navigation'
+import { Session } from 'next-auth'
 
-export default function Navbar() {
+export default function Navbar({ session }: { session: Session | null }) {
 	return (
 		<header className='bg-background border-b'>
 			<div className='container mx-auto px-4'>
@@ -47,17 +50,35 @@ export default function Navbar() {
 					<Link href='/' className='text-2xl font-bold'>
 						EventMaster
 					</Link>
-					<DesktopNav />
-					<MobileNav />
+					<DesktopNav session={session} />
+					<MobileNav session={session} />
 				</nav>
 			</div>
 		</header>
 	)
 }
 
-function DesktopNav() {
+function DesktopNav({ session }: { session: Session | null }) {
 	const [isOpen, setIsOpen] = React.useState(false)
 	const router = useRouter()
+
+	if (!session) {
+		return (
+			<div className='hidden md:flex items-center gap-4'>
+				<Button
+					variant='ghost'
+					className='hover:bg-zinc-100 hover:text-zinc-900'
+					onClick={() => router.push('/account/login')}>
+					<LogIn className='mr-2 h-4 w-4' /> Iniciar sesión
+				</Button>
+				<Button
+					className='bg-blue-600'
+					onClick={() => router.push('/account/register')}>
+					<UserPlus className='mr-2 h-4 w-4' /> Crear cuenta
+				</Button>
+			</div>
+		)
+	}
 	return (
 		<div className='flex items-center gap-x-4'>
 			<NavigationMenu className='hidden md:flex bg-white z-50'>
@@ -179,7 +200,48 @@ function DesktopNav() {
 	)
 }
 
-function MobileNav() {
+function MobileNav({ session }: { session: Session | null }) {
+	if (!session) {
+		return (
+			<Sheet>
+				<SheetTrigger asChild>
+					<Button variant='outline' size='icon' className='md:hidden'>
+						<Menu className='h-6 w-6' />
+						<span className='sr-only'>Abrir menú</span>
+					</Button>
+				</SheetTrigger>
+				<SheetContent side='right' className='w-[300px]'>
+					<div className='flex flex-col h-full'>
+						<div className='flex-1'>
+							<h2 className='text-2xl font-bold mb-6'>EventMaster</h2>
+							<p className='text-muted-foreground mb-6'>
+								Organiza y participa en eventos increíbles. ¡Únete a nuestra
+								comunidad hoy!
+							</p>
+						</div>
+						<nav className='flex flex-col gap-4'>
+							<Button asChild variant='default' size='lg' className='w-full'>
+								<Link
+									href='/account/login'
+									className='flex items-center justify-center gap-2'>
+									<LogIn className='h-5 w-5' />
+									Iniciar sesión
+								</Link>
+							</Button>
+							<Button asChild variant='outline' size='lg' className='w-full'>
+								<Link
+									href='/account/register'
+									className='flex items-center justify-center gap-2'>
+									<UserPlus className='h-5 w-5' />
+									Crear cuenta
+								</Link>
+							</Button>
+						</nav>
+					</div>
+				</SheetContent>
+			</Sheet>
+		)
+	}
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
