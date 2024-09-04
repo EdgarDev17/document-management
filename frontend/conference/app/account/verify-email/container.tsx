@@ -21,7 +21,7 @@ export function VerifyEmail() {
 
 	const handleVerification = async () => {
 		try {
-			const res = await apiClient.post(`/registerusers/validateemail/${userId}`)
+			const res = await apiClient.get(`/registerusers/validateemail/${userId}`)
 
 			setIsVerified(true)
 			setTimeout(() => {
