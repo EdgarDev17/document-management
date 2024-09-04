@@ -19,6 +19,7 @@ import { formatDate } from '@/lib/utils'
 import { Skeleton } from '@/app/components/ui/skeleton'
 import { PencilIcon, LogOut, Mail, MapPin, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
+import { apiClient } from '@/lib/api-service'
 
 function UserProfileData({ token }: { token: string }) {
 	const [base64String, setBase64String] = useState('')
@@ -26,12 +27,28 @@ function UserProfileData({ token }: { token: string }) {
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
+		const fetchUserProfile = () => {
+			apiClient
+				.get('/User/UserPerfil', {
+					headers: {
+						'Authorization-Token': token,
+					},
+				})
+				.then((response) => {
+					setBase64String(response.data.imagenBase)
+					setUserProfile(response.data)
+					setLoading(false)
+				})
+				.catch((err) => {
+					setLoading(false)
+				})
+		}
 		fetchUserProfile()
-	}, [token, userProfile])
+	}, [token])
 
 	const fetchUserProfile = () => {
-		axios
-			.get('http://localhost:5110/api/User/UserPerfil', {
+		apiClient
+			.get('/User/UserPerfil', {
 				headers: {
 					'Authorization-Token': token,
 				},
@@ -49,8 +66,8 @@ function UserProfileData({ token }: { token: string }) {
 	const handleImageUpload = async (file: File) => {
 		try {
 			const base64 = await convertToBase64(file)
-			const response = await axios.post(
-				`${urlRegisterUsers}/Imagen`,
+			const response = await apiClient.post(
+				`/Registerusers/Imagen`,
 				{
 					Image: base64,
 					ImageExtension: `.${file.name.split('.').pop()}`,

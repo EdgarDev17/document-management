@@ -20,6 +20,7 @@ import {
 } from '@/app/components/ui/dialog'
 import { Button } from '@/app/components/ui/button'
 import { AddInstitution } from '@/app/components/form/add-institution'
+import { apiClient } from '@/lib/api-service'
 
 function Container({ userId, token }: { userId: string; token: string }) {
 	const [loading, setLoading] = React.useState(true)
@@ -33,11 +34,12 @@ function Container({ userId, token }: { userId: string; token: string }) {
 	}
 
 	React.useEffect(() => {
-		axios('http://localhost:5110/api/Institutions', {
-			headers: {
-				'Authorization-Token': token,
-			},
-		})
+		apiClient
+			.get('/Institutions', {
+				headers: {
+					'Authorization-Token': token,
+				},
+			})
 			.then((response) => {
 				setInstitutions(response.data)
 				setLoading(false)
