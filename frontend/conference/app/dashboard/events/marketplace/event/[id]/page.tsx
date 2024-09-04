@@ -73,7 +73,7 @@ async function getEventDetailts(id: string, token: string) {
 }
 async function getInstitution(id: string) {
 	try {
-		const response = await apiClient.get(`${urlInstitutions}/public/${id}`)
+		const response = await apiClient.get(`/institutions/public/${id}`)
 		return response.data
 	} catch (err) {
 		return null

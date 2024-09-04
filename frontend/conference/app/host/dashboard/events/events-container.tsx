@@ -53,6 +53,7 @@ export function EventsContainer({ token }: { token: string }) {
 				},
 			})
 			.then((response) => {
+				console.log(response.data.conference)
 				const filteredEvents = response.data.conference.filter(
 					(event: Conference) => event.rolID === 1
 				)
