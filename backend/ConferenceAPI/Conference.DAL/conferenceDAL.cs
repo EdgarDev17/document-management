@@ -45,6 +45,7 @@ namespace Conference.DAL
 
         //Registrar una conferencia 
 
+        
         public (int result, int conferenceID) RegisterConference(int userID, int RollID, int institucionID, string nameConference,
             string typeConference, string description, DateTime beggingDate, DateTime finishDate, int areaID, int docuementAttempt,string location,string urlconference)
         {
@@ -65,7 +66,7 @@ namespace Conference.DAL
                 parameters.Add("@p_finishDate", finishDate);
                 parameters.Add("@p_areaID", areaID);
                 parameters.Add("@p_documentAttempt", docuementAttempt);
-                // Manejar el parámetro location
+                // Manejar el parï¿½metro location
                 if (string.IsNullOrEmpty(location))
                 {
                     parameters.Add("@p_Location", DBNull.Value, DbType.String);
@@ -74,7 +75,7 @@ namespace Conference.DAL
                 {
                     parameters.Add("@p_Location", location);
                 }
-                // Manejar el parámetro urlconference
+                // Manejar el parï¿½metro urlconference
                 if (string.IsNullOrEmpty(urlconference))
                 {
                     parameters.Add("@p_urlconference", DBNull.Value, DbType.String);

@@ -21,7 +21,25 @@ import { auth } from '@/auth'
 import { NoAuth } from '../components/common/noauth'
 import { ConferenceItem } from './events/page'
 import { formatDate } from '@/lib/utils'
-import { CalendarX2, ChevronRight } from 'lucide-react'
+import {
+	ArrowRightIcon,
+	CalendarPlusIcon,
+	CalendarX2,
+	ChevronRight,
+} from 'lucide-react'
+
+interface Paper {
+	documentID: number
+	name: string
+	review: number
+	regDate: string
+	userID: number
+	topicsID: number
+	url: string
+	fileName: string
+	status: string
+	documentBase: string
+}
 
 // Badge component
 const Badge = ({
@@ -45,29 +63,16 @@ const Badge = ({
 	)
 }
 
-const papers = [
-	{
-		id: 1,
-		title: 'Advances in Natural Language Processing',
-		status: 'En revisión',
-	},
-	{
-		id: 2,
-		title: 'Efficient Algorithms for Big Data Analysis',
-		status: 'Aprobado',
-	},
-	{ id: 3, title: 'Deep Learning in Computer Vision', status: 'Enviado' },
-	{
-		id: 4,
-		title: 'Blockchain Technology in Healthcare',
-		status: 'En revisión',
-	},
-	{
-		id: 5,
-		title: 'Ethical Considerations in AI Development',
-		status: 'Aprobado',
-	},
-]
+function getNextEvent(events: ConferenceItem[]): ConferenceItem | null {
+	if (!events || events.length === 0) return null
+
+	return events.reduce((closest, current) => {
+		const closestDate = new Date(closest.beggingDate).getTime()
+		const currentDate = new Date(current.beggingDate).getTime()
+
+		return currentDate < closestDate ? current : closest
+	})
+}
 
 async function getUserEvents(token: string) {
 	try {
@@ -85,6 +90,27 @@ async function getUserEvents(token: string) {
 	}
 }
 
+async function getCurrentUserPapers(
+	userId: number,
+	token: string
+): Promise<Paper[]> {
+	try {
+		const res = await apiClient.get(
+			`/document/getdocumentsByUser?UserID=${userId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+		console.log(res.data.document[0])
+		return res.data.document
+	} catch (error) {
+		console.error('Error fetching papers:', error)
+		return []
+	}
+}
+
 export default async function Page() {
 	const session = await auth()
 
@@ -92,19 +118,25 @@ export default async function Page() {
 		return <NoAuth />
 	}
 
-	const events: ConferenceItem[] = await getUserEvents(session.accessToken)
+	const papers = await getCurrentUserPapers(
+		parseInt(session.userId),
+		session.accessToken
+	)
+
+	const events = await getUserEvents(session.accessToken)
 
 	const totalEvents = events ? events.length : 0
 	const totalPapers = papers ? papers.length : 0
+	const nextEvent = getNextEvent(events)
 
 	const getStatusVariant = (status) => {
 		switch (status) {
 			case 'Aprobado':
 				return 'green'
-			case 'En revisión':
+			case 'Pendiente':
 				return 'yellow'
-			case 'Enviado':
-				return 'blue'
+			case 'Rechazado':
+				return 'red'
 			default:
 				return 'blue'
 		}
@@ -162,10 +194,36 @@ export default async function Page() {
 							<BookOpenIcon className='h-4 w-4 text-muted-foreground' />
 						</CardHeader>
 						<CardContent>
-							<div className='text-2xl font-bold'>
-								Introucción a la programación
-							</div>
-							<p className='text-xs text-muted-foreground'>12 de Junio 2024</p>
+							{nextEvent ? (
+								<div className='space-y-2'>
+									<div className='text-2xl font-bold'>
+										{nextEvent.conference_name}
+									</div>
+									<p className='text-xs text-muted-foreground'>
+										{formatDate(nextEvent.beggingDate)}
+									</p>
+									<Button variant='outline' size='sm' asChild>
+										<Link
+											href={`/dashboard/events/marketplace/event/${nextEvent.conferenceID}`}>
+											Ir al evento
+											<ArrowRightIcon className='ml-2 h-4 w-4' />
+										</Link>
+									</Button>
+								</div>
+							) : (
+								<div className='flex flex-col items-center justify-center space-y-2 py-6'>
+									<CalendarPlusIcon className='h-12 w-12 text-muted-foreground' />
+									<p className='text-center text-sm text-muted-foreground'>
+										No te has inscrito a ningún evento aún.
+									</p>
+									<Button variant='outline' size='sm' asChild>
+										<Link href='/events'>
+											Explorar eventos
+											<ArrowRightIcon className='ml-2 h-4 w-4' />
+										</Link>
+									</Button>
+								</div>
+							)}
 						</CardContent>
 					</Card>
 				</div>
@@ -226,7 +284,7 @@ export default async function Page() {
 				{/* Papers List */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Mis documentos</CardTitle>
+						<CardTitle>Tus documentos</CardTitle>
 						<CardDescription>
 							Estos son todos los documentos que has enviado
 						</CardDescription>
@@ -240,7 +298,7 @@ export default async function Page() {
 									<Link
 										href={''}
 										className='w-full flex justify-between items-center p-2'>
-										<span>{paper.title}</span>
+										<span>{paper.name}</span>
 										<Badge variant={getStatusVariant(paper.status)}>
 											{paper.status}
 										</Badge>
@@ -252,7 +310,7 @@ export default async function Page() {
 					<CardFooter>
 						<Link href={'/dashboard/events'} className='w-full'>
 							<Button variant='outline' className='w-full'>
-								Mirar todos mis docoumentos
+								Mirar todos mis documentos
 								<ChevronRightIcon className='ml-2 h-4 w-4' />
 							</Button>
 						</Link>

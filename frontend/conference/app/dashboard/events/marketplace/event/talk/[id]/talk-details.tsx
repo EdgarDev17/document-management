@@ -30,6 +30,7 @@ import {
 	Scale,
 	Mail,
 	CheckCircle,
+	Star,
 } from 'lucide-react'
 
 import { DocumentIcon } from '@heroicons/react/24/outline'
@@ -39,7 +40,20 @@ import { RegisterUserToTalk } from '@/app/components/features/register-user-talk
 import { Talk } from '@/types/models/talk'
 import { Conference } from '@/types/models/conference'
 import { PaperSubmissionDialog } from '@/app/components/features/paper-submission'
-import { JuryModeContent } from '@/app/components/features/jury-paper-list'
+import {
+	Document,
+	JuryModeContent,
+} from '@/app/components/features/jury-paper-list'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/app/components/ui/dialog'
+import { apiClient } from '@/lib/api-service'
+import { toast } from 'sonner'
 
 type Props = {
 	talk: Talk
@@ -67,8 +81,13 @@ export function TalkDetails({
 	const [isJury, setIsJury] = React.useState(false)
 	const [userRole, setUserRole] = React.useState<Role | null>(null)
 	const [isRegistered, setIsRegistered] = React.useState(false)
+	//@ts-ignore
 	const isSpeakerInfoEmpty = !talk.speakerImage && !talk.nameSpeaker
+	const [rating, setRating] = React.useState(0)
 
+	const handleRating = async (score: number) => {
+		setRating(score)
+	}
 	React.useEffect(() => {
 		setIsRegistered(isUserAlreadyRegistered.isRegistered ?? false)
 		setUserRole(isUserAlreadyRegistered.topic?.rolID ?? null)
@@ -77,6 +96,36 @@ export function TalkDetails({
 
 	const handleTabChange = (value: string) => {
 		setJuryMode(value === 'jury')
+	}
+
+	const sendScore = async () => {
+		console.log({
+			score: {
+				userID: userId,
+				topicID: talk.topicsID,
+				score: rating,
+			},
+		})
+		try {
+			await apiClient.post(
+				'/rating/managerating',
+				{
+					userID: userId,
+					topicID: talk.topicsID,
+					score: rating,
+				},
+				{
+					headers: {
+						'Authorization-Token': token,
+					},
+				}
+			)
+
+			toast.success('¡Gracias por tu Feedback!')
+		} catch (error) {
+			toast.error('Ocurrio un error, intentelo de nuevo')
+			return null
+		}
 	}
 
 	const getUserRoleDisplay = () => {
@@ -171,6 +220,49 @@ export function TalkDetails({
 												width: `${(5 / 100) * 100}%`,
 											}}></div>
 									</div>
+								</div>
+								<div>
+									<h3 className='font-semibold mb-2 text-lg'>
+										Calificar Charla
+									</h3>
+									<Dialog>
+										<DialogTrigger asChild>
+											<Button variant='outline'>Calificar esta charla</Button>
+										</DialogTrigger>
+										<DialogContent className='sm:max-w-[425px]'>
+											<DialogHeader>
+												<DialogTitle>Califica esta charla</DialogTitle>
+												<DialogDescription>
+													¿Qué te pareció esta charla? Tu opinión es importante
+													para nosotros.
+												</DialogDescription>
+											</DialogHeader>
+											<div className='flex justify-center space-x-2 py-4'>
+												{[1, 2, 3, 4, 5].map((star) => (
+													<Star
+														key={star}
+														className={`w-8 h-8 cursor-pointer ${
+															star <= rating
+																? 'text-yellow-400 fill-yellow-400'
+																: 'text-gray-300'
+														}`}
+														onClick={() => handleRating(star)}
+													/>
+												))}
+											</div>
+											<p className='text-center text-sm text-gray-500'>
+												{rating > 0
+													? `Has calificado esta charla con ${rating} ${rating === 1 ? 'estrella' : 'estrellas'}`
+													: 'Haz clic en las estrellas para calificar'}
+											</p>
+											<Button
+												className='bg-blue-600'
+												size={'full'}
+												onClick={sendScore}>
+												Enviar Calificación
+											</Button>
+										</DialogContent>
+									</Dialog>
 								</div>
 							</TabsContent>
 							{juryMode && (

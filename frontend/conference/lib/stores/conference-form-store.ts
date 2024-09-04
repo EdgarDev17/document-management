@@ -10,7 +10,7 @@ export type NewConferenceFormState = {
 	finishingDate: Date | null
 	eventType: string
 	eventAddress: string
-	institutionId: string
+	institutionId: number
 	documentAttempt: number
 	location: string
 	urlConference: string
@@ -30,7 +30,7 @@ export type NewConferenceFormActions = {
 		eventAddress: string
 	) => void
 
-	updateStepThree: (institutionName: string) => void
+	updateStepThree: (institutionName: number) => void
 	updateStepFour: (documentAttempt: number) => void
 }
 
@@ -47,7 +47,7 @@ export const defaultStateValues: NewConferenceFormState = {
 	eventUrl: '',
 	finishingDate: null,
 	startingDate: null,
-	institutionId: '',
+	institutionId: 0,
 	location: '',
 	urlConference: '',
 	documentAttempt: 0,

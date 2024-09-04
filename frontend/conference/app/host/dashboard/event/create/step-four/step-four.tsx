@@ -39,7 +39,7 @@ const formSchema = z.object({
 	paperAttempts: z.number().gte(1),
 })
 
-export default function Component({
+export default function StepFour({
 	userId,
 	token,
 }: {
@@ -59,15 +59,21 @@ export default function Component({
 	const { eventType, eventName, eventDescription, updateStepFour } =
 		useNewConferenceFormStore((state) => state)
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(e: React.MouseEvent) {
+		e.preventDefault()
 		updateStepFour(paperAttempt)
 		router.push('/host/dashboard/event/create/summary')
+	}
+
+	const handleGoBack = (e: React.MouseEvent) => {
+		e.preventDefault() // Prevent default button behavior
+		router.push('/host/dashboard/event/create/step-three')
 	}
 
 	return (
 		<div className='w-full h-[70vh] flex justify-center items-center'>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
+				<form>
 					<Card className='w-full max-w-md shadow-lg'>
 						<CardHeader className='space-y-1'>
 							<div className='flex items-center space-x-2'>
@@ -115,14 +121,10 @@ export default function Component({
 							/>
 						</CardContent>
 						<CardFooter className='flex justify-between'>
-							<Button
-								variant='outline'
-								onClick={() => {
-									router.push('/host/dashboard/event/create/step-two')
-								}}>
+							<Button variant={'ghost'} onClick={handleGoBack}>
 								Volver
 							</Button>
-							<Button type='submit'>Continuar</Button>
+							<Button onClick={onSubmit}>Continuar</Button>
 						</CardFooter>
 					</Card>
 				</form>

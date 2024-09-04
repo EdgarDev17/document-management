@@ -49,8 +49,9 @@ import { Institution } from '@/types/models/institution'
 import { toast } from 'sonner'
 
 const formSchema = z.object({
-	institutionId: z.string().min(1, {
-		message: 'Selecciona una institución',
+	institutionId: z.number().int().min(1, {
+		message:
+			'Selecciona una institución válida (número entero mayor o igual a 1)',
 	}),
 })
 
@@ -66,17 +67,22 @@ export default function StepThree({
 	const [loadingInstitution, setLoadingInstitution] = useState<boolean>(false)
 	const [isInstitutionSelected, setIsInstitutionSelected] = useState<string>('')
 
+	const {
+		eventType,
+		eventName,
+		eventDescription,
+		institutionId,
+		updateStepThree,
+	} = useNewConferenceFormStore((state) => {
+		return state
+	})
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			institutionId: '0',
+			institutionId: institutionId,
 		},
 	})
-
-	const { eventType, eventName, eventDescription, updateStepThree } =
-		useNewConferenceFormStore((state) => {
-			return state
-		})
 
 	const handleInsitutionCreateRequest = (isLoading: boolean) => {
 		setLoadingInstitution(isLoading)
@@ -137,7 +143,9 @@ export default function StepThree({
 											</FormLabel>
 											<FormControl className={'py-2'}>
 												<Select
-													onValueChange={field.onChange}
+													onValueChange={(value) =>
+														field.onChange(Number(value))
+													}
 													value={field.value.toString()}>
 													<SelectTrigger className='w-[200px]'>
 														<SelectValue placeholder='Selecciona una opción' />

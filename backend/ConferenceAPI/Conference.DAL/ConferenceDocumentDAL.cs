@@ -439,7 +439,7 @@ namespace Conference.DAL
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_userID", userId);
 
-                users = _connection.Cnn.Query<DocumentUserEN>("d", parameters, commandType: CommandType.StoredProcedure).ToList();
+                users = _connection.Cnn.Query<DocumentUserEN>("sp_GetDocumentAndUserDetailsByUserID", parameters, commandType: CommandType.StoredProcedure).ToList();
 
 
                 foreach (var user in users)
@@ -459,6 +459,7 @@ namespace Conference.DAL
             catch (Exception ex)
             {
                 // Manejo de la excepción
+                Console.WriteLine(ex);
                 // InsertErrorLog("Error en GetUserProfile en userDAL en sp_user_perfil BD", ex.Message);
             }
             finally

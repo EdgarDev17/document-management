@@ -51,6 +51,7 @@ export function EventsContainer({ token }: { token: string }) {
 				)
 				setEvents(filteredEvents)
 
+				console.log(response.data.conference)
 				// total participantes
 				const total = filteredEvents.reduce(
 					(sum, event) => sum + (event.totalRegistrados || 0),

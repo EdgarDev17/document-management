@@ -92,7 +92,7 @@ const EventSummary = ({ token, userId }: { token: string; userId: number }) => {
 					description: formSummary.eventDescription,
 					beggingDate: formSummary.startingDate,
 					finishDate: formSummary.finishingDate,
-					areaID: 26, //TODO: HACER QUE TOME EL AREA DESDE EL FORM STEPS
+					areaID: 26,
 					documentAttempt: formSummary.documentAttempt,
 					location: formSummary.location,
 					urlconference: formSummary.eventUrl,

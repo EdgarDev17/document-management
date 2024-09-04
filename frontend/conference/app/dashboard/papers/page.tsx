@@ -19,67 +19,83 @@ import {
 	DocumentCheckIcon,
 	ClockIcon,
 	ExclamationCircleIcon,
+	DocumentPlusIcon,
 } from '@heroicons/react/24/outline'
+import { apiClient } from '@/lib/api-service'
+import { auth } from '@/auth'
+import { NoAuth } from '@/app/components/common/noauth'
+import Link from 'next/link'
 
-export default function PaginaDocumentos() {
-	// Estos datos normalmente vendrían de una API o base de datos
-	const datosResumen = {
-		totalDocumentos: 12,
-		documentosAceptados: 5,
-		enRevision: 6,
-		documentosRechazados: 1,
+interface Paper {
+	documentID: number
+	name: string
+	review: number
+	regDate: string
+	userID: number
+	topicsID: number
+	url: string
+	fileName: string
+	status: string
+	documentBase: string
+}
+
+async function getCurrentUserPapers(
+	userId: number,
+	token: string
+): Promise<Paper[]> {
+	try {
+		const res = await apiClient.get(
+			`/document/getdocumentsByUser?UserID=${userId}`,
+			{
+				headers: {
+					'Authorization-Token': token,
+				},
+			}
+		)
+		console.log(res.data.document[0])
+		return res.data.document
+	} catch (error) {
+		console.error('Error fetching papers:', error)
+		return []
+	}
+}
+
+function obtenerEtiquetaEstado(estado: string) {
+	switch (estado) {
+		case 'Aceptado':
+			return <Badge className='bg-green-500'>Aceptado</Badge>
+		case 'En Revisión':
+			return <Badge className='bg-yellow-500'>En Revisión</Badge>
+		case 'Rechazado':
+			return <Badge className='bg-red-500'>Rechazado</Badge>
+		case 'Pendiente':
+			return <Badge className='bg-blue-500'>Pendiente</Badge>
+		default:
+			return <Badge>{estado}</Badge>
+	}
+}
+
+export default async function Page() {
+	const session = await auth()
+
+	if (!session) {
+		return <NoAuth />
 	}
 
-	const listaDocumentos = [
-		{
-			id: 1,
-			titulo: 'Aprendizaje Automático en Educación',
-			evento: 'Conferencia EdTech 2024',
-			estado: 'Aceptado',
-			fechaEnvio: '15-11-2023',
-		},
-		{
-			id: 2,
-			titulo: 'El Futuro del Aprendizaje en Línea',
-			evento: 'Cumbre de Educación Digital',
-			estado: 'En Revisión',
-			fechaEnvio: '01-12-2023',
-		},
-		{
-			id: 3,
-			titulo: 'Blockchain en Credenciales Académicas',
-			evento: 'Simposio de Blockchain en Educación',
-			estado: 'Rechazado',
-			fechaEnvio: '20-10-2023',
-		},
-		{
-			id: 4,
-			titulo: 'Métodos de Investigación Asistidos por IA',
-			evento: 'Conferencia de IA en Academia',
-			estado: 'En Revisión',
-			fechaEnvio: '10-12-2023',
-		},
-		{
-			id: 5,
-			titulo: 'Realidad Virtual en el Aula',
-			evento: 'Foro de Innovación EdTech',
-			estado: 'Aceptado',
-			fechaEnvio: '25-11-2023',
-		},
-	]
-
-	const obtenerEtiquetaEstado = (estado: string) => {
-		switch (estado) {
-			case 'Aceptado':
-				return <Badge className='bg-green-500'>Aceptado</Badge>
-			case 'En Revisión':
-				return <Badge className='bg-yellow-500'>En Revisión</Badge>
-			case 'Rechazado':
-				return <Badge className='bg-red-500'>Rechazado</Badge>
-			default:
-				return <Badge>{estado}</Badge>
-		}
-	}
+	const papers = await getCurrentUserPapers(
+		parseInt(session.userId),
+		session.accessToken
+	)
+	const totalDocumentos = papers.length
+	const documentosAceptados = papers.filter(
+		(paper) => paper.status === 'Aprobado'
+	).length
+	const documentosEnRevision = papers.filter(
+		(paper) => paper.status === 'Pendiente'
+	).length
+	const documentosRechazados = papers.filter(
+		(paper) => paper.status === 'Rechazado'
+	).length
 
 	return (
 		<div className='container mx-auto px-4 py-8'>
@@ -94,9 +110,7 @@ export default function PaginaDocumentos() {
 						<DocumentIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>
-							{datosResumen.totalDocumentos}
-						</div>
+						<div className='text-2xl font-bold'>{totalDocumentos}</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -107,9 +121,7 @@ export default function PaginaDocumentos() {
 						<DocumentCheckIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>
-							{datosResumen.documentosAceptados}
-						</div>
+						<div className='text-2xl font-bold'>{documentosAceptados}</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -118,7 +130,7 @@ export default function PaginaDocumentos() {
 						<ClockIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>{datosResumen.enRevision}</div>
+						<div className='text-2xl font-bold'>{documentosEnRevision}</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -129,50 +141,61 @@ export default function PaginaDocumentos() {
 						<ExclamationCircleIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>
-							{datosResumen.documentosRechazados}
-						</div>
+						<div className='text-2xl font-bold'>{documentosRechazados}</div>
 					</CardContent>
 				</Card>
 			</div>
 
-			<Card className='mt-8'>
-				<CardHeader>
-					<CardTitle>Documentos Enviados</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Título</TableHead>
-								<TableHead>Evento</TableHead>
-								<TableHead>Estado</TableHead>
-								<TableHead>Fecha de Envío</TableHead>
-								<TableHead>Acciones</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{listaDocumentos.map((documento) => (
-								<TableRow key={documento.id}>
-									<TableCell className='font-medium'>
-										{documento.titulo}
-									</TableCell>
-									<TableCell>{documento.evento}</TableCell>
-									<TableCell>
-										{obtenerEtiquetaEstado(documento.estado)}
-									</TableCell>
-									<TableCell>{documento.fechaEnvio}</TableCell>
-									<TableCell>
-										<Button variant='outline' size='sm'>
-											Ver Detalles
-										</Button>
-									</TableCell>
+			{papers.length === 0 ? (
+				<Card className='mt-8'>
+					<CardContent className='flex flex-col items-center justify-center py-12'>
+						<DocumentPlusIcon className='h-24 w-24 text-gray-400 mb-4' />
+						<h2 className='text-2xl font-semibold text-gray-700 mb-2'>
+							No has enviado documentos aún
+						</h2>
+						<p className='text-gray-500 mb-4 text-center'>
+							Cuando subas documentos, aparecerán aquí para su revisión y
+							seguimiento.
+						</p>
+					</CardContent>
+				</Card>
+			) : (
+				<Card className='mt-8'>
+					<CardHeader>
+						<CardTitle>Documentos Enviados</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Título</TableHead>
+									<TableHead>Estado</TableHead>
+									<TableHead>Fecha de Envío</TableHead>
+									<TableHead>Acciones</TableHead>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</CardContent>
-			</Card>
+							</TableHeader>
+							<TableBody>
+								{papers.map((paper) => (
+									<TableRow key={paper.documentID}>
+										<TableCell className='font-medium'>{paper.name}</TableCell>
+										<TableCell>{obtenerEtiquetaEstado(paper.status)}</TableCell>
+										<TableCell>
+											{new Date(paper.regDate).toLocaleDateString()}
+										</TableCell>
+										<TableCell>
+											<Link href={`/documents/general/${paper.documentID}`}>
+												<Button variant='outline' size='sm'>
+													Ver Detalles
+												</Button>
+											</Link>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</CardContent>
+				</Card>
+			)}
 		</div>
 	)
 }

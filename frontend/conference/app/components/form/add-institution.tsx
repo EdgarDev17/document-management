@@ -74,7 +74,7 @@ function AddInstitution({
 				'/Institutions/create',
 				{
 					Name: values.name,
-					Website: values.website,
+					Wesbite: values.website,
 					Phone: values.contact_phone,
 					Description: values.description,
 					Image: values.image,

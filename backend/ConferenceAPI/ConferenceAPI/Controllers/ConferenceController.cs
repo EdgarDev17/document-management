@@ -443,6 +443,7 @@ namespace ConferenceAPI.Controllers
 
         }
 
+        
         [HttpGet]
         [Route("ConferencesDetailsByUser")]
         public ActionResult<IResponse> GetConferencesDetailsSpecificByUser()
@@ -862,7 +863,7 @@ namespace ConferenceAPI.Controllers
                 }
                 else
                 {
-                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "ï¿½Algo salio mal!" };
                     return Conflict(response);
                 }
             }
@@ -902,7 +903,7 @@ namespace ConferenceAPI.Controllers
                 }
                 else
                 {
-                    var response = new GenericApiRespons { HttpCode = 409, Message = "¡Algo salio mal!" };
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "ï¿½Algo salio mal!" };
                     return Conflict(response);
                 }
             }

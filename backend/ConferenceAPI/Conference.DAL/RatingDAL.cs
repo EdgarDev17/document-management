@@ -41,7 +41,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                // Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error en ManageRating en RatingDAL en sp_manage_score BD", ex.Message, UserID);
             }
@@ -75,7 +75,7 @@ namespace Conference.DAL
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine(ex);
 
                 _connection.Cnn.Close();
                 InsertErrorLogSession("Error  en conferenceDAL obtener_promedio_score_por_topic", ex.Message, userId);

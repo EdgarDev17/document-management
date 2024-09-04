@@ -1,3 +1,5 @@
+# create database conferencesdb;
+
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: conferencesdb
@@ -18,7 +20,6 @@
 --
 -- Table structure for table `area`
 --
-
 
 DROP TABLE IF EXISTS `area`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -52,7 +53,7 @@ CREATE TABLE `areasconference` (
   KEY `FK_conferenceID_conference` (`conferenceID`),
   CONSTRAINT `areasconference_ibfk_1` FOREIGN KEY (`areaID`) REFERENCES `area` (`areaID`),
   CONSTRAINT `FK_conferenceID_conference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +86,7 @@ CREATE TABLE `conference` (
   CONSTRAINT `FK_institutionID_conference` FOREIGN KEY (`institutionID`) REFERENCES `institution` (`institutionID`),
   CONSTRAINT `FK_rolID_conference` FOREIGN KEY (`rolID`) REFERENCES `roluserconference` (`rolID`),
   CONSTRAINT `FK_UserID_conference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +113,7 @@ CREATE TABLE `conferencetopics` (
   PRIMARY KEY (`TopicsID`),
   KEY `fk_ConferenceTopics_Conference` (`conferenceID`),
   CONSTRAINT `fk_ConferenceTopics_Conference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +143,7 @@ DROP TABLE IF EXISTS `diplomadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `diplomadata` (
-  `DiplomaID` int NOT NULL,
+  `DiplomaID` int NOT NULL AUTO_INCREMENT,
   `Title` varchar(100) NOT NULL,
   `Description` varchar(250) NOT NULL,
   `Signed` varchar(50) DEFAULT NULL,
@@ -191,7 +192,7 @@ CREATE TABLE `document` (
   KEY `FK_UserID_document` (`UserID`),
   CONSTRAINT `FK_TopicsID_document` FOREIGN KEY (`TopicsID`) REFERENCES `conferencetopics` (`TopicsID`),
   CONSTRAINT `FK_UserID_document` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +219,7 @@ CREATE TABLE `documentevaluationcriteria` (
   CONSTRAINT `documentevaluationcriteria_ibfk_2` FOREIGN KEY (`scaleID`) REFERENCES `evalutionscale` (`scaleID`),
   CONSTRAINT `documentevaluationcriteria_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `userconference` (`UserID`),
   CONSTRAINT `documentevaluationcriteria_ibfk_4` FOREIGN KEY (`documentID`) REFERENCES `document` (`documentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,7 +243,7 @@ CREATE TABLE `documentveredict` (
   CONSTRAINT `FK_documentID_documentVeredict` FOREIGN KEY (`documentID`) REFERENCES `document` (`documentID`),
   CONSTRAINT `FK_UserID_documentVeredict` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
   CONSTRAINT `FK_veredictID_documentVeredict` FOREIGN KEY (`veredictID`) REFERENCES `veredict` (`veredictID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,7 +353,7 @@ CREATE TABLE `institution` (
   PRIMARY KEY (`institutionID`),
   KEY `fk_institution_user` (`userID`),
   CONSTRAINT `fk_institution_user` FOREIGN KEY (`userID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +372,7 @@ CREATE TABLE `logerror` (
   PRIMARY KEY (`logID`),
   KEY `FK_sessionID_logError` (`sessionID`),
   CONSTRAINT `FK_sessionID_logError` FOREIGN KEY (`sessionID`) REFERENCES `sessions` (`sessionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,7 +462,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`sessionID`),
   KEY `FK_UserID_sessions` (`UserID`),
   CONSTRAINT `FK_UserID_sessions` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -478,7 +479,7 @@ CREATE TABLE `speakerconference` (
   PRIMARY KEY (`SpeakerConferenceID`),
   KEY `fk_TopicsID_SpeakerConference` (`TopicsID`),
   CONSTRAINT `fk_TopicsID_SpeakerConference` FOREIGN KEY (`TopicsID`) REFERENCES `conferencetopics` (`TopicsID`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -500,7 +501,7 @@ CREATE TABLE `temp-conferencetopics` (
   `TotalAttendees` int NOT NULL,
   `TotalSpeakers` int NOT NULL,
   PRIMARY KEY (`TopicsID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -545,7 +546,7 @@ CREATE TABLE `user` (
   KEY `FK_User_rolID` (`rolID`),
   CONSTRAINT `FK_User_CountryID` FOREIGN KEY (`countryID`) REFERENCES `country` (`CountryID`),
   CONSTRAINT `FK_User_rolID` FOREIGN KEY (`rolID`) REFERENCES `roluserconference` (`rolID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -566,7 +567,7 @@ CREATE TABLE `userassignedconference` (
   KEY `fk_conferenceID_UserAssignedConference` (`conferenceID`),
   CONSTRAINT `fk_conferenceID_UserAssignedConference` FOREIGN KEY (`conferenceID`) REFERENCES `conference` (`conferenceID`),
   CONSTRAINT `FK_UserID_UserAssignedConference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,7 +592,7 @@ CREATE TABLE `userconference` (
   CONSTRAINT `FK_RolID_userConference` FOREIGN KEY (`RolID`) REFERENCES `roluserconference` (`rolID`),
   CONSTRAINT `fk_TopicsId` FOREIGN KEY (`TopicsID`) REFERENCES `conferencetopics` (`TopicsID`),
   CONSTRAINT `FK_UserID_userConference` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -611,7 +612,7 @@ CREATE TABLE `userpassword` (
   PRIMARY KEY (`PasswordID`),
   KEY `FK_UserPassword_UserID` (`UserID`),
   CONSTRAINT `FK_UserPassword_UserID` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2715,7 +2716,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`edgardo`@`localhost` PROCEDURE `sp_insert_institution`(IN p_name varchar(100), IN p_website varchar(255),
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_institution`(IN p_name varchar(100), IN p_website varchar(255),
                                                                 IN p_contact_phone varchar(25),
                                                                 IN p_description varchar(240), IN p_userID int,
                                                                 IN p_image_url varchar(255),
@@ -3038,6 +3039,8 @@ declare  p_UserConferenceID INT;
 	-- Verificar si existe el usuario y si está activo
     SELECT COUNT(1) INTO v_UserExists 
 		FROM conferencesdb.user WHERE UserID = p_UserID AND state = 1;
+          select userConferenceID into p_UserConferenceID   from `conferencesdb`.`userconference` 
+    where UserID=p_UserID and TopicsID=p_TopicsID; 
         
 	IF v_UserExists = 0 THEN
 		SET result = 0;
@@ -3069,8 +3072,7 @@ declare  p_UserConferenceID INT;
 IF v_UserExists = 1 AND v_TopicExists = 1 AND v_IsValid = 1 THEN
 	
     
-    select userConferenceID into p_UserConferenceID   from `conferencesdb`.`userconference` 
-    where UserID=p_UserID and TopicsID=p_TopicsID; 
+  
     
     -- Consultar puntaje de la conferencia
     SELECT Score INTO v_CurrentScore
@@ -3319,11 +3321,9 @@ BEGIN
                 VALUES (NOW(), p_documentID, p_veredictID, p_UserID);
 
                 -- Actualizar la tabla document si después de la inserción existen 3 registros con diferente UserID
-                SET v_count = v_count + 1;
-                IF v_count = 3 THEN
-                    UPDATE conferencesdb.document
-                    SET review = 1
-                    WHERE documentID = p_documentID;
+              -- SET v_count = v_count + 1;
+              --  IF v_count = 3 THEN
+                   
                     
                       -- Contar los veredictos "Aprobado" para este documento
                 SELECT COUNT(*) INTO v_approvalCount
@@ -3333,6 +3333,11 @@ BEGIN
 
                 -- Si hay 2 o 3 veredictos iguales a "Aprobado", actualizar la calificación del documento
                 IF v_approvalCount >= 2 THEN
+                
+                 UPDATE conferencesdb.document
+                    SET review = 1
+                    WHERE documentID = p_documentID;
+                    
                     UPDATE conferencesdb.document
                     SET qualification = 1
                     WHERE documentID = p_documentID;
@@ -3343,7 +3348,7 @@ BEGIN
 					FROM `conferencesdb`.`document`
 					WHERE documentID = p_documentID
 					LIMIT 1;
-                    sELECT CONCAT(name, ' ', lastname) INTO v_NameSpeaker
+                    SELECT CONCAT(name, ' ', lastname) INTO v_NameSpeaker
 					FROM `conferencesdb`.`user`
 					WHERE UserID=v_userID1
 					LIMIT 1;  
@@ -3353,7 +3358,7 @@ BEGIN
                     ELSE
                         SET calification = 0;
                     
-                END IF;
+               -- END IF;
 
                 END IF;
 
@@ -3572,7 +3577,7 @@ BEGIN
     SELECT COUNT(*)
     INTO v_UpdateCount
     FROM `conferencesdb`.`userconference`
-    WHERE TopicsID = p_TopicsID AND RolID != p_NewRolID;
+    WHERE TopicsID = p_TopicsID AND RolID = p_NewRolID;
 
     -- Verificar si las actualizaciones no han superado el límite de 3
     IF v_UpdateCount < 3 THEN
@@ -3997,4 +4002,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-31 21:22:24
+-- Dump completed on 2024-09-03 15:58:11

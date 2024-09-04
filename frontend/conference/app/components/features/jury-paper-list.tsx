@@ -14,7 +14,7 @@ import { FileText, Star } from 'lucide-react'
 import { formatDistanceToNow, es } from 'date-fns'
 import Link from 'next/link'
 
-type Document = {
+export type Document = {
 	documentID: number
 	name: string
 	regDate: string
