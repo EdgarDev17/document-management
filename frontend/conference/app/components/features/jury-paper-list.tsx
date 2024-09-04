@@ -36,7 +36,13 @@ function truncateText(text: string, maxLength: number) {
 	return text.slice(0, maxLength) + '...'
 }
 
-export function JuryModeContent({ documents }: { documents: Document[] }) {
+export function JuryModeContent({
+	documents,
+	conferenceId,
+}: {
+	documents: Document[]
+	conferenceId: number
+}) {
 	return (
 		<div className='space-y-4'>
 			<h3 className='text-2xl font-bold mb-4'>Papers para Evaluación</h3>
@@ -83,7 +89,8 @@ export function JuryModeContent({ documents }: { documents: Document[] }) {
 										className='text-xs'>
 										{doc.review === '0' ? 'Pendiente' : 'Revisado'}
 									</Badge>
-									<Link href={`/documents/${doc.documentID}`}>
+									<Link
+										href={`/documents/${doc.documentID}?conferenceID=${conferenceId}`}>
 										<Button
 											variant='outline'
 											size='sm'

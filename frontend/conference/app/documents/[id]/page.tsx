@@ -3,10 +3,10 @@ import { PDFViewer } from '@/app/components/features/pdf-viewer'
 import { auth } from '@/auth'
 import { apiClient } from '@/lib/api-service'
 
-async function getRubric(documentId: number, token: string) {
+async function getRubric(conferenceId: number, token: string) {
 	try {
 		const res = await apiClient.get(
-			`/Conference/ListEvaluationCriteriaByConference?conferenceID=${documentId}`,
+			`/Conference/ListEvaluationCriteriaByConference?conferenceID=${conferenceId}`,
 			{
 				headers: {
 					'Authorization-Token': token,
@@ -14,8 +14,10 @@ async function getRubric(documentId: number, token: string) {
 			}
 		)
 
+		console.log('RUBRICA', res.data.conference)
 		return res.data.conference
 	} catch (error) {
+		console.log(error)
 		return null
 	}
 }
@@ -35,7 +37,13 @@ async function getDocumentById(id: string, token: string) {
 	} catch (error) {}
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+	params,
+	searchParams,
+}: {
+	params: { id: string }
+	searchParams: { [key: string]: string | string[] | undefined }
+}) {
 	const session = await auth()
 
 	if (!session) {
@@ -43,7 +51,11 @@ export default async function Page({ params }: { params: { id: string } }) {
 	}
 
 	const paper = await getDocumentById(params.id, session.accessToken)
-	const rubric = await getRubric(17, session.accessToken)
+	const rubric = await getRubric(
+		// @ts-ignore
+		parseInt(searchParams.conferenceID),
+		session.accessToken
+	)
 
 	return (
 		<div className='w-full md:container mx-auto py-8'>

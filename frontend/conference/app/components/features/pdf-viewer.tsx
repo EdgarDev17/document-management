@@ -71,11 +71,13 @@ const RubricContent = ({
 	evaluation,
 	handleEvaluationChange,
 	handleVerdict,
+	isLoading,
 }: {
 	rubric: RubricItem[]
 	evaluation: Record<number, number>
 	handleEvaluationChange: (evaCritConfID: number, scaleID: number) => void
 	handleVerdict: (verdict: number) => void
+	isLoading: boolean
 }) => (
 	<ScrollArea className='h-[calc(100vh-10rem)] pr-4'>
 		<div className='space-y-8 p-1'>
@@ -104,6 +106,7 @@ const RubricContent = ({
 									<RadioGroupItem
 										value={scale.scaleID.toString()}
 										id={`${item.evaCritConfID}-${scale.scaleID}`}
+										disabled={isLoading}
 									/>
 									<Label
 										htmlFor={`${item.evaCritConfID}-${scale.scaleID}`}
@@ -121,11 +124,17 @@ const RubricContent = ({
 			))}
 		</div>
 		<CardFooter className='flex justify-between mt-6'>
-			<Button onClick={() => handleVerdict(1)} variant='default'>
-				Aprobado
+			<Button
+				onClick={() => handleVerdict(1)}
+				variant='default'
+				disabled={isLoading}>
+				{isLoading ? 'Enviando...' : 'Aprobado'}
 			</Button>
-			<Button onClick={() => handleVerdict(2)} variant='destructive'>
-				Rechazado
+			<Button
+				onClick={() => handleVerdict(2)}
+				variant='destructive'
+				disabled={isLoading}>
+				{isLoading ? 'Enviando...' : 'Rechazado'}
 			</Button>
 		</CardFooter>
 	</ScrollArea>
@@ -162,6 +171,7 @@ export function PDFViewer({
 	const [isDesktop, setIsDesktop] = useState(true)
 	const [activeTab, setActiveTab] = useState('pdf')
 	const router = useRouter()
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	useEffect(() => {
 		pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
@@ -215,6 +225,7 @@ export function PDFViewer({
 	}
 
 	const handleVerdict = async (verdict: number) => {
+		setIsSubmitting(true)
 		try {
 			// Formatear los datos de la rúbrica según el formato esperado por la API
 			const rubricData = Object.entries(evaluation).map(
@@ -260,9 +271,19 @@ export function PDFViewer({
 
 			toast.success('Calificación enviada con éxito')
 			router.push(`/dashboard/events/marketplace/event/talk/${topicsID}`)
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error:', error)
-			toast.error('Error al enviar la calificación')
+			if (
+				error.response &&
+				error.response.data &&
+				error.response.data.httpCode === 409
+			) {
+				toast.error(error.response.data.message)
+			} else {
+				toast.error('Error al enviar la calificación')
+			}
+		} finally {
+			setIsSubmitting(false)
 		}
 	}
 
@@ -343,6 +364,7 @@ export function PDFViewer({
 									rubric={rubric}
 									handleEvaluationChange={handleEvaluationChange}
 									handleVerdict={handleVerdict}
+									isLoading={isSubmitting}
 								/>
 							</CardContent>
 						</Card>
@@ -366,6 +388,7 @@ export function PDFViewer({
 										rubric={rubric}
 										handleEvaluationChange={handleEvaluationChange}
 										handleVerdict={handleVerdict}
+										isLoading={isSubmitting}
 									/>
 								</div>
 							</Drawer.Content>

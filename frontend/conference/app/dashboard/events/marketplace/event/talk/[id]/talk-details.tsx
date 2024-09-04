@@ -267,7 +267,10 @@ export function TalkDetails({
 							</TabsContent>
 							{juryMode && (
 								<TabsContent value='jury' className='space-y-6'>
-									<JuryModeContent documents={papers || []} />
+									<JuryModeContent
+										documents={papers || []}
+										conferenceId={talk.conferenceID}
+									/>
 								</TabsContent>
 							)}
 						</CardContent>
