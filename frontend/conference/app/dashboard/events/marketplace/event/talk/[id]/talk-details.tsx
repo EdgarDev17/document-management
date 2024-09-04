@@ -123,7 +123,7 @@ export function TalkDetails({
 
 			toast.success('¡Gracias por tu Feedback!')
 		} catch (error) {
-			toast.error('Ocurrio un error, intentelo de nuevo')
+			toast.error('Debes estar inscrito a la charla')
 			return null
 		}
 	}

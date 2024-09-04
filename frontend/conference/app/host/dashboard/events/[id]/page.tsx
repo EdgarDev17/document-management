@@ -70,7 +70,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 	)
 	const isAdmin = event.userID === parseInt(session.userId)
 
-	console.log('evento', event)
 	return (
 		<div className=' p-4 space-y-8 h-[70vh]'>
 			<EventContainer

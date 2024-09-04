@@ -13,7 +13,7 @@ import {
 import { UserIcon, MicIcon } from 'lucide-react'
 import { apiClient } from '@/lib/api-service'
 import { Role } from '@/types/models/role'
-import { HttpStatusCode } from 'axios'
+import { AxiosError, HttpStatusCode } from 'axios'
 import { toast } from 'sonner'
 import { WaveLoading } from '../common/wave-loading'
 
@@ -56,8 +56,17 @@ export function RegisterUserToTalk({
 				toast.success('Te has registrado al evento con éxito')
 				setIsOpen(false)
 			}
-		} catch (err) {
-			toast.error('Error al intentar registrarte en el evento')
+		} catch (err: any) {
+			if (
+				err.response.status === 409 &&
+				err.response.data.message ===
+					'El número máximo de oradores ya ha sido alcanzado'
+			) {
+				toast.error('Esta charla no acepta más ponentes')
+				return
+			} else {
+				toast.error('Error al intentar registrarte en el evento')
+			}
 
 			setIsOpen(false)
 		} finally {
@@ -80,7 +89,9 @@ export function RegisterUserToTalk({
 					</DialogDescription>
 				</DialogHeader>
 				{loading ? (
-					<WaveLoading />
+					<div className='py-8'>
+						<WaveLoading />
+					</div>
 				) : (
 					<div className='grid grid-cols-2 gap-4 py-4'>
 						<Button

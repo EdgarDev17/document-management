@@ -1,6 +1,6 @@
 export function WaveLoading() {
 	return (
-		<div className='flex items-center justify-center h-screen  dark:bg-gray-900'>
+		<div>
 			<div className='flex space-x-2'>
 				{[...Array(3)].map((_, i) => (
 					<div
