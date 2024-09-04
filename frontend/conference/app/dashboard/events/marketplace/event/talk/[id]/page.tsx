@@ -16,6 +16,7 @@ async function getTalkDetails(talkId: string, token: string) {
 			}
 		)
 
+		console.log('CHARLA JOJI', response.data.topics[0])
 		return response.data.topics[0]
 	} catch (err) {
 		return null
@@ -64,7 +65,7 @@ async function checkIfUserIsRegistered(token: string, targetTalkId: number) {
 		)
 
 		const foundTopic = res.data.topics.find(
-			(topic: Talk) => parseInt(topic.topicsID) === targetTalkId
+			(topic: Talk) => topic.topicsID === targetTalkId
 		)
 
 		return {

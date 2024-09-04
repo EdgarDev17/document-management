@@ -149,6 +149,7 @@ export default function StepOne() {
 							/>
 						</CardContent>
 						<CardFooter className='h-[20%] flex gap-x-4'>
+							{/* @ts-ignore */}
 							{windowSize.width > 640 ? (
 								<AlertDialog>
 									<AlertDialogTrigger asChild>

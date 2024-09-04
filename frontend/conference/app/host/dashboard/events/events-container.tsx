@@ -13,7 +13,6 @@ import {
 import {
 	ChartConfig,
 	ChartContainer,
-	ChartTooltip,
 	ChartTooltipContent,
 } from '@/app/components/ui/charts'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
@@ -54,6 +53,7 @@ export function EventsContainer({ token }: { token: string }) {
 				console.log(response.data.conference)
 				// total participantes
 				const total = filteredEvents.reduce(
+					// @ts-ignore
 					(sum, event) => sum + (event.totalRegistrados || 0),
 					0
 				)
@@ -62,10 +62,10 @@ export function EventsContainer({ token }: { token: string }) {
 				// evento mas proximo
 				const now = new Date()
 				const upcomingEvents = filteredEvents.filter(
-					(event) => new Date(event.beggingDate) > now
+					(event: Conference) => new Date(event.beggingDate) > now
 				)
 				const nearest = upcomingEvents.reduce(
-					(nearest, event) =>
+					(nearest: any, event: Conference) =>
 						!nearest ||
 						new Date(event.beggingDate) < new Date(nearest.beggingDate)
 							? event
@@ -75,7 +75,7 @@ export function EventsContainer({ token }: { token: string }) {
 				setNearestEvent(nearest)
 
 				// Prepare chart data
-				const chartData = filteredEvents.slice(0, 10).map((event) => ({
+				const chartData = filteredEvents.slice(0, 10).map((event: any) => ({
 					name:
 						event.conference_name.slice(0, 20) +
 						(event.conference_name.length > 20 ? '...' : ''),

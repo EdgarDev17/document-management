@@ -204,6 +204,7 @@ export default function Register() {
 													disabled={(date) =>
 														date > new Date() || date < new Date('1900-01-01')
 													}
+													// @ts-ignore
 													initialFocus
 													year={selectedYear}
 												/>

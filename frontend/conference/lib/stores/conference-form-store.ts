@@ -84,7 +84,7 @@ export const createNewConferenceFormStore = (
 				eventUrl: pEventUrl,
 				eventAddress: pEventAddress,
 			})),
-		updateStepThree: (pInstitutionName: string) =>
+		updateStepThree: (pInstitutionName: number) =>
 			set((state) => ({
 				institutionId: pInstitutionName,
 			})),

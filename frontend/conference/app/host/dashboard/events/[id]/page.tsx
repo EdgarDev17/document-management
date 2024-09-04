@@ -98,7 +98,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 		return 'no auth'
 	}
 
-	const event = await getEventDetails(params.id, session.accessToken)
+	const event: Conference = await getEventDetails(
+		params.id,
+		session.accessToken
+	)
 	const agenda = await getEventAgenda(params.id, session.accessToken)
 	const institution = await getInstitution(
 		event.institutionID.toString(),

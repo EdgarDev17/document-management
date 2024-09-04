@@ -57,6 +57,7 @@ const Badge = ({
 		red: 'bg-red-100 text-red-800',
 	}
 	return (
+		// @ts-ignore
 		<span className={`${baseClasses} ${variantClasses[variant]}`}>
 			{children}
 		</span>
@@ -129,7 +130,7 @@ export default async function Page() {
 	const totalPapers = papers ? papers.length : 0
 	const nextEvent = getNextEvent(events)
 
-	const getStatusVariant = (status) => {
+	const getStatusVariant = (status: string) => {
 		switch (status) {
 			case 'Aprobado':
 				return 'green'
@@ -142,7 +143,7 @@ export default async function Page() {
 		}
 	}
 
-	const getDateVariant = (date) => {
+	const getDateVariant = (date: string) => {
 		const eventDate = new Date(date)
 		const today = new Date()
 		const diffTime = eventDate.getTime() - today.getTime()
@@ -252,7 +253,7 @@ export default async function Page() {
 							</div>
 						) : (
 							<ul className='space-y-2'>
-								{events.slice(0, 3).map((event) => (
+								{events.slice(0, 3).map((event: ConferenceItem) => (
 									<li
 										key={event.conferenceID}
 										className='flex justify-between items-center bg-muted rounded-md hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors'>
@@ -291,9 +292,9 @@ export default async function Page() {
 					</CardHeader>
 					<CardContent>
 						<ul className='space-y-2'>
-							{papers.slice(0, 3).map((paper) => (
+							{papers.slice(0, 3).map((paper: Paper) => (
 								<li
-									key={paper.id}
+									key={paper.documentID}
 									className=' bg-muted rounded-md hover:bg-muted/80 cursor-pointer transition-colors'>
 									<Link
 										href={''}

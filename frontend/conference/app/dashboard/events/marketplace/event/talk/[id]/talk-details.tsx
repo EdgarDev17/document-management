@@ -297,10 +297,7 @@ export function TalkDetails({
 							) : (
 								<div className='flex items-center space-x-4'>
 									<Avatar className='h-20 w-20 ring-2 ring-primary ring-offset-2'>
-										<AvatarImage
-											src={talk.speakerImage || ''}
-											alt={talk.nameSpeaker}
-										/>
+										<AvatarImage src={''} alt={talk.nameSpeaker} />
 										<AvatarFallback>
 											{talk.nameSpeaker
 												.split(' ')
@@ -334,7 +331,7 @@ export function TalkDetails({
 									¡Asegura tu lugar en esta charla exclusiva!
 								</p>
 								<RegisterUserToTalk
-									talkId={parseInt(talk.topicsID)}
+									talkId={talk.topicsID}
 									token={token}
 									userId={parseInt(userId)}
 								/>
@@ -378,7 +375,7 @@ export function TalkDetails({
 												comparte tus ideas con la comunidad.
 											</p>
 											<PaperSubmissionDialog
-												talkId={parseInt(talk.topicsID)}
+												talkId={talk.topicsID}
 												token={token}
 											/>
 										</CardContent>

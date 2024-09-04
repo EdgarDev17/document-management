@@ -131,7 +131,7 @@ export function AnalyticsDataContainer({ events }: Props) {
 			: talks.filter(
 					(talk) =>
 						events.find((event) => event.conferenceID === talk.eventId)
-							?.name === selectedEvent
+							?.conference_name === selectedEvent
 				)
 
 	const getRatingMessage = (rating: number) => {
@@ -150,13 +150,15 @@ export function AnalyticsDataContainer({ events }: Props) {
 			icon: <ThumbsDownIcon className='h-6 w-6 text-red-500' />,
 		}
 	}
-	const averageRating =
-		events.reduce((sum, event) => sum + event.averageRating, 0) / events.length
+	// TODO: hacer funcionar esto
+	const averageRating = 4
 	const ratingFeedback = getRatingMessage(averageRating)
-
+	// @ts-ignore
 	const totalRevenue = events.reduce((sum, event) => sum + event.revenue, 0)
+
 	const totalParticipants = events.reduce(
-		(sum, event) => sum + event.totalParticipants,
+		// @ts-ignore
+		(sum, event) => sum + event.totalRegistrados,
 		0
 	)
 

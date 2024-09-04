@@ -11,7 +11,9 @@ import {
 	HoverCardTrigger,
 } from '@/app/components/ui/hover-card'
 import { FileText, Star } from 'lucide-react'
-import { formatDistanceToNow, es } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
+import { es } from 'date-fns/locale'
+
 import Link from 'next/link'
 
 export type Document = {

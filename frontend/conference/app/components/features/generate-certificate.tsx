@@ -34,14 +34,7 @@ import {
 	CardTitle,
 } from '@/app/components/ui/card'
 import { Separator } from '@/app/components/ui/separator'
-import {
-	FileUpload,
-	User,
-	Building,
-	FileText,
-	Users,
-	Image,
-} from 'lucide-react'
+import { User, FileText, Users, Image } from 'lucide-react'
 
 const formSchema = z.object({
 	UserId: z.string().min(1, { message: 'El ID de usuario es requerido' }),

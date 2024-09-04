@@ -71,7 +71,7 @@ export function EventContainer({
 						</Badge>
 						<Badge variant='blue' className='text-sm'>
 							<MapPinIcon className='mr-1 h-4 w-4' />
-							{event.type}
+							{event.conference_type}
 						</Badge>
 						{/*TODO: TRAER EL AREA DE LA BD */}
 						<Badge variant='outline' className='text-sm'>

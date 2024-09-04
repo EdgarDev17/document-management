@@ -137,6 +137,7 @@ function AddRubrica({ token }: { token: string }) {
 		// Generar la respuesta en el formato que la API espera
 		const apiResponse = selectedCriteria.map((criterionID) => ({
 			criterionID,
+			// @ts-ignore
 			conferenceID: parseInt(conferenceId),
 		}))
 
