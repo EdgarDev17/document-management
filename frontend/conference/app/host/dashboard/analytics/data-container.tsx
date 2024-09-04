@@ -4,7 +4,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/app/components/ui/card'
@@ -16,7 +15,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/app/components/ui/table'
-
 import {
 	Select,
 	SelectContent,
@@ -32,16 +30,19 @@ import {
 	ThumbsUpIcon,
 	ThumbsDownIcon,
 } from 'lucide-react'
-
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
-
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	XAxis,
+	ResponsiveContainer,
+} from 'recharts'
 import {
 	ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/app/components/ui/chart'
-import { TopicRatingAvg } from '@/app/components/features/analytics/rating-avg'
 import { Conference } from '@/types/models/conference'
 
 type Props = {
@@ -125,15 +126,11 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 			icon: <ThumbsDownIcon className='h-6 w-6 text-red-500' />,
 		}
 	}
-	// TODO: hacer funcionar esto
+
 	const averageRating = 4
 	const ratingFeedback = getRatingMessage(averageRating)
-	// @ts-ignore
-	const totalRevenue = events.reduce((sum, event) => sum + event.revenue, 0)
-
 	const totalParticipants = events.reduce(
-		// @ts-ignore
-		(sum, event) => sum + event.totalRegistrados,
+		(sum, event) => sum + (event.totalRegistrados || 0),
 		0
 	)
 
@@ -154,13 +151,11 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 	} satisfies ChartConfig
 
 	return (
-		<div className='p-8 space-y-8'>
-			<h1 className='text-3xl font-bold mb-6'>
+		<div className='p-4 md:p-8 space-y-6 md:space-y-8'>
+			<h1 className='text-2xl md:text-3xl font-bold mb-4 md:mb-6'>
 				Dashboard de Gestión de Eventos
 			</h1>
-			{/* <TopicRatingAvg ratingTopics={} /> */}
-			{/* KPIs */}
-			<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
 				<Card>
 					<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 						<CardTitle className='text-sm font-medium'>
@@ -169,8 +164,10 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 						{ratingFeedback.icon}
 					</CardHeader>
 					<CardContent>
-						<div className='text-xl font-bold'>{ratingFeedback.message}</div>
-						<p className='text-sm text-muted-foreground mt-2'>
+						<div className='text-lg md:text-xl font-bold'>
+							{ratingFeedback.message}
+						</div>
+						<p className='text-xs md:text-sm text-muted-foreground mt-2'>
 							Basado en la calificación promedio de {averageRating.toFixed(1)}
 						</p>
 					</CardContent>
@@ -183,7 +180,7 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 						<UsersIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>
+						<div className='text-xl md:text-2xl font-bold'>
 							{totalParticipants.toLocaleString()}
 						</div>
 						<p className='text-xs text-muted-foreground'>
@@ -191,7 +188,7 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 						</p>
 					</CardContent>
 				</Card>
-				<Card>
+				<Card className='md:col-span-2 lg:col-span-1'>
 					<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 						<CardTitle className='text-sm font-medium'>
 							Calificación Promedio
@@ -199,23 +196,24 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 						<StarIcon className='h-4 w-4 text-muted-foreground' />
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>{averageRating.toFixed(1)}</div>
+						<div className='text-xl md:text-2xl font-bold'>
+							{averageRating.toFixed(1)}
+						</div>
 						<p className='text-xs text-muted-foreground'>
 							+0.2 desde el último mes
 						</p>
 					</CardContent>
 				</Card>
 			</div>
-			<div className='flex justify-between gap-x-4'>
-				{/* Filtro de eventos y tabla de charlas */}
-				<Card className='w-[60%] h-[500px]'>
+			<div className='flex flex-col lg:flex-row gap-4'>
+				<Card className='w-full lg:w-[60%]'>
 					<CardHeader>
 						<CardTitle>Análisis de Charlas</CardTitle>
 						<CardDescription>Desglose de charlas por evento</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<Select onValueChange={setSelectedEvent} defaultValue='Todos'>
-							<SelectTrigger className='w-[180px] mb-4'>
+							<SelectTrigger className='w-full md:w-[180px] mb-4'>
 								<SelectValue placeholder='Seleccionar evento' />
 							</SelectTrigger>
 							<SelectContent>
@@ -229,102 +227,64 @@ export function AnalyticsDataContainer({ events, token }: Props) {
 								))}
 							</SelectContent>
 						</Select>
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead>Charla</TableHead>
-									<TableHead>Ponente</TableHead>
-									<TableHead>Participantes</TableHead>
-									<TableHead>Calificación</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{filteredTalks.map((talk) => (
-									<TableRow key={talk.id}>
-										<TableCell>{talk.name}</TableCell>
-										<TableCell>{talk.speaker}</TableCell>
-										<TableCell>{talk.participants}</TableCell>
-										<TableCell>
-											<StarRating rating={talk.rating} />
-										</TableCell>
+						<div className='overflow-x-auto'>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>Charla</TableHead>
+										<TableHead>Ponente</TableHead>
+										<TableHead>Participantes</TableHead>
+										<TableHead>Calificación</TableHead>
 									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+								</TableHeader>
+								<TableBody>
+									{filteredTalks.map((talk) => (
+										<TableRow key={talk.id}>
+											<TableCell className='font-medium'>{talk.name}</TableCell>
+											<TableCell>{talk.speaker}</TableCell>
+											<TableCell>{talk.participants}</TableCell>
+											<TableCell>
+												<StarRating rating={talk.rating} />
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
 					</CardContent>
 				</Card>
-				{/* Gráfico de tendencias de asistencia */}
-				<Card className='w-[40%] h-[500px]'>
+				<Card className='w-full lg:w-[40%]'>
 					<CardHeader>
 						<CardTitle>Participantes por evento</CardTitle>
 						<CardDescription>Datos en tiempo real</CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className='h-[300px] md:h-[400px]'>
 						<ChartContainer config={chartConfig}>
-							<BarChart accessibilityLayer data={chartData}>
-								<CartesianGrid vertical={false} />
-								<XAxis
-									dataKey='evento'
-									tickLine={false}
-									tickMargin={10}
-									axisLine={false}
-									tickFormatter={(value) => value.slice(0, 3)}
-								/>
-								<ChartTooltip
-									cursor={false}
-									content={<ChartTooltipContent hideLabel />}
-								/>
-								<Bar
-									dataKey='participantes'
-									fill='var(--color-desktop)'
-									radius={8}
-								/>
-							</BarChart>
+							<ResponsiveContainer width='100%' height='100%'>
+								<BarChart data={chartData}>
+									<CartesianGrid vertical={false} />
+									<XAxis
+										dataKey='evento'
+										tickLine={false}
+										tickMargin={10}
+										axisLine={false}
+										tickFormatter={(value) => value.slice(0, 3)}
+									/>
+									<ChartTooltip
+										cursor={false}
+										content={<ChartTooltipContent hideLabel />}
+									/>
+									<Bar
+										dataKey='participantes'
+										fill='var(--color-desktop)'
+										radius={8}
+									/>
+								</BarChart>
+							</ResponsiveContainer>
 						</ChartContainer>
 					</CardContent>
-					{/* <CardFooter className='flex-col items-start gap-2 text-sm'>
-						<div className='flex gap-2 font-medium leading-none'>
-							Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
-						</div>
-						<div className='leading-none text-muted-foreground'>
-							Showing total visitors for the last 6 months
-						</div>
-					</CardFooter> */}
 				</Card>
 			</div>
-
-			{/* Próximos eventos */}
-			{/* <Card>
-				<CardHeader>
-					<CardTitle>Próximos Eventos</CardTitle>
-					<CardDescription>
-						Eventos programados para los próximos meses
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<div className='space-y-4'>
-						{upcomingEvents.map((event) => (
-							<div key={event.id} className='flex items-center justify-between'>
-								<div>
-									<h3 className='font-semibold'>{event.name}</h3>
-									<p className='text-sm text-muted-foreground flex items-center'>
-										<CalendarIcon className='mr-1 h-4 w-4' />
-										{new Date(event.date).toLocaleDateString()}
-									</p>
-								</div>
-								<div className='text-right'>
-									<Badge variant='secondary'>
-										{event.expectedParticipants} esperados
-									</Badge>
-									<Button size='sm' className='ml-2'>
-										Ver detalles
-									</Button>
-								</div>
-							</div>
-						))}
-					</div>
-				</CardContent>
-			</Card> */}
 		</div>
 	)
 }

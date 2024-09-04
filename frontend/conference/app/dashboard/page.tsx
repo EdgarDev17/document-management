@@ -155,10 +155,10 @@ export default async function Page() {
 	}
 
 	return (
-		<div className='min-h-screen'>
-			<main className='max-w-7xl mx-auto py-6 sm:px-6 lg:px-8'>
+		<div className='min-h-screen p-4 sm:p-6 lg:p-8'>
+			<main className='max-w-7xl mx-auto'>
 				{/* Summary Cards */}
-				<div className='grid gap-6 mb-8 md:grid-cols-3'>
+				<div className='grid gap-4 sm:gap-6 mb-6 sm:mb-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 					<Card>
 						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 							<CardTitle className='text-sm font-medium'>
@@ -187,7 +187,7 @@ export default async function Page() {
 							</p>
 						</CardContent>
 					</Card>
-					<Card>
+					<Card className='sm:col-span-2 lg:col-span-1'>
 						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 							<CardTitle className='text-sm font-medium'>
 								Evento mas cercano
@@ -197,13 +197,17 @@ export default async function Page() {
 						<CardContent>
 							{nextEvent ? (
 								<div className='space-y-2'>
-									<div className='text-2xl font-bold'>
+									<div className='text-xl sm:text-2xl font-bold'>
 										{nextEvent.conference_name}
 									</div>
 									<p className='text-xs text-muted-foreground'>
 										{formatDate(nextEvent.beggingDate)}
 									</p>
-									<Button variant='outline' size='sm' asChild>
+									<Button
+										variant='outline'
+										size='sm'
+										asChild
+										className='w-full sm:w-auto'>
 										<Link
 											href={`/dashboard/events/marketplace/event/${nextEvent.conferenceID}`}>
 											Ir al evento
@@ -212,12 +216,16 @@ export default async function Page() {
 									</Button>
 								</div>
 							) : (
-								<div className='flex flex-col items-center justify-center space-y-2 py-6'>
-									<CalendarPlusIcon className='h-12 w-12 text-muted-foreground' />
+								<div className='flex flex-col items-center justify-center space-y-2 py-4 sm:py-6'>
+									<CalendarPlusIcon className='h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground' />
 									<p className='text-center text-sm text-muted-foreground'>
 										No te has inscrito a ningún evento aún.
 									</p>
-									<Button variant='outline' size='sm' asChild>
+									<Button
+										variant='outline'
+										size='sm'
+										asChild
+										className='w-full sm:w-auto'>
 										<Link href='/events'>
 											Explorar eventos
 											<ArrowRightIcon className='ml-2 h-4 w-4' />
@@ -238,15 +246,15 @@ export default async function Page() {
 					</CardHeader>
 					<CardContent>
 						{totalEvents == 0 ? (
-							<div className='flex flex-col items-center justify-center text-center p-6'>
+							<div className='flex flex-col items-center justify-center text-center p-4 sm:p-6'>
 								<CalendarX2
-									className='w-16 h-16 text-muted-foreground mb-4'
+									className='w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mb-4'
 									aria-hidden='true'
 								/>
-								<h2 className='text-xl font-semibold mb-2'>
+								<h2 className='text-lg sm:text-xl font-semibold mb-2'>
 									No tienes eventos suscritos
 								</h2>
-								<p className='text-muted-foreground'>
+								<p className='text-sm text-muted-foreground'>
 									Actualmente no estás suscrito a ningún evento. ¡Explora y
 									únete a eventos interesantes!
 								</p>
@@ -259,8 +267,10 @@ export default async function Page() {
 										className='flex justify-between items-center bg-muted rounded-md hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors'>
 										<Link
 											href={`/dashboard/events/marketplace/event/${event.conferenceID}`}
-											className='w-full flex justify-between items-center p-2'>
-											<span>{event.conference_name}</span>
+											className='w-full flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 sm:p-3'>
+											<span className='mb-1 sm:mb-0'>
+												{event.conference_name}
+											</span>
 											<Badge variant={getDateVariant(event.beggingDate)}>
 												Inicia: {formatDate(event.beggingDate)}
 											</Badge>
@@ -295,11 +305,11 @@ export default async function Page() {
 							{papers.slice(0, 3).map((paper: Paper) => (
 								<li
 									key={paper.documentID}
-									className=' bg-muted rounded-md hover:bg-muted/80 cursor-pointer transition-colors'>
+									className='bg-muted rounded-md hover:bg-muted/80 cursor-pointer transition-colors'>
 									<Link
 										href={''}
-										className='w-full flex justify-between items-center p-2'>
-										<span>{paper.name}</span>
+										className='w-full flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 sm:p-3'>
+										<span className='mb-1 sm:mb-0'>{paper.name}</span>
 										<Badge variant={getStatusVariant(paper.status)}>
 											{paper.status}
 										</Badge>

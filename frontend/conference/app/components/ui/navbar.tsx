@@ -192,46 +192,44 @@ function MobileNav() {
 				<nav className='flex flex-col gap-4'>
 					<h2 className='text-lg font-semibold mb-2'>Organizadores</h2>
 					<Link
-						href='/organizadores/conferencias'
+						href='/host/dashboard/events'
 						className='flex items-center gap-2'>
 						<Calendar className='h-4 w-4' />
 						Ver mis conferencias
 					</Link>
 					<Link
-						href='/organizadores/instituciones'
+						href='/host/dashboard/institutions'
 						className='flex items-center gap-2'>
 						<Users className='h-4 w-4' />
 						Ver mis instituciones
 					</Link>
 					<Link
-						href='/organizadores/analiticas'
+						href='/host/dashboard/analytics'
 						className='flex items-center gap-2'>
 						<BarChart2 className='h-4 w-4' />
 						Ver analíticas
 					</Link>
 					<Link
-						href='/organizadores/perfil'
+						href='/host/dashboard/account'
 						className='flex items-center gap-2'>
 						<User className='h-4 w-4' />
 						Mi perfil
 					</Link>
 
 					<h2 className='text-lg font-semibold mt-4 mb-2'>Personas</h2>
-					<Link
-						href='/personas/conferencias'
-						className='flex items-center gap-2'>
+					<Link href='/dashboard/events' className='flex items-center gap-2'>
 						<Calendar className='h-4 w-4' />
 						Ver mis conferencias
 					</Link>
-					<Link href='/personas/documentos' className='flex items-center gap-2'>
+					<Link href='/dashboard/papers' className='flex items-center gap-2'>
 						<FileText className='h-4 w-4' />
 						Ver mis documentos
 					</Link>
 					<Link href='/personas/analiticas' className='flex items-center gap-2'>
 						<BarChart2 className='h-4 w-4' />
-						Ver analíticas
+						Ver analíticas (muy pronto)
 					</Link>
-					<Link href='/personas/perfil' className='flex items-center gap-2'>
+					<Link href='/dashboard/account' className='flex items-center gap-2'>
 						<User className='h-4 w-4' />
 						Mi perfil
 					</Link>

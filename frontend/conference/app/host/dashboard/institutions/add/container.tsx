@@ -13,13 +13,9 @@ import axios from 'axios'
 import {
 	Dialog,
 	DialogTrigger,
-	DialogClose,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
-	DialogOverlay,
-	DialogPortal,
 	DialogTitle,
 } from '@/app/components/ui/dialog'
 import { Button } from '@/app/components/ui/button'
@@ -32,58 +28,91 @@ function Container({ userId, token }: { userId: string; token: string }) {
 	>(null)
 	const [institutionModal, setInstitutionModal] = React.useState<boolean>(false)
 
-  const handleCreatingInstitution = async (state: boolean) => {
-    setInstitutionModal(state);
-  };
-  React.useEffect(() => {
-    axios("http://localhost:5110/api/Institutions", {
-      headers: {
-        "Authorization-Token": token,
-      },
-    })
-      .then((response) => {
-        setInstitutions(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {})
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [institutionModal, token]);
+	const handleCreatingInstitution = async (state: boolean) => {
+		setInstitutionModal(state)
+	}
+
+	React.useEffect(() => {
+		axios('http://localhost:5110/api/Institutions', {
+			headers: {
+				'Authorization-Token': token,
+			},
+		})
+			.then((response) => {
+				setInstitutions(response.data)
+				setLoading(false)
+			})
+			.catch((error) => {
+				console.error('Error fetching institutions:', error)
+			})
+			.finally(() => {
+				setLoading(false)
+			})
+	}, [institutionModal, token])
 
 	return (
-		<div className={'flex flex-col gap-y-16 py-8'}>
-			<div className='flex justify-between'>
-				<Card className={'w-full max-w-[400px]'}>
-					<CardHeader className={'bg-tertiary'}>
-						<CardTitle className={'text-white font-bold'}>
+		<div className='flex flex-col gap-y-8 md:gap-y-16 py-4 md:py-8 px-4 md:px-0'>
+			<div className='flex flex-col md:flex-row justify-between gap-4 md:gap-0'>
+				<Dialog open={institutionModal} onOpenChange={setInstitutionModal}>
+					<DialogTrigger asChild>
+						<Button
+							variant='default'
+							className='text-sm md:text-base w-full md:w-auto bg-blue-600 md:hidden block'>
+							Crear Institución
+						</Button>
+					</DialogTrigger>
+					<DialogContent className='max-w-[90vw] md:max-w-[700px]'>
+						<DialogHeader>
+							<DialogTitle className='text-lg md:text-xl'>
+								Añadir nueva institución
+							</DialogTitle>
+							<DialogDescription className='text-sm md:text-base'>
+								Si la institucion no aparece en la lista, puedes crearla aqui
+							</DialogDescription>
+						</DialogHeader>
+						<div className='mt-4'>
+							<AddInstitution
+								token={token}
+								userId={userId}
+								isInstitutionLoading={handleCreatingInstitution}
+							/>
+						</div>
+					</DialogContent>
+				</Dialog>
+				<Card className='w-full md:max-w-[400px]'>
+					<CardHeader className='bg-tertiary'>
+						<CardTitle className='text-white font-bold text-lg md:text-xl'>
 							Instituciones creadas
 						</CardTitle>
 					</CardHeader>
-					<CardContent className={'py-6 flex justify-center'}>
+					<CardContent className='py-4 md:py-6 flex justify-center items-center'>
 						{loading ? (
-							<p>Cargando...</p>
+							<p className='text-sm md:text-base'>Cargando...</p>
 						) : (
-							<p className={'text-4xl font-bold'}>
-								{institutions ? institutions?.length : '0'}
+							<p className='text-3xl md:text-4xl font-bold'>
+								{institutions ? institutions.length : '0'}
 							</p>
 						)}
 					</CardContent>
 				</Card>
 				<Dialog open={institutionModal} onOpenChange={setInstitutionModal}>
 					<DialogTrigger asChild>
-						<Button variant='default' className={'text-sm'}>
+						<Button
+							variant='default'
+							className='text-sm md:text-base w-full md:w-auto bg-blue-600 hidden md:block'>
 							Crear Institución
 						</Button>
 					</DialogTrigger>
-					<DialogContent className='max-w-[700px]'>
+					<DialogContent className='max-w-[90vw] md:max-w-[700px]'>
 						<DialogHeader>
-							<DialogTitle>Añadir nueva institución</DialogTitle>
-							<DialogDescription>
+							<DialogTitle className='text-lg md:text-xl'>
+								Añadir nueva institución
+							</DialogTitle>
+							<DialogDescription className='text-sm md:text-base'>
 								Si la institucion no aparece en la lista, puedes crearla aqui
 							</DialogDescription>
 						</DialogHeader>
-						<div className=''>
+						<div className='mt-4'>
 							<AddInstitution
 								token={token}
 								userId={userId}
@@ -93,9 +122,9 @@ function Container({ userId, token }: { userId: string; token: string }) {
 					</DialogContent>
 				</Dialog>
 			</div>
-			<div>
+			<div className='w-full overflow-x-auto'>
 				{loading ? (
-					<p>Cargando...</p>
+					<p className='text-sm md:text-base'>Cargando...</p>
 				) : (
 					<DataTable
 						columns={columns}

@@ -88,9 +88,9 @@ export default async function Page() {
 		: []
 
 	return (
-		<div className='min-h-screen w-full'>
-			<main className='max-w-7xl mx-auto py-6 sm:px-6 lg:px-8'>
-				<div className='grid gap-6 mb-8 md:grid-cols-3'>
+		<div className='min-h-screen w-full px-4 sm:px-6 lg:px-8'>
+			<main className='max-w-7xl mx-auto py-6'>
+				<div className='grid gap-4 sm:gap-6 mb-6 sm:mb-8 grid-cols-1 md:grid-cols-3'>
 					<Card className='md:col-span-1'>
 						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 							<CardTitle className='text-sm font-medium'>
@@ -100,8 +100,10 @@ export default async function Page() {
 						</CardHeader>
 						<CardContent className='h-[80%]'>
 							{!allEvents || allEvents.length === 0 ? (
-								<div className='flex h-full w-full  flex-col items-center justify-center space-y-2'>
-									<p className='text-center text-6xl font-bold'>0</p>
+								<div className='flex h-full w-full flex-col items-center justify-center space-y-2'>
+									<p className='text-center text-4xl sm:text-6xl font-bold'>
+										0
+									</p>
 								</div>
 							) : (
 								<>
@@ -123,13 +125,17 @@ export default async function Page() {
 						<CardContent>
 							{nextEvent ? (
 								<div className='space-y-2'>
-									<div className='text-2xl font-bold'>
+									<div className='text-xl sm:text-2xl font-bold'>
 										{nextEvent.conference_name}
 									</div>
 									<p className='text-xs text-muted-foreground'>
 										{formatDate(nextEvent.beggingDate)}
 									</p>
-									<Button variant='outline' size='sm' asChild>
+									<Button
+										variant='outline'
+										size='sm'
+										asChild
+										className='w-full sm:w-auto'>
 										<Link
 											href={`/dashboard/events/marketplace/event/${nextEvent.conferenceID}`}>
 											Ir al evento
@@ -138,12 +144,16 @@ export default async function Page() {
 									</Button>
 								</div>
 							) : (
-								<div className='flex flex-col items-center justify-center space-y-2 py-6'>
-									<CalendarPlusIcon className='h-12 w-12 text-muted-foreground' />
+								<div className='flex flex-col items-center justify-center space-y-2 py-4 sm:py-6'>
+									<CalendarPlusIcon className='h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground' />
 									<p className='text-center text-sm text-muted-foreground'>
 										No te has inscrito a ningún evento aún.
 									</p>
-									<Button variant='outline' size='sm' asChild>
+									<Button
+										variant='outline'
+										size='sm'
+										asChild
+										className='w-full sm:w-auto'>
 										<Link href='/events'>
 											Explorar eventos
 											<ArrowRightIcon className='ml-2 h-4 w-4' />
@@ -154,9 +164,9 @@ export default async function Page() {
 						</CardContent>
 					</Card>
 				</div>
-				<div className='py-8'>
+				<div className='py-6 sm:py-8'>
 					<Link
-						className='bg-blue-600 hover:bg-blue-800 text-blue-50 px-4 py-3 rounded-lg'
+						className='inline-block bg-blue-600 hover:bg-blue-800 text-blue-50 px-4 py-3 rounded-lg text-sm sm:text-base'
 						href='/dashboard/events/marketplace/'>
 						Buscar un evento
 					</Link>

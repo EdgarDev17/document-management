@@ -13,7 +13,7 @@ export default async function Page() {
 		)
 	}
 	return (
-		<div className='w-full h-full md:h-[80vh] flex justify-center items-center py-8'>
+		<div className=' flex justify-center items-center py-8'>
 			<EventsContainer token={session.accessToken} />
 		</div>
 	)

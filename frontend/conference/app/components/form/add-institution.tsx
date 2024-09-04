@@ -17,10 +17,11 @@ import {
 	FormMessage,
 } from '@/app/components/ui/form'
 import { Textarea } from '@/app/components/ui/textarea'
-import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
+import { CloudUpload } from 'lucide-react'
 import { apiClient } from '@/lib/api-service'
 import { HttpStatusCode } from 'axios'
 import { toast } from 'sonner'
+import { ScrollArea } from '../ui/scrollarea'
 
 const formSchema = z.object({
 	name: z.string().min(1, {
@@ -37,10 +38,10 @@ const formSchema = z.object({
 	}),
 	image: z.string().min(1, {
 		message: 'selecciona una imagen',
-	}), // Este campo almacenará la imagen en formato base64
+	}),
 })
 
-function AddInstitution({
+export function AddInstitution({
 	userId,
 	token,
 	isInstitutionLoading,
@@ -66,7 +67,7 @@ function AddInstitution({
 		values: z.infer<typeof formSchema>,
 		event: React.FormEvent
 	) {
-		event.preventDefault() // Previene la propagación del evento
+		event.preventDefault()
 		isInstitutionLoading(true)
 
 		try {
@@ -108,128 +109,126 @@ function AddInstitution({
 				const base64 = result.replace(/^data:image\/\w+;base64,/, '')
 
 				setPreviewImage(result)
-				form.setValue('image', base64) // Establecer la imagen en base64 en el formulario
+				form.setValue('image', base64)
 			}
 			reader.readAsDataURL(file)
 		}
 	}
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit((values, event) =>
-					onSubmit(values, event as React.FormEvent)
-				)}
-				className='w-full space-y-8'>
-				<div className={'flex gap-x-16'}>
-					<div className={'space-y-8'}>
-						<FormField
-							control={form.control}
-							name='name'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Nombre Institución</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormDescription>
-										Nombre con el que se guardará la institución
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='website'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Sitio Web</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormDescription>
-										URL oficial de la institución
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='contact_phone'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Teléfono de Contacto</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormDescription>
-										Número de teléfono de contacto de la institución
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
-					<div className={'space-y-8'}>
-						<FormField
-							control={form.control}
-							name='description'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Descripción</FormLabel>
-									<FormControl>
-										{/*<Input {...field} />*/}
-										<Textarea {...field} className={'resize-none h-[124px]'} />
-									</FormControl>
-									<FormDescription>
-										Breve descripción de la institución (Maximo 140 caracteres)
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormItem className={'flex flex-col'}>
-							<Label>Imagen de la institución</Label>
-
-							<FormLabel
-								htmlFor={'institutionimage'}
-								className={
-									'w-full border border-zinc-100 shadow p-3 rounded-lg bg-zinc-800 flex items-center text-white cursor-pointer'
-								}>
-								<CloudArrowUpIcon className={'w-6 h-6'} />
-								<span>Subir imagen</span>
-							</FormLabel>
-							<Input
-								id={'institutionimage'}
-								type='file'
-								accept='image/jpeg, image/png'
-								onChange={handleImageChange}
-								className={'hidden'}
+		<ScrollArea className='h-[600px] w-full md:h-auto md:px-0'>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit((values, event) =>
+						onSubmit(values, event as React.FormEvent)
+					)}
+					className='w-full space-y-8 pb-8 md:pb-0'>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+						<div className='space-y-8'>
+							<FormField
+								control={form.control}
+								name='name'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Nombre Institución</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormDescription>
+											Nombre con el que se guardará la institución
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
 							/>
-							<FormMessage />
-							<FormDescription>
-								Selecciona una imagen en formato JPG o PNG. (OBLIGATORIO)
-							</FormDescription>
-
-							{previewImage && (
-								<div className='mt-4'>
-									<p>Vista previa de la imagen:</p>
-									<img
-										src={previewImage}
-										alt='Vista previa'
-										className='mt-2 w-[100px] h-[100px] rounded-lg'
-									/>
-								</div>
-							)}
-						</FormItem>
+							<FormField
+								control={form.control}
+								name='website'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Sitio Web</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormDescription>
+											URL oficial de la institución
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='contact_phone'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Teléfono de Contacto</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormDescription>
+											Número de teléfono de contacto de la institución
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<div className='space-y-8'>
+							<FormField
+								control={form.control}
+								name='description'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Descripción</FormLabel>
+										<FormControl>
+											<Textarea {...field} className='resize-none h-32' />
+										</FormControl>
+										<FormDescription>
+											Breve descripción de la institución (Maximo 140
+											caracteres)
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormItem className='flex flex-col'>
+								<Label>Imagen de la institución</Label>
+								<FormLabel
+									htmlFor='institutionimage'
+									className='w-full border border-zinc-200 shadow p-3 rounded-lg bg-zinc-800 flex items-center justify-center text-white cursor-pointer hover:bg-zinc-700 transition-colors'>
+									<CloudUpload className='w-6 h-6 mr-2' />
+									<span>Subir imagen</span>
+								</FormLabel>
+								<Input
+									id='institutionimage'
+									type='file'
+									accept='image/jpeg, image/png'
+									onChange={handleImageChange}
+									className='hidden'
+								/>
+								<FormMessage />
+								<FormDescription>
+									Selecciona una imagen en formato JPG o PNG. (OBLIGATORIO)
+								</FormDescription>
+								{previewImage && (
+									<div className='mt-4'>
+										<p>Vista previa de la imagen:</p>
+										<img
+											src={previewImage}
+											alt='Vista previa'
+											className='mt-2 w-24 h-24 object-cover rounded-lg'
+										/>
+									</div>
+								)}
+							</FormItem>
+						</div>
 					</div>
-				</div>
-				<Button type='submit'>Submit</Button>
-			</form>
-		</Form>
+					<Button type='submit' className='w-full md:w-auto bg-blue-600'>
+						Crear Institución
+					</Button>
+				</form>
+			</Form>
+		</ScrollArea>
 	)
 }
-
-export { AddInstitution }

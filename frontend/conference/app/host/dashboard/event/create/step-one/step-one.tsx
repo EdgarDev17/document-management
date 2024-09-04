@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/app/components/ui/card'
-
 import {
 	Form,
 	FormField,
@@ -18,7 +17,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/app/components/ui/form'
-
 import {
 	Select,
 	SelectContent,
@@ -41,8 +39,6 @@ import {
 	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
-	AlertDialogOverlay,
-	AlertDialogPortal,
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/app/components/ui/alert-dialog'
@@ -82,17 +78,21 @@ export default function StepOne() {
 	}
 
 	return (
-		<div className='w-full h-[80vh] flex justify-center items-center'>
+		<div className='w-full min-h-screen px-4 py-6 flex justify-center items-center'>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<Card className='h-[600px]'>
-						<CardHeader className='h-[20%]'>
-							<CardTitle>Datos generales del evento</CardTitle>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className='w-full max-w-md'>
+					<Card className='w-full'>
+						<CardHeader className='space-y-2'>
+							<CardTitle className='text-2xl'>
+								Datos generales del evento
+							</CardTitle>
 							<CardDescription>
-								Estos datos son necesario para que puedas crear un nuevo evento
+								Estos datos son necesarios para que puedas crear un nuevo evento
 							</CardDescription>
 						</CardHeader>
-						<CardContent className='h-[60%] space-y-6'>
+						<CardContent className='space-y-6'>
 							<FormField
 								control={form.control}
 								name='eventName'
@@ -115,7 +115,7 @@ export default function StepOne() {
 										<FormControl>
 											<Textarea
 												{...field}
-												className='h-[140px] resize-none'
+												className='h-32 resize-none'
 												maxLength={240}
 											/>
 										</FormControl>
@@ -123,7 +123,6 @@ export default function StepOne() {
 									</FormItem>
 								)}
 							/>
-
 							<FormField
 								control={form.control}
 								name='eventType'
@@ -148,12 +147,13 @@ export default function StepOne() {
 								)}
 							/>
 						</CardContent>
-						<CardFooter className='h-[20%] flex gap-x-4'>
-							{/* @ts-ignore */}
-							{windowSize.width > 640 ? (
+						<CardFooter className='flex flex-col sm:flex-row gap-4'>
+							{windowSize.width && windowSize.width > 640 ? (
 								<AlertDialog>
 									<AlertDialogTrigger asChild>
-										<Button variant={'outline'}>Cancelar</Button>
+										<Button variant={'outline'} className='w-full sm:w-auto'>
+											Cancelar
+										</Button>
 									</AlertDialogTrigger>
 									<AlertDialogContent>
 										<AlertDialogHeader>
@@ -162,7 +162,7 @@ export default function StepOne() {
 											</AlertDialogTitle>
 											<AlertDialogDescription>
 												Si cancelas la creación del evento, los datos se
-												perderás y debereas crearlo desde cero.
+												perderán y deberás crearlo desde cero.
 											</AlertDialogDescription>
 										</AlertDialogHeader>
 										<AlertDialogFooter>
@@ -175,10 +175,11 @@ export default function StepOne() {
 									</AlertDialogContent>
 								</AlertDialog>
 							) : (
-								// TODO: HACERLO COMPONENTE
 								<Drawer.Root shouldScaleBackground>
 									<Drawer.Trigger asChild>
-										<Button variant={'outline'}>Cancelar</Button>
+										<Button variant={'outline'} className='w-full'>
+											Cancelar
+										</Button>
 									</Drawer.Trigger>
 									<Drawer.Portal>
 										<Drawer.Overlay className='fixed inset-0 bg-black/40' />
@@ -192,7 +193,7 @@ export default function StepOne() {
 														</Drawer.Title>
 														<p className='text-zinc-600 mb-2'>
 															Si cancelas la creación del evento, los datos se
-															perderás y debereas crearlo desde cero.
+															perderán y deberás crearlo desde cero.
 														</p>
 													</div>
 													<div className='flex flex-col w-full gap-y-4'>
@@ -210,7 +211,9 @@ export default function StepOne() {
 									</Drawer.Portal>
 								</Drawer.Root>
 							)}
-							<Button variant={'default'}>Continuar</Button>
+							<Button variant={'default'} className='w-full sm:w-auto'>
+								Continuar
+							</Button>
 						</CardFooter>
 					</Card>
 				</form>

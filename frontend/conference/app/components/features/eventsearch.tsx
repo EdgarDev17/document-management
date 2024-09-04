@@ -18,11 +18,10 @@ import {
 } from '@heroicons/react/24/outline'
 import { apiClient } from '@/lib/api-service'
 import { urlConference } from '@/lib/endpoints'
-import { Conference } from '@/app/host/dashboard/events/columns'
+import { Conference } from '@/types/models/conference'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 
-// Array de colores de Tailwind con valor "100"
 const bgColors = [
 	'bg-red-100',
 	'bg-yellow-100',
@@ -41,7 +40,6 @@ const bgColors = [
 	'bg-fuchsia-100',
 ]
 
-// Función para obtener un color aleatorio
 const getRandomColor = () =>
 	bgColors[Math.floor(Math.random() * bgColors.length)]
 
@@ -55,7 +53,7 @@ function EventSearch({ token }: { token: string }) {
 	useEffect(() => {
 		setLoading(true)
 		apiClient
-			.get(`${urlConference}/ConferencesDetailsGeneral`, {
+			.get(`conference/ConferencesDetailsGeneral`, {
 				headers: {
 					'Authorization-Token': token,
 				},
@@ -72,11 +70,9 @@ function EventSearch({ token }: { token: string }) {
 	}, [])
 
 	if (loading) {
-		return <div>LOADING DATA...</div>
+		return <div className='text-center py-8'>LOADING DATA...</div>
 	}
 
-	// TODO: CAMBIAR NAME POR AREA
-	// EN LA SEGUNDA VALIDACION
 	const filteredEvents = events.filter(
 		(event) =>
 			event.conference_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -96,18 +92,18 @@ function EventSearch({ token }: { token: string }) {
 				Buscador de Eventos Académicos
 			</h1>
 
-			<div className='flex space-x-4'>
+			<div className='flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4'>
 				<div className='flex-1'>
 					<Input
 						type='search'
 						placeholder='Buscar eventos...'
 						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
+						onChange={(e: any) => setSearchTerm(e.target.value)}
 						className='w-full bg-white'
 					/>
 				</div>
 				<Select value={selectedArea} onValueChange={setSelectedArea}>
-					<SelectTrigger className='w-[180px]'>
+					<SelectTrigger className='w-full sm:w-[180px]'>
 						<SelectValue placeholder='Filtrar por área' />
 					</SelectTrigger>
 					<SelectContent>
@@ -120,7 +116,7 @@ function EventSearch({ token }: { token: string }) {
 				</Select>
 			</div>
 
-			<div className='flex flex-col gap-y-2'>
+			<div className='flex flex-col gap-y-4'>
 				{displayedEvents.map((evento) => {
 					const randomColor = getRandomColor()
 					return (
@@ -129,11 +125,13 @@ function EventSearch({ token }: { token: string }) {
 							className='w-full h-fit'
 							href={`/dashboard/events/marketplace/event/${evento.conferenceID}`}>
 							<Card className='overflow-hidden'>
-								<CardContent className='p-4 flex'>
+								<CardContent className='p-4 flex flex-col sm:flex-row'>
 									<div
-										className={`mr-4 flex flex-col items-center justify-center ${randomColor} rounded-md p-2 min-w-[80px]`}>
-										<span className='text-sm font-semibold'>12</span>
-										<span className='text-xs'>sep</span>
+										className={`mb-4 sm:mb-0 sm:mr-4 flex flex-row sm:flex-col items-center justify-center ${randomColor} rounded-md p-2 min-w-[80px]`}>
+										<span className='text-sm font-semibold mr-2 sm:mr-0'>
+											12
+										</span>
+										<span className='text-xs mr-2 sm:mr-0'>sep</span>
 										<span className='text-xs'>2022</span>
 									</div>
 									<div className='flex-1'>
@@ -141,22 +139,26 @@ function EventSearch({ token }: { token: string }) {
 										<p className='text-sm mt-1 line-clamp-2'>
 											{evento.description}
 										</p>
-										<div className='flex items-center mt-2 space-x-2'>
-											<Badge variant='secondary'>
+										<div className='flex flex-wrap items-center mt-2 space-x-2'>
+											<Badge variant='secondary' className='mb-2'>
 												<GlobeAltIcon className='inline-block mr-1 h-3 w-3' />
 												{evento.conference_type}
 											</Badge>
-											<Badge variant='outline'>{'Area'}</Badge>
-											<Badge variant='outline'>
+											<Badge variant='outline' className='mb-2'>
+												{'Area'}
+											</Badge>
+											<Badge variant='outline' className='mb-2'>
 												Anfitrión: {evento.institution_name}
 											</Badge>
 										</div>
 									</div>
-									<div className='flex flex-col justify-between items-end ml-4'>
+									<div className='flex flex-col justify-between items-start sm:items-end mt-4 sm:mt-0 sm:ml-4'>
 										<Badge variant='secondary' className='mb-2'>
 											{`${formatDate(evento.beggingDate)} - ${formatDate(evento.finishDate)}`}
 										</Badge>
-										<Button size='sm'>Ver conferencia</Button>
+										<Button size='sm' className='w-full sm:w-auto'>
+											Ver conferencia
+										</Button>
 									</div>
 								</CardContent>
 							</Card>

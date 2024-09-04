@@ -66,19 +66,19 @@ export default function StepFour({
 	}
 
 	const handleGoBack = (e: React.MouseEvent) => {
-		e.preventDefault() // Prevent default button behavior
+		e.preventDefault()
 		router.push('/host/dashboard/event/create/step-three')
 	}
 
 	return (
-		<div className='w-full h-[70vh] flex justify-center items-center'>
+		<div className='w-full min-h-screen p-4 flex justify-center items-center'>
 			<Form {...form}>
-				<form>
-					<Card className='w-full max-w-md shadow-lg'>
+				<form className='w-full max-w-md'>
+					<Card className='w-full shadow-lg'>
 						<CardHeader className='space-y-1'>
 							<div className='flex items-center space-x-2'>
 								<DocumentTextIcon className='w-6 h-6 text-primary' />
-								<CardTitle className='text-2xl font-bold'>
+								<CardTitle className='text-xl sm:text-2xl font-bold'>
 									Configuración de Papers
 								</CardTitle>
 							</div>
@@ -95,7 +95,7 @@ export default function StepFour({
 								name='paperAttempts'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel className='text-lg font-medium'>
+										<FormLabel className='text-base sm:text-lg font-medium'>
 											¿Aceptará la conferencia ponentes y papers?
 										</FormLabel>
 										<FormControl>
@@ -120,11 +120,16 @@ export default function StepFour({
 								)}
 							/>
 						</CardContent>
-						<CardFooter className='flex justify-between'>
-							<Button variant={'ghost'} onClick={handleGoBack}>
+						<CardFooter className='flex flex-col sm:flex-row justify-between gap-4'>
+							<Button
+								variant={'ghost'}
+								onClick={handleGoBack}
+								className='w-full sm:w-auto'>
 								Volver
 							</Button>
-							<Button onClick={onSubmit}>Continuar</Button>
+							<Button onClick={onSubmit} className='w-full sm:w-auto'>
+								Continuar
+							</Button>
 						</CardFooter>
 					</Card>
 				</form>

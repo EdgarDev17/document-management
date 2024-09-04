@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/app/components/ui/card'
-
 import {
 	Form,
 	FormField,
@@ -18,7 +17,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/app/components/ui/form'
-
 import { Input } from '@/app/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -32,7 +30,6 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { Calendar } from '@/app/components/ui/calendar'
 import { CalendarIcon } from '@radix-ui/react-icons'
-import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useNewConferenceFormStore } from '@/lib/providers/conference-form-provider'
@@ -93,7 +90,6 @@ export default function StepTwo() {
 		setLoading(false)
 	}, [eventType, eventDescription, eventName, router])
 
-	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		updateStepTwo(
 			values.startingDate,
@@ -105,23 +101,29 @@ export default function StepTwo() {
 	}
 
 	if (loading) {
-		;<div className='w-full h-[80vh] flex justify-center items-center'>
-			<p>cargando datos...</p>
-		</div>
+		return (
+			<div className='w-full min-h-screen flex justify-center items-center p-4'>
+				<p>Cargando datos...</p>
+			</div>
+		)
 	}
 
 	return (
-		<div className='w-full h-[80vh] flex justify-center items-center'>
+		<div className='w-full min-h-screen flex justify-center items-center p-4'>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<Card className='h-[600px]'>
-						<CardHeader className='h-[20%]'>
-							<CardTitle>Datos generales del evento</CardTitle>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className='w-full max-w-md'>
+					<Card className='w-full'>
+						<CardHeader>
+							<CardTitle className='text-2xl'>
+								Datos generales del evento
+							</CardTitle>
 							<CardDescription>
-								Estos datos son necesario para que puedas crear un nuevo evento
+								Estos datos son necesarios para que puedas crear un nuevo evento
 							</CardDescription>
 						</CardHeader>
-						<CardContent className='h-[60%] space-y-8'>
+						<CardContent className='space-y-6'>
 							<FormField
 								control={form.control}
 								name='startingDate'
@@ -134,7 +136,7 @@ export default function StepTwo() {
 													<Button
 														variant={'outline'}
 														className={cn(
-															'w-[240px] pl-3 text-left font-normal',
+															'w-full pl-3 text-left font-normal',
 															!field.value && 'text-muted-foreground'
 														)}>
 														{field.value ? (
@@ -170,7 +172,7 @@ export default function StepTwo() {
 													<Button
 														variant={'outline'}
 														className={cn(
-															'w-[240px] pl-3 text-left font-normal',
+															'w-full pl-3 text-left font-normal',
 															!field.value && 'text-muted-foreground'
 														)}>
 														{field.value ? (
@@ -227,16 +229,19 @@ export default function StepTwo() {
 								)}
 							/>
 						</CardContent>
-						<CardFooter className='h-[20%] flex gap-x-4'>
+						<CardFooter className='flex flex-col sm:flex-row gap-4'>
 							<Button
 								variant={'ghost'}
 								type='button'
 								onClick={() =>
 									router.push('/host/dashboard/event/create/step-one')
-								}>
+								}
+								className='w-full sm:w-auto'>
 								Volver
 							</Button>
-							<Button variant={'default'}>Continuar</Button>
+							<Button variant={'default'} className='w-full sm:w-auto'>
+								Continuar
+							</Button>
 						</CardFooter>
 					</Card>
 				</form>
