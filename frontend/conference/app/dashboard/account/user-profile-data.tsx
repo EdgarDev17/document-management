@@ -24,7 +24,7 @@ function UserProfileData({ token }: { token: string }) {
 	const [base64String, setBase64String] = useState('')
 	const [userProfile, setUserProfile] = useState<any>({})
 	const [loading, setLoading] = useState(true)
-
+	const [isUploading, setIsUploading] = useState(false)
 	useEffect(() => {
 		const fetchUserProfile = () => {
 			apiClient
@@ -63,17 +63,21 @@ function UserProfileData({ token }: { token: string }) {
 	}
 
 	const handleImageUpload = async (file: File) => {
+		setIsUploading(true)
 		try {
 			const base64 = await convertToBase64(file)
+			const imageExtension = `.${file.name.split('.').pop()}`
+
 			console.log({
-				Image: base64,
-				ImageExtension: `${file.name.split('.').pop()}`,
+				image: base64.split(',')[1], // Removemos el prefijo "data:image/png;base64,"
+				imageExtension: imageExtension,
 			})
+
 			const response = await apiClient.post(
 				`/Registerusers/Imagen`,
 				{
-					Image: base64,
-					ImageExtension: `.${file.name.split('.').pop()}`,
+					image: base64.split(',')[1], // Removemos el prefijo "data:image/png;base64,"
+					imageExtension: imageExtension,
 				},
 				{
 					headers: {
@@ -81,30 +85,25 @@ function UserProfileData({ token }: { token: string }) {
 					},
 				}
 			)
+
 			toast.success('Foto actualizada correctamente')
 			fetchUserProfile() // Actualizar el perfil después de subir la imagen
 		} catch (error) {
 			console.error('Error uploading image:', error)
-			console.error(error)
 			toast.error(
 				'No se pudo actualizar la imagen. Por favor, intente de nuevo.'
 			)
+		} finally {
+			setIsUploading(false)
 		}
 	}
 
 	const convertToBase64 = (file: File): Promise<string> => {
 		return new Promise((resolve, reject) => {
-			const fileReader = new FileReader()
-			fileReader.readAsDataURL(file)
-			fileReader.onload = () => {
-				if (fileReader.result) {
-					const base64String = (fileReader.result as string).split(',')[1]
-					resolve(base64String)
-				} else {
-					reject(new Error('FileReader result is null'))
-				}
-			}
-			fileReader.onerror = (error) => reject(error)
+			const reader = new FileReader()
+			reader.readAsDataURL(file)
+			reader.onload = () => resolve(reader.result as string)
+			reader.onerror = (error) => reject(error)
 		})
 	}
 
@@ -139,6 +138,7 @@ function UserProfileData({ token }: { token: string }) {
 											type='file'
 											accept='image/*'
 											className='hidden'
+											disabled={isUploading}
 											onChange={(e) => {
 												const file = e.target.files?.[0]
 												if (file) handleImageUpload(file)
