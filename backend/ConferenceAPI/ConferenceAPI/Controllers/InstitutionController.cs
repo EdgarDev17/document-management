@@ -199,6 +199,20 @@ namespace ConferenceAPI.Controllers
                 throw;
             }
         }
-        
+        [HttpGet("public/{institutionId}")]
+        public async Task<ActionResult<IResponse>> GetPublicInstitutionById(int institutionId)
+        {
+            try
+            {
+                var institution = await _institutionBl.GetPublicInstitutionById(institutionId);
+                return Ok(institution);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

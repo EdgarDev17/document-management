@@ -303,5 +303,12 @@ namespace Conference.BL
             return result;
 
         }
+
+        public List<ConferencesDetailsEN> getConferencesByAdminID(int userID)
+        {
+            List<ConferencesDetailsEN> conference = new List<ConferencesDetailsEN>();
+            conference = _conferenceDAL.getConferencesByAdminID(userID);
+            return conference;
+        }
     }
 }

@@ -862,6 +862,33 @@ namespace Conference.DAL
 
             return email;
         }
+
+
+        //listar conferencias de manera especifico por usuario Admin
+
+        public List<ConferencesDetailsEN> getConferencesByAdminID(int userID)
+        {
+            List<ConferencesDetailsEN> conferences = new List<ConferencesDetailsEN>();
+            try
+            {
+                var parameters = new DynamicParameters();
+                _connection.Cnn.Open();
+                parameters.Add("@p_UserID", userID);
+                conferences = _connection.Cnn.Query<ConferencesDetailsEN>("sp_get_ConferencesByAdminID", parameters, commandType: CommandType.StoredProcedure).AsList();
+            }
+            catch (Exception ex)
+            {
+
+
+                _connection.Cnn.Close();
+                InsertErrorLogSession("Error en GetTopics en conferenceDAL en  sp_get_ConferencesByAdminID", ex.Message, userID);
+            }
+            finally
+            {
+                _connection.Cnn.Close();
+            }
+            return conferences;
+        }
     }
 
 }

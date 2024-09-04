@@ -383,4 +383,40 @@ public class InstitutionDAL
             return null; // O podrías re-lanzar la excepción
         }
     }
+
+
+    public async Task<InstitutionDetailsEN> GetPublicInstitutionById(int institutionId)
+    {
+        await _connection.Cnn.OpenAsync();
+        const string query = @"
+            SELECT
+                InstitutionID,
+                Name,
+                Website,
+                contact_phone,
+                Description,
+                image_url,
+                image_name
+            FROM institution
+            WHERE institutionID = @institutionId";
+
+        var parameters = new
+        {
+            institutionID = institutionId
+        };
+
+        var currentInstitution = await _connection.Cnn.QuerySingleOrDefaultAsync<InstitutionDetailsEN>(query, parameters);
+
+
+        if (currentInstitution == null)
+        {
+            throw new InvalidOperationException("Institution not found or user not authorized to update it");
+        }
+
+        string imageBase64 = ConvertFileToBase64(currentInstitution.image_url);
+
+        currentInstitution.Image = imageBase64;
+
+        return currentInstitution;
+    }
 }

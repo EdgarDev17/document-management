@@ -1008,6 +1008,47 @@ namespace ConferenceAPI.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("GetConferencesByAdminID")]
+        public ActionResult<IResponse> getConferencesByAdminID(int UserID)
+        {
+
+            if (!Request.Headers.TryGetValue("Authorization-Token", out var token))
+            {
+                return BadRequest(new GenericApiRespons
+                {
+                    HttpCode = 400,
+                    Message = "Authorization-Token must be provided"
+                });
+            }
+
+            var user = _userBL.VerifyPersonAuthentication(token);
+            if (user != null)
+            {
+
+                List<ConferencesDetailsEN> Conference = _conferenceBL.getConferencesByAdminID(UserID);
+
+
+
+                if (Conference != null)
+                {
+                    return Ok(new { Conference = Conference });
+                }
+                else
+                {
+                    var response = new GenericApiRespons { HttpCode = 409, Message = "usuario no encontrado" };
+                    return Conflict(response);
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new GenericApiRespons
+            {
+                HttpCode = 500,
+                Message = "Something went wrong"
+            });
+
+        }
+
     }
 
 
