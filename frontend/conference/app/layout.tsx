@@ -12,8 +12,9 @@ import { auth } from '@/auth'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-	title: 'EventMaster',
-	description: 'x',
+	title: 'CongressApp',
+	description:
+		'Aplicación de gestion de eventos desarrollador por estudiantes de la USO',
 }
 
 export default async function RootLayout({
@@ -26,9 +27,11 @@ export default async function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={cn(inter.className, 'bg-white')}>
-				<Navbar session={session} />
-				<div className='w-full mx-auto'>{children}</div>
-				<Toaster richColors position={'top-center'} />
+				<SessionProvider session={session}>
+					<Navbar />
+					<div className='w-full mx-auto'>{children}</div>
+					<Toaster richColors position={'top-center'} />
+				</SessionProvider>
 			</body>
 		</html>
 	)

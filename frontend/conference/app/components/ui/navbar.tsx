@@ -1,6 +1,6 @@
 'use client'
-import { signOut } from 'next-auth/react'
 
+import { signOut, useSession } from 'next-auth/react'
 import * as React from 'react'
 import Link from 'next/link'
 import {
@@ -40,208 +40,176 @@ import {
 	DropdownMenuTrigger,
 } from './dropdown-menu'
 import { useRouter } from 'next/navigation'
-import { Session } from 'next-auth'
+import { toast } from 'sonner'
 
-export default function Navbar({ session }: { session: Session | null }) {
+export default function Navbar() {
+	const { data: session, status } = useSession()
+	const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+	const router = useRouter()
+
+	const handleSignOut = async () => {
+		try {
+			await signOut({ callbackUrl: '/account/login' })
+		} catch (error) {
+			toast.error('Ocurrió un error al cerrar sesión, intenta de nuevo')
+		}
+	}
+
+	if (status === 'loading') {
+		return <div>Cargando...</div>
+	}
+
 	return (
 		<header className='bg-background border-b'>
 			<div className='container mx-auto px-4'>
 				<nav className='flex items-center justify-between py-4'>
 					<Link href='/' className='text-2xl font-bold'>
-						EventMaster
+						CongressApp
 					</Link>
-					<DesktopNav session={session} />
-					<MobileNav session={session} />
+					{status === 'authenticated' ? (
+						<>
+							<DesktopNav />
+							<DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+								<DropdownMenuTrigger asChild className='hidden md:flex'>
+									<Button
+										variant='outline'
+										size='icon'
+										className='rounded-full w-10 h-10 bg-zinc-100 text-zinc-900 hover:bg-zinc-200 ring-0 outline-none focus:outline-none focus:ring-0'>
+										<User className='h-5 w-5' />
+										{isMenuOpen ? (
+											<ChevronUp className='h-4 w-4 absolute bottom-0 right-0' />
+										) : (
+											<ChevronDown className='h-4 w-4 absolute bottom-0 right-0' />
+										)}
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className='w-56'>
+									<DropdownMenuLabel className='text-center'>
+										Mi cuenta
+									</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem>
+										<Link
+											href='/host/dashboard/account'
+											className='w-full text-center'>
+											Mi perfil
+										</Link>
+									</DropdownMenuItem>
+									<DropdownMenuItem>
+										<Button
+											variant='ghost'
+											className='p-0 hover:bg-transparent hover:text-zinc-900 w-full h-full'
+											onClick={handleSignOut}>
+											Cerrar sesión
+										</Button>
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<MobileNav handleSignOut={handleSignOut} />
+						</>
+					) : (
+						<div className='flex items-center gap-4'>
+							<Button
+								variant='ghost'
+								className='hover:bg-zinc-100 hover:text-zinc-900'
+								onClick={() => router.push('/account/login')}>
+								<LogIn className='mr-2 h-4 w-4' /> Iniciar sesión
+							</Button>
+							<Button
+								className='bg-blue-600'
+								onClick={() => router.push('/account/register')}>
+								<UserPlus className='mr-2 h-4 w-4' /> Crear cuenta
+							</Button>
+						</div>
+					)}
 				</nav>
 			</div>
 		</header>
 	)
 }
 
-function DesktopNav({ session }: { session: Session | null }) {
-	const [isOpen, setIsOpen] = React.useState(false)
-	const router = useRouter()
-
-	if (!session) {
-		return (
-			<div className='hidden md:flex items-center gap-4'>
-				<Button
-					variant='ghost'
-					className='hover:bg-zinc-100 hover:text-zinc-900'
-					onClick={() => router.push('/account/login')}>
-					<LogIn className='mr-2 h-4 w-4' /> Iniciar sesión
-				</Button>
-				<Button
-					className='bg-blue-600'
-					onClick={() => router.push('/account/register')}>
-					<UserPlus className='mr-2 h-4 w-4' /> Crear cuenta
-				</Button>
-			</div>
-		)
-	}
+function DesktopNav() {
 	return (
-		<div className='flex items-center gap-x-4'>
-			<NavigationMenu className='hidden md:flex bg-white z-50'>
-				<NavigationMenuList>
-					<NavigationMenuItem>
-						<NavigationMenuTrigger>Organizadores</NavigationMenuTrigger>
-						<NavigationMenuContent>
-							<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
-								<li className='row-span-3'>
-									<NavigationMenuLink asChild className='bg-white z-50'>
-										<a
-											className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
-											href='/'>
-											<Users className='h-6 w-6' />
-											<div className='mb-2 mt-4 text-lg font-medium'>
-												Organizadores
-											</div>
-											<p className='text-sm leading-tight text-muted-foreground'>
-												Gestiona tus conferencias e instituciones
-											</p>
-										</a>
-									</NavigationMenuLink>
-								</li>
-								<ListItem
-									href='/host/dashboard/events'
-									title='Ver mis conferencias'>
-									<Calendar className='h-4 w-4 mr-2' />
-									Gestiona tus eventos
-								</ListItem>
-								<ListItem
-									href='/host/dashboard/institutions'
-									title='Ver mis instituciones'>
-									<Users className='h-4 w-4 mr-2' />
-									Administra tus organizaciones
-								</ListItem>
-								<ListItem
-									href='/host/dashboard/analytics'
-									title='Ver analíticas'>
-									<BarChart2 className='h-4 w-4 mr-2' />
-									Analiza el rendimiento
-								</ListItem>
-								<ListItem href='/host/dashboard/account' title='Mi perfil'>
-									<User className='h-4 w-4 mr-2' />
-									Gestiona tu cuenta
-								</ListItem>
-							</ul>
-						</NavigationMenuContent>
-					</NavigationMenuItem>
-					<NavigationMenuItem>
-						<NavigationMenuTrigger>Personas</NavigationMenuTrigger>
-						<NavigationMenuContent>
-							<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
-								<li className='row-span-3'>
-									<NavigationMenuLink asChild className='bg-white z-50'>
-										<a
-											className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
-											href='/dashboard'>
-											<User className='h-6 w-6' />
-											<div className='mb-2 mt-4 text-lg font-medium'>
-												Personas
-											</div>
-											<p className='text-sm leading-tight text-muted-foreground'>
-												Gestiona tus conferencias y documentos
-											</p>
-										</a>
-									</NavigationMenuLink>
-								</li>
-								<ListItem href='/dashboard/events' title='Ver mis conferencias'>
-									<Calendar className='h-4 w-4 mr-2' />
-									Explora tus eventos
-								</ListItem>
-								<ListItem href='/dashboard/papers' title='Ver mis documentos'>
-									<FileText className='h-4 w-4 mr-2' />
-									Accede a tus archivos
-								</ListItem>
-								<ListItem href='/personas/analiticas' title='Ver analíticas'>
-									<BarChart2 className='h-4 w-4 mr-2' />
-									Revisa tus estadísticas (muy pronto...)
-								</ListItem>
-								<ListItem href='/dashboard/account' title='Mi perfil'>
-									<User className='h-4 w-4 mr-2' />
-									Actualiza tu información
-								</ListItem>
-							</ul>
-						</NavigationMenuContent>
-					</NavigationMenuItem>
-				</NavigationMenuList>
-			</NavigationMenu>
-			<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-				<DropdownMenuTrigger asChild className='hidden md:flex'>
-					<Button
-						variant='outline'
-						size='icon'
-						className='rounded-full w-10 h-10 bg-zinc-100 text-zinc-900 hover:bg-zinc-200 ring-0 outline-none focus:outline-none focus:ring-0'>
-						<User className='h-5 w-5' />
-						{isOpen ? (
-							<ChevronUp className='h-4 w-4 absolute bottom-0 right-0' />
-						) : (
-							<ChevronDown className='h-4 w-4 absolute bottom-0 right-0' />
-						)}
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent className='w-56'>
-					<DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem>
-						<Link href={'/host/dashboard/account'}>Mi perfil</Link>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() => {
-							signOut()
-							router.push('/')
-						}}>
-						Cerrar sesión
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</div>
+		<NavigationMenu className='hidden md:flex bg-white z-50'>
+			<NavigationMenuList>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Organizadores</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+							<li className='row-span-3'>
+								<NavigationMenuLink asChild className='bg-white z-50'>
+									<a
+										className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
+										href='/'>
+										<Users className='h-6 w-6' />
+										<div className='mb-2 mt-4 text-lg font-medium'>
+											Organizadores
+										</div>
+										<p className='text-sm leading-tight text-muted-foreground'>
+											Gestiona tus conferencias e instituciones
+										</p>
+									</a>
+								</NavigationMenuLink>
+							</li>
+							<ListItem
+								href='/host/dashboard/events'
+								title='Ver mis conferencias'>
+								<Calendar className='h-4 w-4 mr-2' />
+								Gestiona tus eventos
+							</ListItem>
+							<ListItem
+								href='/host/dashboard/institutions'
+								title='Ver mis instituciones'>
+								<Users className='h-4 w-4 mr-2' />
+								Administra tus organizaciones
+							</ListItem>
+							<ListItem href='/host/dashboard/analytics' title='Ver analíticas'>
+								<BarChart2 className='h-4 w-4 mr-2' />
+								Analiza el rendimiento
+							</ListItem>
+						</ul>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Personas</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<ul className='grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+							<li className='row-span-3'>
+								<NavigationMenuLink asChild className='bg-white z-50'>
+									<a
+										className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md'
+										href='/dashboard'>
+										<User className='h-6 w-6' />
+										<div className='mb-2 mt-4 text-lg font-medium'>
+											Personas
+										</div>
+										<p className='text-sm leading-tight text-muted-foreground'>
+											Gestiona tus conferencias y documentos
+										</p>
+									</a>
+								</NavigationMenuLink>
+							</li>
+							<ListItem href='/dashboard/events' title='Ver mis conferencias'>
+								<Calendar className='h-4 w-4 mr-2' />
+								Explora tus eventos
+							</ListItem>
+							<ListItem href='/dashboard/papers' title='Ver mis documentos'>
+								<FileText className='h-4 w-4 mr-2' />
+								Accede a tus archivos
+							</ListItem>
+							<ListItem href='/personas/analiticas' title='Ver analíticas'>
+								<BarChart2 className='h-4 w-4 mr-2' />
+								Revisa tus estadísticas (muy pronto...)
+							</ListItem>
+						</ul>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+			</NavigationMenuList>
+		</NavigationMenu>
 	)
 }
 
-function MobileNav({ session }: { session: Session | null }) {
-	if (!session) {
-		return (
-			<Sheet>
-				<SheetTrigger asChild>
-					<Button variant='outline' size='icon' className='md:hidden'>
-						<Menu className='h-6 w-6' />
-						<span className='sr-only'>Abrir menú</span>
-					</Button>
-				</SheetTrigger>
-				<SheetContent side='right' className='w-[300px]'>
-					<div className='flex flex-col h-full'>
-						<div className='flex-1'>
-							<h2 className='text-2xl font-bold mb-6'>EventMaster</h2>
-							<p className='text-muted-foreground mb-6'>
-								Organiza y participa en eventos increíbles. ¡Únete a nuestra
-								comunidad hoy!
-							</p>
-						</div>
-						<nav className='flex flex-col gap-4'>
-							<Button asChild variant='default' size='lg' className='w-full'>
-								<Link
-									href='/account/login'
-									className='flex items-center justify-center gap-2'>
-									<LogIn className='h-5 w-5' />
-									Iniciar sesión
-								</Link>
-							</Button>
-							<Button asChild variant='outline' size='lg' className='w-full'>
-								<Link
-									href='/account/register'
-									className='flex items-center justify-center gap-2'>
-									<UserPlus className='h-5 w-5' />
-									Crear cuenta
-								</Link>
-							</Button>
-						</nav>
-					</div>
-				</SheetContent>
-			</Sheet>
-		)
-	}
+function MobileNav({ handleSignOut }: { handleSignOut: () => Promise<void> }) {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
@@ -304,10 +272,10 @@ function MobileNav({ session }: { session: Session | null }) {
 					<h2 className='text-lg font-semibold mt-4 mb-2'>Cuenta</h2>
 
 					<Button
-						onClick={() => signOut()}
+						onClick={handleSignOut}
 						variant={'outline'}
 						className='w-11/12'>
-						<LogOut className='h-4 w-4' />
+						<LogOut className='h-4 w-4 mr-2' />
 						Cerrar sesión
 					</Button>
 				</nav>

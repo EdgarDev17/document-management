@@ -447,7 +447,7 @@ export default function LandingPage() {
 					</div>
 					<div className='mt-8 border-t border-gray-200 pt-8 text-center'>
 						<p className='text-sm text-gray-600'>
-							© 2024 EventMaster. Todos los derechos reservados.
+							© 2024 CongressApp. Todos los derechos reservados.
 						</p>
 					</div>
 				</div>

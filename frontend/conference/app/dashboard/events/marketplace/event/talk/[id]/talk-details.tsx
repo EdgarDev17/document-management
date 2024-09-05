@@ -87,6 +87,11 @@ export function TalkDetails({
 	const [isSubmitting, setIsSubmitting] = React.useState(false)
 	const [dialogOpen, setDialogOpen] = React.useState(false)
 
+	// Estado de el numero de participantes
+	const maxParticipants = talk.totalAttendees
+	const currentParticipants = talk.counterAttendees + talk.counterTotalSpeakers
+	const progressPercentage = (currentParticipants / maxParticipants) * 100
+
 	console.log(talk)
 	const handleRating = async (score: number) => {
 		setRating(score)
@@ -207,21 +212,22 @@ export function TalkDetails({
 									<h4>Esta charla posee un número máximo de participantes</h4>
 									<div className='flex items-center justify-between'>
 										<span className='text-2xl font-bold'>
-											{talk.counterAttendees + talk.counterTotalSpeakers}
+											{currentParticipants}
 										</span>
-										<Badge variant='destructive' className='text-sm'>
+										<Badge variant='red' className='text-sm'>
 											<UsersIcon className='mr-1 h-3 w-3' />
-											{talk.totalAttendees}
+											{maxParticipants}
 										</Badge>
 									</div>
 									<div className='w-full bg-secondary rounded-full h-2.5'>
 										<div
 											className='bg-primary h-2.5 rounded-full transition-all duration-500 ease-in-out'
 											style={{
-												width: `${(talk.totalAttendees / 100) * 100}%`,
+												width: `${progressPercentage}%`,
 											}}></div>
 									</div>
 								</div>
+
 								<div>
 									<h3 className='font-semibold mb-2 text-lg'>
 										Calificar Charla
