@@ -58,6 +58,7 @@ export default function Login() {
 				toast.error('Correo o contraseña incorrectos')
 			} else {
 				router.push('/dashboard')
+				router.refresh()
 			}
 		} catch (error) {
 			console.error(error)
