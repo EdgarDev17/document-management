@@ -64,7 +64,11 @@ function getNextEvent(events: ConferenceItem[]): ConferenceItem | null {
 	})
 }
 
-export default async function Page() {
+export default async function Page({
+	searchParams,
+}: {
+	searchParams: { page?: string }
+}) {
 	const session = await auth()
 
 	if (!session) {
@@ -78,11 +82,11 @@ export default async function Page() {
 	const allEvents: ConferenceItem[] = await getUserEvents(session.accessToken)
 	const nextEvent = getNextEvent(allEvents)
 
-	const page = 1
+	const page = parseInt(searchParams.page || '1', 10)
 	const pageSize = 3
 	const totalPages = allEvents ? Math.ceil(allEvents.length / pageSize) : 1
 
-	// Simulating server-side pagination
+	// Server-side pagination
 	const paginatedEvents = allEvents
 		? allEvents.slice((page - 1) * pageSize, page * pageSize)
 		: []

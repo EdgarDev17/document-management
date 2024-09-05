@@ -45,11 +45,9 @@ function EventsList({
 	totalPages: number
 }) {
 	const router = useRouter()
-	const [page, setPage] = useState(currentPage)
 	const [sortBy, setSortBy] = useState('date')
 
 	const handlePageChange = (newPage: number) => {
-		setPage(newPage)
 		router.push(`/dashboard/events?page=${newPage}`)
 	}
 
@@ -144,18 +142,18 @@ function EventsList({
 			{sortedEvents.length > 0 && (
 				<CardFooter className='flex justify-between'>
 					<Button
-						onClick={() => handlePageChange(page - 1)}
-						disabled={page === 1}
+						onClick={() => handlePageChange(currentPage - 1)}
+						disabled={currentPage === 1}
 						variant={'outline'}
 						size='sm'>
 						Anterior
 					</Button>
 					<span className='text-sm'>
-						Página {page} de {totalPages}
+						Página {currentPage} de {totalPages}
 					</span>
 					<Button
-						onClick={() => handlePageChange(page + 1)}
-						disabled={page === totalPages}
+						onClick={() => handlePageChange(currentPage + 1)}
+						disabled={currentPage === totalPages}
 						variant={'outline'}
 						size='sm'>
 						Siguiente
