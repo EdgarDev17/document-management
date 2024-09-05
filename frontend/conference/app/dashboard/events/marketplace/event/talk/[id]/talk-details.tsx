@@ -379,6 +379,7 @@ export function TalkDetails({
 											</p>
 											<PaperSubmissionDialog
 												talkId={talk.topicsID}
+												conferenceId={event.conferenceID}
 												token={token}
 											/>
 										</CardContent>

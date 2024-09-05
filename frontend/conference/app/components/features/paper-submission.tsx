@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/app/components/ui/button'
 import {
 	Dialog,
@@ -12,20 +12,36 @@ import {
 	DialogTrigger,
 } from '@/app/components/ui/dialog'
 import { Label } from '@/app/components/ui/label'
-import { AlertCircle, Send, FileUp, X, FileIcon, Trash2 } from 'lucide-react'
+import { AlertCircle, Send, FileUp, FileIcon, Trash2, Info } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/app/components/ui/alert'
 import { Progress } from '@/app/components/ui/progress'
 import { Badge } from '@/app/components/ui/badge'
 import { apiClient } from '@/lib/api-service'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '@/app/components/ui/accordion'
+import { ScrollArea } from '@/app/components/ui/scroll-area'
+
+interface EvaluationCriteria {
+	evaCritConfID: number
+	conferenceID: number
+	aspect: string
+	description: string
+}
 
 export function PaperSubmissionDialog({
 	token,
 	talkId,
+	conferenceId,
 }: {
 	token: string
 	talkId: number
+	conferenceId: number
 }) {
 	const [isOpen, setIsOpen] = useState(false)
 	const [file, setFile] = useState<File | null>(null)
@@ -33,8 +49,30 @@ export function PaperSubmissionDialog({
 	const [isUploading, setIsUploading] = useState(false)
 	const [uploadProgress, setUploadProgress] = useState(0)
 	const [isPublishing, setIsPublishing] = useState(false)
+	const [evaluationCriteria, setEvaluationCriteria] = useState<
+		EvaluationCriteria[]
+	>([])
 	const router = useRouter()
 	const fileInputRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		apiClient
+			.get(
+				`/Conference/ListEvaluationCriteriaByConference?conferenceID=${conferenceId}`,
+				{
+					headers: {
+						'Authorization-Token': token,
+					},
+				}
+			)
+			.then((res) => {
+				setEvaluationCriteria(res.data.conference)
+			})
+			.catch((err) => {
+				console.error('Error fetching evaluation criteria:', err)
+				toast.error('Error al cargar los criterios de evaluación.')
+			})
+	}, [conferenceId, token])
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = event.target.files?.[0]
@@ -64,10 +102,7 @@ export function PaperSubmissionDialog({
 		if (file && fileBase64) {
 			setIsUploading(true)
 			try {
-				// Simular una carga
 				await simulateUpload()
-
-				// Iniciar la publicación real
 				setIsPublishing(true)
 				const cleanedBase64String = fileBase64.replace(
 					'data:application/pdf;base64,',
@@ -212,6 +247,45 @@ export function PaperSubmissionDialog({
 							</p>
 						</div>
 					)}
+
+					{/* Rúbrica de Calificación */}
+					<Accordion type='single' collapsible className='w-full'>
+						<AccordionItem value='rubric'>
+							<AccordionTrigger className='text-base font-medium'>
+								<div className='flex items-center'>
+									<Info className='w-5 h-5 mr-2' />
+									Rúbrica de Calificación
+								</div>
+							</AccordionTrigger>
+							<AccordionContent>
+								<Alert className='mb-4'>
+									<AlertCircle className='h-4 w-4' />
+									<AlertTitle>Importante</AlertTitle>
+									<AlertDescription className='text-sm'>
+										Los siguientes criterios serán utilizados para evaluar tu
+										documento. Asegúrate de abordar cada uno de ellos en tu
+										paper.
+									</AlertDescription>
+								</Alert>
+								<ScrollArea className='h-[200px] rounded-md border p-4 bg-white'>
+									<div className='space-y-4'>
+										{evaluationCriteria.map((criteria, index) => (
+											<div
+												key={criteria.evaCritConfID}
+												className='pb-3 border-b border-gray-200 last:border-b-0'>
+												<h4 className='text-sm font-semibold text-primary mb-1'>
+													{index + 1}. {criteria.aspect}
+												</h4>
+												<p className='text-sm text-zinc-700'>
+													{criteria.description}
+												</p>
+											</div>
+										))}
+									</div>
+								</ScrollArea>
+							</AccordionContent>
+						</AccordionItem>
+					</Accordion>
 				</div>
 				<DialogFooter>
 					<Button
