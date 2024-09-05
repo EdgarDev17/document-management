@@ -17,6 +17,8 @@ namespace Conference.Entities
         public int ConferenceID { get; set; }
         public int TotalAttendees { get; set; }
         public int TotalSpeakers { get; set; }
+        public int? CounterAttendees{ get; set; }
+        public int? CounterTotalSpeakers { get; set; }
         public string? NameSpeaker { get; set; }
     }
 
