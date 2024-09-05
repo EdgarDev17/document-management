@@ -8,5 +8,7 @@ export interface Talk {
 	conferenceID: number
 	totalAttendees: number
 	totalSpeakers: number
+	counterAttendees: number
+	counterTotalSpeakers: number
 	nameSpeaker: string
 }

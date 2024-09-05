@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { H2 } from '@/app/components/ui/headings'
 import { Input } from '@/app/components/ui/input'
 import { Button } from '@/app/components/ui/button'
@@ -10,7 +10,6 @@ import { z } from 'zod'
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -24,7 +23,7 @@ import {
 	PopoverTrigger,
 } from '@/app/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, Eye, EyeOff } from 'lucide-react'
 import { format } from 'date-fns'
 import { Calendar } from '@/app/components/ui/calendar'
 import {
@@ -32,35 +31,44 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-	SelectGroup,
-	SelectLabel,
 	SelectValue,
 } from '@/app/components/ui/select'
 import { toast } from 'sonner'
 import { WaveLoading } from '@/app/components/common/wave-loading'
 import { useRouter } from 'next/navigation'
 
-// definimos el schema que debe seguir el formulario
-const formSchema = z.object({
-	name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-	lastname: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
-	email: z.string().email('Email inválido'),
-	birthdate: z.date(),
-	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-})
+const passwordSchema = z
+	.string()
+	.min(8, 'La contraseña debe tener al menos 8 caracteres')
+	.regex(/[a-z]/, 'La contraseña debe incluir al menos una minúscula')
+	.regex(/[0-9]/, 'La contraseña debe incluir al menos un número')
+
+const formSchema = z
+	.object({
+		name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+		lastname: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
+		email: z.string().email('Email inválido'),
+		birthdate: z.date(),
+		password: passwordSchema,
+		confirmPassword: z.string(),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: 'Las contraseñas no coinciden',
+		path: ['confirmPassword'],
+	})
 
 export default function Register() {
-	const [selectedYear, setSelectedYear] = React.useState(
-		new Date().getFullYear()
-	)
-	const [isLoading, setIsLoading] = React.useState(false)
+	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+	const [isLoading, setIsLoading] = useState(false)
+	const [showPassword, setShowPassword] = useState(false)
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 	const router = useRouter()
 
 	const years = Array.from(
 		{ length: 124 },
 		(_, i) => new Date().getFullYear() - i
 	)
-	// creamos el formulario y asignamos valores predeterminados
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -68,6 +76,7 @@ export default function Register() {
 			lastname: '',
 			email: '',
 			password: '',
+			confirmPassword: '',
 		},
 	})
 
@@ -86,7 +95,7 @@ export default function Register() {
 				'/registerusers/registeruser',
 				formattedData
 			)
-
+			console.log(response)
 			toast.success('Registro Completado con éxito')
 			router.push('/account/email-alert')
 		} catch (error) {
@@ -96,9 +105,10 @@ export default function Register() {
 			setIsLoading(false)
 		}
 	}
+
 	return (
 		<div className='w-full flex justify-center items-center'>
-			<div className="hidden w-1/2 h-[800px] relative  bg-[url('/login.jpg')] bg-cover bg-no-repeat bg-center md:flex flex-col justify-end gap-y-4 px-5">
+			<div className="hidden w-1/2 h-[800px] relative bg-[url('/login.jpg')] bg-cover bg-no-repeat bg-center md:flex flex-col justify-end gap-y-4 px-5">
 				<div className='py-14 flex flex-col gap-y-4'>
 					<H2 className='text-5xl text-white'>Bienvenido de nuevo 👋</H2>
 					<p className='text-gray-300'>
@@ -118,7 +128,7 @@ export default function Register() {
 					<p>
 						¿Ya tienes una cuenta?
 						<span className='pl-1 text-blue-600'>
-							<Link href={'/account/login'}>Inicia sesión aqui</Link>
+							<Link href={'/account/login'}>Inicia sesión aquí</Link>
 						</span>
 					</p>
 					<Form {...form}>
@@ -205,8 +215,9 @@ export default function Register() {
 															field.onChange(newDate)
 														}
 													}}
-													disabled={(date) => date < new Date('1900-01-01')}
-													// @ts-ignore
+													disabled={(date) =>
+														date > new Date() || date < new Date('1900-01-01')
+													}
 													initialFocus
 													year={selectedYear}
 												/>
@@ -229,7 +240,6 @@ export default function Register() {
 									</FormItem>
 								)}
 							/>
-
 							<FormField
 								control={form.control}
 								name='password'
@@ -237,7 +247,56 @@ export default function Register() {
 									<FormItem>
 										<FormLabel>Contraseña</FormLabel>
 										<FormControl>
-											<Input type='password' {...field} />
+											<div className='relative'>
+												<Input
+													type={showPassword ? 'text' : 'password'}
+													{...field}
+												/>
+												<Button
+													type='button'
+													variant='ghost'
+													size='sm'
+													className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+													onClick={() => setShowPassword(!showPassword)}>
+													{showPassword ? (
+														<EyeOff className='h-4 w-4' />
+													) : (
+														<Eye className='h-4 w-4' />
+													)}
+												</Button>
+											</div>
+										</FormControl>
+										<FormMessage className='text-red-400' />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='confirmPassword'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Confirmar Contraseña</FormLabel>
+										<FormControl>
+											<div className='relative'>
+												<Input
+													type={showConfirmPassword ? 'text' : 'password'}
+													{...field}
+												/>
+												<Button
+													type='button'
+													variant='ghost'
+													size='sm'
+													className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+													onClick={() =>
+														setShowConfirmPassword(!showConfirmPassword)
+													}>
+													{showConfirmPassword ? (
+														<EyeOff className='h-4 w-4' />
+													) : (
+														<Eye className='h-4 w-4' />
+													)}
+												</Button>
+											</div>
 										</FormControl>
 										<FormMessage className='text-red-400' />
 									</FormItem>

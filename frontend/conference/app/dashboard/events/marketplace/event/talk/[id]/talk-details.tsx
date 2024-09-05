@@ -84,7 +84,10 @@ export function TalkDetails({
 	//@ts-ignore
 	const isSpeakerInfoEmpty = !talk.speakerImage && !talk.nameSpeaker
 	const [rating, setRating] = React.useState(0)
+	const [isSubmitting, setIsSubmitting] = React.useState(false)
+	const [dialogOpen, setDialogOpen] = React.useState(false)
 
+	console.log(talk)
 	const handleRating = async (score: number) => {
 		setRating(score)
 	}
@@ -99,13 +102,7 @@ export function TalkDetails({
 	}
 
 	const sendScore = async () => {
-		console.log({
-			score: {
-				userID: userId,
-				topicID: talk.topicsID,
-				score: rating,
-			},
-		})
+		setIsSubmitting(true)
 		try {
 			await apiClient.post(
 				'/rating/managerating',
@@ -122,9 +119,11 @@ export function TalkDetails({
 			)
 
 			toast.success('¡Gracias por tu Feedback!')
+			setDialogOpen(false)
 		} catch (error) {
 			toast.error('Debes estar inscrito a la charla')
-			return null
+		} finally {
+			setIsSubmitting(false)
 		}
 	}
 
@@ -207,17 +206,19 @@ export function TalkDetails({
 									<h3 className='font-semibold mb-2 text-lg'>Participantes</h3>
 									<h4>Esta charla posee un número máximo de participantes</h4>
 									<div className='flex items-center justify-between'>
-										<span className='text-2xl font-bold'>5</span>
+										<span className='text-2xl font-bold'>
+											{talk.counterAttendees + talk.counterTotalSpeakers}
+										</span>
 										<Badge variant='destructive' className='text-sm'>
 											<UsersIcon className='mr-1 h-3 w-3' />
-											100 max
+											{talk.totalAttendees}
 										</Badge>
 									</div>
 									<div className='w-full bg-secondary rounded-full h-2.5'>
 										<div
 											className='bg-primary h-2.5 rounded-full transition-all duration-500 ease-in-out'
 											style={{
-												width: `${(5 / 100) * 100}%`,
+												width: `${(talk.totalAttendees / 100) * 100}%`,
 											}}></div>
 									</div>
 								</div>
@@ -225,7 +226,7 @@ export function TalkDetails({
 									<h3 className='font-semibold mb-2 text-lg'>
 										Calificar Charla
 									</h3>
-									<Dialog>
+									<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 										<DialogTrigger asChild>
 											<Button variant='outline'>Calificar esta charla</Button>
 										</DialogTrigger>
@@ -252,14 +253,17 @@ export function TalkDetails({
 											</div>
 											<p className='text-center text-sm text-gray-500'>
 												{rating > 0
-													? `Has calificado esta charla con ${rating} ${rating === 1 ? 'estrella' : 'estrellas'}`
+													? `Has calificado esta charla con ${rating} ${
+															rating === 1 ? 'estrella' : 'estrellas'
+														}`
 													: 'Haz clic en las estrellas para calificar'}
 											</p>
 											<Button
 												className='bg-blue-600'
-												size={'full'}
-												onClick={sendScore}>
-												Enviar Calificación
+												size='full'
+												onClick={sendScore}
+												disabled={isSubmitting || rating === 0}>
+												{isSubmitting ? 'Enviando...' : 'Enviar Calificación'}
 											</Button>
 										</DialogContent>
 									</Dialog>

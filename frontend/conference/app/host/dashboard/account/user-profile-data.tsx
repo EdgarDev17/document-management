@@ -16,14 +16,23 @@ import { Button } from '@/app/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { formatDate } from '@/lib/utils'
 import { Skeleton } from '@/app/components/ui/skeleton'
-import { PencilIcon, LogOut, Mail, MapPin, Calendar } from 'lucide-react'
+import {
+	PencilIcon,
+	LogOut,
+	Mail,
+	MapPin,
+	Calendar,
+	Loader2,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-service'
+import { WaveLoading } from '@/app/components/common/wave-loading'
 
 function UserProfileData({ token }: { token: string }) {
 	const [base64String, setBase64String] = useState('')
 	const [userProfile, setUserProfile] = useState<any>({})
 	const [loading, setLoading] = useState(true)
+	const [isUploading, setIsUploading] = useState(false)
 
 	useEffect(() => {
 		fetchUserProfile()
@@ -96,6 +105,7 @@ function UserProfileData({ token }: { token: string }) {
 	}
 
 	const handleImageUpload = async (file: File) => {
+		setIsUploading(true)
 		const extension = file.name.split('.').pop() || ''
 		console.error('Debug:', { imageExtension: extension })
 
@@ -125,6 +135,8 @@ function UserProfileData({ token }: { token: string }) {
 				console.error('Error desconocido:', error)
 				toast.error('Ocurrió un error inesperado. Por favor, intente de nuevo.')
 			}
+		} finally {
+			setIsUploading(false)
 		}
 	}
 
@@ -140,20 +152,30 @@ function UserProfileData({ token }: { token: string }) {
 						<div className='flex flex-col md:flex-row justify-between items-center gap-4'>
 							<div className='flex flex-col md:flex-row items-center gap-x-6'>
 								<div className='relative group'>
-									<Avatar className='h-24 w-24 border-4 border-primary/20'>
-										<AvatarImage
-											src={`data:image/jpeg;base64,${base64String}`}
-											alt={userProfile.name}
-										/>
-										<AvatarFallback>
-											{userProfile.name?.charAt(0)}
-											{userProfile.lastname?.charAt(0)}
-										</AvatarFallback>
-									</Avatar>
+									{isUploading ? (
+										<Skeleton className='h-24 w-24 rounded-full animate-bounce flex justify-center items-center'>
+											<WaveLoading />
+										</Skeleton>
+									) : (
+										<Avatar className='h-24 w-24 border-4 border-primary/20'>
+											<AvatarImage
+												src={`data:image/jpeg;base64,${base64String}`}
+												alt={userProfile.name}
+											/>
+											<AvatarFallback>
+												{userProfile.name?.charAt(0)}
+												{userProfile.lastname?.charAt(0)}
+											</AvatarFallback>
+										</Avatar>
+									)}
 									<label
 										htmlFor='profile-image-upload'
 										className='absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity'>
-										<PencilIcon className='h-4 w-4' />
+										{isUploading ? (
+											<Loader2 className='h-4 w-4 animate-spin' />
+										) : (
+											<PencilIcon className='h-4 w-4' />
+										)}
 										<input
 											id='profile-image-upload'
 											type='file'
@@ -163,6 +185,7 @@ function UserProfileData({ token }: { token: string }) {
 												const file = e.target.files?.[0]
 												if (file) handleImageUpload(file)
 											}}
+											disabled={isUploading}
 										/>
 									</label>
 								</div>

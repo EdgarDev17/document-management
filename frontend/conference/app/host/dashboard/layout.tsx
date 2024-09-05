@@ -40,7 +40,7 @@ export default function DashboardLayout({
 						<SideBarItem url='/host/dashboard/analytics'>
 							<div className='w-full flex justify-start items-center gap-x-4 p-3 hover:bg-accent rounded-lg'>
 								<ChartBarIcon className='w-6 h-6 text-zinc-700' />
-								<p>Analiticas</p>
+								<p>Analíticas</p>
 							</div>
 						</SideBarItem>
 						<SideBarItem url='/host/dashboard/account'>

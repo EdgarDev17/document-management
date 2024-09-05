@@ -98,7 +98,7 @@ export default function StepOne() {
 								name='eventName'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Titulo del evento</FormLabel>
+										<FormLabel>Título del evento</FormLabel>
 										<FormControl>
 											<Input {...field} />
 										</FormControl>
@@ -158,7 +158,7 @@ export default function StepOne() {
 									<AlertDialogContent>
 										<AlertDialogHeader>
 											<AlertDialogTitle>
-												¿Estas completamente seguro?
+												¿Estás completamente seguro?
 											</AlertDialogTitle>
 											<AlertDialogDescription>
 												Si cancelas la creación del evento, los datos se
@@ -189,7 +189,7 @@ export default function StepOne() {
 												<div className='max-w-md h-[90%] mx-auto flex flex-col justify-between'>
 													<div>
 														<Drawer.Title className='font-medium mb-4 text-lg'>
-															¿Estas completamente seguro?
+															¿Estás completamente seguro?
 														</Drawer.Title>
 														<p className='text-zinc-600 mb-2'>
 															Si cancelas la creación del evento, los datos se
