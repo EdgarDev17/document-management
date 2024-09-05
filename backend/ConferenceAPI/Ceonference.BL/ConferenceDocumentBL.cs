@@ -128,7 +128,7 @@ namespace Conference.BL
                 if (!string.IsNullOrEmpty(email.EmailUser))
                 {
                     var titleUser = $@"Notificación de Revisión de Documento en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},\n\nNos complace informarte que un jurado ha revisado tu documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.\n\nGracias por tu participación.\n\nSaludos cordiales,\nEl Equipo del Congreso";
+                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},Nos complace informarte que un jurado ha revisado tu documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.Gracias por tu participación.Saludos cordiales,\nEl Equipo del Congreso";
                     _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
                 }
 
@@ -136,7 +136,7 @@ namespace Conference.BL
                 if (!string.IsNullOrEmpty(email.EmailAdmin))
                 {
                     var titleAdmin = $@"Notificación de Revisión de Documento en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin},\n\nTe informamos que el jurado:{email.NameJury1},  ha completado la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}. La revisión se ha realizado correctamente";
+                    var mensajeBodyAdmin = $@"Estimado/a {email.NameAdmin},Te informamos que el jurado:{email.NameJury1},  ha completado la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}. La revisión se ha realizado correctamente";
                     _emailSend.Send(email.EmailAdmin, titleAdmin, mensajeBodyAdmin, []);
                 }
 
@@ -144,7 +144,7 @@ namespace Conference.BL
                 if (!string.IsNullOrEmpty(email.EmailJury1))
                 {
                     var titleJury = $@"Confirmación de Asignación de Revisión de Documento en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyJury = $@"Estimado/a {email.NameJury1},\n\nTe informamos que has realizado exitosamente la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}. Agradecemos tu valiosa colaboración en este proceso.\n\nSaludos cordiales,\nEl Equipo del Congreso";
+                    var mensajeBodyJury = $@"Estimado/a {email.NameJury1},Te informamos que has realizado exitosamente la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}. Agradecemos tu valiosa colaboración en este proceso.Saludos cordiales,El Equipo del Congreso";
                     _emailSend.Send(email.EmailJury1, titleJury, mensajeBodyJury, []);
                 }
             }
@@ -155,16 +155,16 @@ namespace Conference.BL
                 if (!string.IsNullOrEmpty(email.EmailUser))
                 {
                     var titleUser = $@"Notificación de Revisión de Documento en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},\n\nNos complace informarte que el proceso de revisión de tu documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName} ha finalizado.\n\nPuedes conocer el resultado de la revisión ingresando a la web del congreso.\n\nGracias por tu participación.\n\nSaludos cordiales,\nEl Equipo del Congreso";
+                    var mensajeBodyUser = $@"Estimado/a {email.NameUser},Nos complace informarte que el proceso de revisión de tu documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName} ha finalizado.Puedes conocer el resultado de la revisión ingresando a la web del congreso.Gracias por tu participación.Saludos cordiales,El Equipo del Congreso";
                     _emailSend.Send(email.EmailUser, titleUser, mensajeBodyUser, []);
                 }
 
                 // Validación para enviar correo al jurado (Jury)
-                if (!string.IsNullOrEmpty(email.EmailJury1))
+                if (!string.IsNullOrEmpty(email.NameAdmin))
                 {
                     var titleJury = $@"Notificación de Finalización de Revisión de Documento en el tema: {email.NameTopics} del Congreso: {email.ConferenceName}";
-                    var mensajeBodyJury = $@"Estimado/a {email.NameJury1},\n\nTe informamos que has completado la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso: {email.ConferenceName}.\n\nPuedes conocer el resultado final del documento ingresando a la web del congreso.\n\nGracias por tu valiosa contribución en este proceso.\n\nSaludos cordiales,\nEl Equipo del Congreso";
-                    _emailSend.Send(email.EmailJury1, titleJury, mensajeBodyJury, []);
+                    var mensajeBodyJury = $@"Estimado/a {email.NameAdmin},Te informamos que has completado la revisión del documento relacionado con el tema: {email.NameTopics} en el Congreso:{email.ConferenceName}.\Puedes conocer el resultado final del documento ingresando a la web del congreso.Gracias por tu valiosa contribución en este proceso.\n\nSaludos cordiales,El Equipo del Congreso";
+                    _emailSend.Send(email.NameAdmin, titleJury, mensajeBodyJury, []);
                 }
 
 

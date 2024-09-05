@@ -368,11 +368,11 @@ namespace Conference.DAL
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@p_UserID", userId);
-                parameters.Add("@p_conferenceID", conferenceID);
+                parameters.Add("@p_TopicsID", conferenceID);
 
 
 
-                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_by_conference", parameters, commandType: CommandType.StoredProcedure);
+                email = _connection.Cnn.QuerySingleOrDefault<DateNotificationEN>("sp_get_emails_and_names_by_user_and_topic", parameters, commandType: CommandType.StoredProcedure);
 
 
             }
