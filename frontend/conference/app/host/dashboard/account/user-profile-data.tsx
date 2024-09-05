@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { urlRegisterUsers } from '@/lib/endpoints'
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
@@ -27,22 +26,6 @@ function UserProfileData({ token }: { token: string }) {
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		const fetchUserProfile = () => {
-			apiClient
-				.get('/User/UserPerfil', {
-					headers: {
-						'Authorization-Token': token,
-					},
-				})
-				.then((response) => {
-					setBase64String(response.data.imagenBase)
-					setUserProfile(response.data)
-					setLoading(false)
-				})
-				.catch((err) => {
-					setLoading(false)
-				})
-		}
 		fetchUserProfile()
 	}, [token])
 
@@ -59,34 +42,12 @@ function UserProfileData({ token }: { token: string }) {
 				setLoading(false)
 			})
 			.catch((err) => {
+				console.error('Error al obtener el perfil del usuario:', err)
+				toast.error(
+					'No se pudo cargar el perfil del usuario. Por favor, intente de nuevo.'
+				)
 				setLoading(false)
 			})
-	}
-
-	const handleImageUpload = async (file: File) => {
-		try {
-			const base64 = await convertToBase64(file)
-			const response = await apiClient.post(
-				`/Registerusers/Imagen`,
-				{
-					Image: base64,
-					ImageExtension: `.${file.name.split('.').pop()}`,
-				},
-				{
-					headers: {
-						'Authorization-Token': token,
-					},
-				}
-			)
-			toast.success('Foto actualizada correctamente')
-			fetchUserProfile() // Actualizar el perfil después de subir la imagen
-		} catch (error) {
-			console.error('Error uploading image:', error)
-			console.error(error)
-			toast.error(
-				'No se pudo actualizar la imagen. Por favor, intente de nuevo.'
-			)
-		}
 	}
 
 	const convertToBase64 = (file: File): Promise<string> => {
@@ -103,6 +64,68 @@ function UserProfileData({ token }: { token: string }) {
 			}
 			fileReader.onerror = (error) => reject(error)
 		})
+	}
+
+	const uploadImageToAPI = async (
+		base64: string,
+		extension: string,
+		token: string
+	) => {
+		console.log({
+			image: base64,
+			extension: extension,
+		})
+		try {
+			const response = await apiClient.post(
+				`/Registerusers/Imagen`,
+				{
+					image: base64,
+					imageExtension: extension,
+				},
+				{
+					headers: {
+						'Authorization-Token': token,
+					},
+				}
+			)
+			return response
+		} catch (error) {
+			console.error('Error en la llamada a la API:', error)
+			throw error
+		}
+	}
+
+	const handleImageUpload = async (file: File) => {
+		const extension = file.name.split('.').pop() || ''
+		console.error('Debug:', { imageExtension: extension })
+
+		try {
+			const base64 = await convertToBase64(file)
+			console.error('Imagen convertida a base64 exitosamente')
+
+			const response = await uploadImageToAPI(base64, extension, token)
+			console.error('Respuesta de la API:', response)
+
+			toast.success('Foto actualizada correctamente')
+			fetchUserProfile()
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error.message === 'FileReader result is null') {
+					console.error('Error al convertir la imagen a base64:', error)
+					toast.error(
+						'No se pudo procesar la imagen. Por favor, intente con otra imagen.'
+					)
+				} else {
+					console.error('Error al subir la imagen a la API:', error)
+					toast.error(
+						'No se pudo actualizar la imagen en el servidor. Por favor, intente de nuevo.'
+					)
+				}
+			} else {
+				console.error('Error desconocido:', error)
+				toast.error('Ocurrió un error inesperado. Por favor, intente de nuevo.')
+			}
+		}
 	}
 
 	if (loading) {

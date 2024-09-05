@@ -15,7 +15,9 @@ async function getDocumentById(id: string, token: string) {
 		)
 
 		return res.data.document[0]
-	} catch (error) {}
+	} catch (error) {
+		return []
+	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
