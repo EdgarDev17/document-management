@@ -148,17 +148,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 					</div>
 				</div>
 				{hasConferenceWithId(parseInt(params.id)) === false && (
-					<Dialog>
-						<DialogTrigger asChild>
-							<Button size='lg' className='bg-blue-600 mt-4 sm:mt-0'>
-								Registrarme al evento
-							</Button>
-						</DialogTrigger>
-						<RegisterUserEvent
-							conferenceId={params.id}
-							token={session.accessToken}
-						/>
-					</Dialog>
+					<RegisterUserEvent
+						conferenceId={params.id}
+						token={session.accessToken}
+					/>
 				)}
 			</div>
 

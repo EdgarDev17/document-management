@@ -151,6 +151,7 @@ export default function StepTwo() {
 											<PopoverContent className='w-auto p-0' align='start'>
 												<Calendar
 													mode='single'
+													showCaption
 													selected={field.value}
 													onSelect={field.onChange}
 												/>
@@ -187,6 +188,7 @@ export default function StepTwo() {
 											<PopoverContent className='w-auto p-0' align='start'>
 												<Calendar
 													mode='single'
+													showCaption
 													selected={field.value}
 													onSelect={field.onChange}
 												/>

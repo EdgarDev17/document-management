@@ -7,12 +7,15 @@ import { DayPicker } from 'react-day-picker'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/app/components/ui/button'
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+	showCaption?: boolean
+}
 
 function Calendar({
 	className,
 	classNames,
 	showOutsideDays = true,
+	showCaption = false,
 	...props
 }: CalendarProps) {
 	return (
@@ -22,8 +25,11 @@ function Calendar({
 			classNames={{
 				months: 'flex flex-col space-y-4',
 				month: 'space-y-4',
-				caption: 'flex justify-center pt-1 relative items-center hidden',
-				caption_label: 'text-sm font-medium hidden',
+				caption: cn(
+					'flex justify-center pt-1 relative items-center',
+					showCaption ? '' : 'hidden'
+				),
+				caption_label: cn('text-sm font-medium', showCaption ? '' : 'hidden'),
 				nav: 'space-x-1 flex items-center',
 				nav_button: cn(
 					buttonVariants({ variant: 'outline' }),
@@ -32,7 +38,6 @@ function Calendar({
 				nav_button_previous: 'absolute left-1',
 				nav_button_next: 'absolute right-1',
 				table: 'w-full border-collapse space-y-1',
-
 				head_row: 'flex',
 				weekdays: 'grid grid-cols-7',
 				head_cell:
@@ -62,10 +67,10 @@ function Calendar({
 				...classNames,
 			}}
 			components={{
-				// @ts-ignore
+				//@ts-ignore
 				IconLeft: ({ ...props }) => <ChevronLeftIcon className='h-4 w-4' />,
 				IconRight: ({ ...props }) => <ChevronRightIcon className='h-4 w-4' />,
-				Caption: ({ displayMonth }: { displayMonth: any }) => (
+				Caption: ({ displayMonth }: { displayMonth: Date }) => (
 					<div className='flex justify-center pt-1 relative items-center'>
 						<span className='text-sm font-medium'>
 							{displayMonth.toLocaleString('default', { month: 'long' })}
@@ -77,6 +82,7 @@ function Calendar({
 		/>
 	)
 }
+
 Calendar.displayName = 'Calendar'
 
 export { Calendar }

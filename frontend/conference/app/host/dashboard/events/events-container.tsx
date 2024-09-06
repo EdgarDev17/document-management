@@ -96,17 +96,17 @@ export function EventsContainer({ token }: { token: string }) {
 	}, [token])
 
 	return (
-		<div className='w-full h-full flex flex-col gap-y-6 md:gap-y-14 relative py-8 md:py-14 px-4 md:px-0'>
+		<div className='w-full h-full flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-14 relative py-4 sm:py-8 lg:py-14 px-4 sm:px-6 lg:px-8'>
 			<Link
 				href='/host/dashboard/event/create/step-one'
-				className='bg-blue-800 text-blue-50 border absolute mx-auto right-4 md:right-0 top-0 border-blue-50 p-2 md:p-4 rounded-lg w-[90%] md:w-[250px] h-[40px] md:h-[50px] text-center flex justify-center items-center text-sm md:text-base'>
+				className='bg-blue-800 text-blue-50 border absolute right-4 sm:right-6 lg:right-8 top-0 border-blue-50 p-2 sm:p-3 lg:p-4 rounded-lg w-full sm:w-auto md:max-w-[250px] h-[40px] sm:h-[45px] lg:h-[50px] text-center flex justify-center items-center text-xs sm:text-sm lg:text-base'>
 				Crear Conferencia
 			</Link>
-			<section className='w-full flex flex-col md:flex-row gap-6 md:gap-x-6 mt-12 md:mt-0'>
-				<div className='w-full md:w-[50%] grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-1 place-items-center'>
-					<Card className='w-full md:w-[250px] flex flex-col justify-between'>
+			<section className='w-full flex flex-col lg:flex-row gap-4 sm:gap-6 mt-12 sm:mt-16 lg:mt-0'>
+				<div className='w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 place-items-center'>
+					<Card className='w-full max-w-[250px] flex flex-col justify-between'>
 						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
-							<CardTitle className='text-primary-foreground text-sm md:text-base'>
+							<CardTitle className='text-primary-foreground text-sm sm:text-base'>
 								Eventos creados
 							</CardTitle>
 						</CardHeader>
@@ -114,59 +114,59 @@ export function EventsContainer({ token }: { token: string }) {
 							{loading ? (
 								<p>cargando...</p>
 							) : (
-								<p className='text-3xl md:text-5xl font-bold text-zinc-800'>
+								<p className='text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-800'>
 									{events.length}
 								</p>
 							)}
 						</CardContent>
 					</Card>
 
-					<Card className='w-full md:w-[250px] flex flex-col justify-between'>
+					<Card className='w-full max-w-[250px] flex flex-col justify-between'>
 						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
-							<CardTitle className='text-primary-foreground text-sm md:text-base'>
+							<CardTitle className='text-primary-foreground text-sm sm:text-base'>
 								Participantes
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='w-full h-full flex justify-center items-center py-4'>
-							<p className='text-3xl md:text-5xl font-bold text-zinc-800'>
+							<p className='text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-800'>
 								{totalParticipants}
 							</p>
 						</CardContent>
 					</Card>
 
-					<Card className='w-full md:w-11/12 col-span-1 md:col-span-2 flex flex-col justify-between'>
+					<Card className='w-full col-span-1 sm:col-span-2 flex flex-col justify-between'>
 						<CardHeader className='w-full bg-blue-800 rounded-t-lg'>
-							<CardTitle className='text-primary-foreground text-sm md:text-base'>
+							<CardTitle className='text-primary-foreground text-sm sm:text-base'>
 								Próximo Evento
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='w-full h-full flex flex-col justify-center items-center py-4'>
 							{nearestEvent ? (
 								<>
-									<p className='text-lg md:text-xl font-bold text-zinc-800 text-center'>
+									<p className='text-base sm:text-lg lg:text-xl font-bold text-zinc-800 text-center'>
 										{nearestEvent.conference_name}
 									</p>
-									<p className='text-xs md:text-sm text-zinc-600'>
+									<p className='text-xs sm:text-sm text-zinc-600'>
 										{new Date(nearestEvent.beggingDate).toLocaleDateString()}
 									</p>
 								</>
 							) : (
-								<p className='text-lg md:text-xl text-zinc-600'>
+								<p className='text-base sm:text-lg lg:text-xl text-zinc-600'>
 									No hay eventos próximos
 								</p>
 							)}
 						</CardContent>
 					</Card>
 				</div>
-				<div className='w-full md:w-[50%]'>
+				<div className='w-full lg:w-1/2'>
 					<Card className='h-fit'>
 						<CardHeader>
-							<CardTitle className='text-sm md:text-base'>Registros</CardTitle>
-							<CardDescription className='text-xs md:text-sm'>
+							<CardTitle className='text-sm sm:text-base'>Registros</CardTitle>
+							<CardDescription className='text-xs sm:text-sm'>
 								Participantes por evento
 							</CardDescription>
 						</CardHeader>
-						<CardContent className='h-[250px] md:h-[290px]'>
+						<CardContent className='h-[200px] sm:h-[250px] lg:h-[290px]'>
 							{events.length > 0 ? (
 								<ChartContainer config={chartConfig} className='h-full'>
 									<ResponsiveContainer width='100%' height='100%'>
@@ -200,18 +200,18 @@ export function EventsContainer({ token }: { token: string }) {
 								</ChartContainer>
 							) : (
 								<div className='flex justify-center items-center h-full'>
-									<p className='text-sm md:text-lg text-zinc-600 text-center'>
+									<p className='text-sm sm:text-base lg:text-lg text-zinc-600 text-center'>
 										Ingrese más información para ver las gráficas
 									</p>
 								</div>
 							)}
 						</CardContent>
 						<CardFooter>
-							<div className='flex w-full items-start gap-2 text-xs md:text-sm'>
+							<div className='flex w-full items-start gap-2 text-xs sm:text-sm'>
 								<div className='grid gap-2'>
 									<div className='flex items-center gap-2 font-medium leading-none'>
 										Participantes registrados
-										<ArrowTrendingUpIcon className='h-3 w-3 md:h-4 md:w-4' />
+										<ArrowTrendingUpIcon className='h-3 w-3 sm:h-4 sm:w-4' />
 									</div>
 									<div className='flex items-center gap-2 leading-none text-muted-foreground'>
 										Datos en tiempo real
@@ -222,7 +222,7 @@ export function EventsContainer({ token }: { token: string }) {
 					</Card>
 				</div>
 			</section>
-			<section className='mt-6 md:mt-0'>
+			<section className='mt-4 sm:mt-6 lg:mt-0'>
 				{loading ? (
 					<p>Cargando...</p>
 				) : (

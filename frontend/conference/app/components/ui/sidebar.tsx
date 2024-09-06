@@ -2,34 +2,34 @@
 
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import React from 'react'
 
-interface SideBarContainer extends React.HTMLAttributes<HTMLDivElement> {
+interface SideBarContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode[]
 }
 
-const SideBarContainer = ({ children, className }: SideBarContainer) => {
+const SideBarContainer = ({ children, className }: SideBarContainerProps) => {
 	return (
 		<div
 			className={cn(
-				'hidden sm:flex w-full h-full  flex-col bg-white p-3 rounded-lg border border-gray-50 shadow-sm',
+				'hidden sm:flex w-full h-full flex-col bg-white p-3 rounded-lg border border-gray-50 shadow-sm',
 				className
 			)}>
-			{children}
+			<div className='flex flex-col h-full justify-between'>{children}</div>
 		</div>
 	)
 }
 
-type SideBarItemProps = {
+interface SideBarItemProps {
 	url: string
 	children: React.ReactNode
 }
 
 const SideBarItem = ({ url, children }: SideBarItemProps) => {
 	return (
-		<div className='w-full hidden sm:block'>
-			<Link href={url}>{children}</Link>
-		</div>
+		<Link href={url} className='block w-full'>
+			{children}
+		</Link>
 	)
 }
 
