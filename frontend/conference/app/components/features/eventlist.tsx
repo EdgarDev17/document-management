@@ -24,17 +24,6 @@ import {
 } from '@/app/components/ui/select'
 import Link from 'next/link'
 
-const getDateVariant = (date: string) => {
-	const eventDate = new Date(date)
-	const today = new Date()
-	const diffTime = eventDate.getTime() - today.getTime()
-	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-	if (diffDays < 0) return 'destructive'
-	if (diffDays <= 7) return 'warning'
-	if (diffDays <= 30) return 'secondary'
-	return 'default'
-}
-
 function EventsList({
 	events,
 	currentPage,

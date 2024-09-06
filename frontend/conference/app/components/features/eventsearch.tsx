@@ -17,11 +17,11 @@ import {
 	GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import { apiClient } from '@/lib/api-service'
-import { urlConference } from '@/lib/endpoints'
 import { Conference } from '@/types/models/conference'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { WaveLoading } from '../common/wave-loading'
+import { Tickets } from 'lucide-react'
 
 const bgColors = [
 	'bg-red-100',
@@ -107,7 +107,7 @@ function EventSearch({ token }: { token: string }) {
 						className='w-full bg-white'
 					/>
 				</div>
-				<Select value={selectedArea} onValueChange={setSelectedArea}>
+				{/* <Select value={selectedArea} onValueChange={setSelectedArea}>
 					<SelectTrigger className='w-full sm:w-[180px]'>
 						<SelectValue placeholder='Filtrar por área' />
 					</SelectTrigger>
@@ -118,7 +118,7 @@ function EventSearch({ token }: { token: string }) {
 						<SelectItem value='Economía'>Economía</SelectItem>
 						<SelectItem value='Educación'>Educación</SelectItem>
 					</SelectContent>
-				</Select>
+				</Select> */}
 			</div>
 
 			<div className='flex flex-col gap-y-4'>
@@ -133,11 +133,7 @@ function EventSearch({ token }: { token: string }) {
 								<CardContent className='p-4 flex flex-col sm:flex-row'>
 									<div
 										className={`mb-4 sm:mb-0 sm:mr-4 flex flex-row sm:flex-col items-center justify-center ${randomColor} rounded-md p-2 min-w-[80px]`}>
-										<span className='text-sm font-semibold mr-2 sm:mr-0'>
-											12
-										</span>
-										<span className='text-xs mr-2 sm:mr-0'>sep</span>
-										<span className='text-xs'>2022</span>
+										<Tickets className='w-6 h-6 text-zinc-800' />
 									</div>
 									<div className='flex-1'>
 										<h3 className='font-semibold'>{evento.conference_name}</h3>
