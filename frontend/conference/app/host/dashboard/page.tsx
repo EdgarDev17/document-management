@@ -12,6 +12,7 @@ import {
 	UserCircle,
 	PlusCircle,
 	Lightbulb,
+	ArrowRight,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -49,86 +50,101 @@ export default async function DashboardHome() {
 	const dailyTip = getDailyTip()
 
 	return (
-		<div className='container mx-auto px-4 py-8 space-y-8'>
-			<h1 className='text-4xl font-bold text-zinc-900'>Bienvenido de nuevo</h1>
-
-			<Card className='bg-secondary'>
-				<CardHeader>
-					<CardTitle className='flex items-center text-2xl text-secondary-foreground'>
-						<Lightbulb className='mr-2 h-6 w-6' />
-						Dato del día
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className='text-lg text-secondary-foreground'>{dailyTip}</p>
-				</CardContent>
-			</Card>
-
-			<section className='space-y-4'>
-				<h2 className='text-3xl font-semibold text-zinc-900'>Tus opciones</h2>
-				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-					<Link
-						href={'/host/dashboard/events'}
-						className='h-auto py-6 flex flex-col items-center justify-center text-lg border border-gray-100 rounded-lg hover:bg-zinc-100'>
-						<CalendarDays className='mb-2 h-8 w-8' />
-						<span>Ver tus eventos creados</span>
-					</Link>
-					<Link
-						href={'/host/dashboard/institutions'}
-						className='h-auto py-6 flex flex-col items-center justify-center text-lg border border-gray-100 rounded-lg hover:bg-zinc-100'>
-						<Users className='mb-2 h-8 w-8' />
-						<span>Ver tus instituciones</span>
-					</Link>
-
-					<Link
-						href={'/host/dashboard/analytics'}
-						className='h-auto py-6 flex flex-col items-center justify-center text-lg border border-gray-100 rounded-lg hover:bg-zinc-100'>
-						<BarChart3 className='mb-2 h-8 w-8' />
-						<span>Ver tus analíticas</span>
-					</Link>
-
-					<Link
-						href={'/host/dashboard/analytics'}
-						className='h-auto py-6 flex flex-col items-center justify-center text-lg border border-gray-100 rounded-lg hover:bg-zinc-100'>
-						<UserCircle className='mb-2 h-8 w-8' />
-						<span>Ver tu perfil</span>
-					</Link>
+		<div className='min-h-screen bg-white'>
+			<header className='py-8'>
+				<div className='container mx-auto px-4'>
+					<h1 className='text-4xl font-bold text-gray-800'>
+						Bienvenido de nuevo
+					</h1>
 				</div>
-			</section>
+			</header>
 
-			<section className='space-y-4'>
-				<h2 className='text-3xl font-semibold text-zinc-900'>Atajos</h2>
-				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-					<Card>
+			<main className='container mx-auto px-4 py-12'>
+				<div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+					<Card className='col-span-1 lg:col-span-2 bg-zinc-50'>
 						<CardHeader>
-							<CardTitle className='flex items-center text-xl'>
-								<PlusCircle className='mr-2 h-6 w-6' />
-								Crear evento
+							<CardTitle className='flex items-center text-2xl'>
+								<Lightbulb className='mr-2 h-6 w-6' />
+								Dato del día
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
-							<Link href={'/host/dashboard/event/create/step-one'}>
-								<Button className='w-full text-lg py-6'>Nuevo evento</Button>
-							</Link>
+							<p className='text-lg text-gray-700'>{dailyTip}</p>
 						</CardContent>
 					</Card>
-					<Card>
+
+					<Card className='col-span-1 bg-gray-50 shadow-sm'>
 						<CardHeader>
-							<CardTitle className='flex items-center text-xl'>
-								<PlusCircle className='mr-2 h-6 w-6' />
-								Crear institución
+							<CardTitle className='text-2xl text-gray-800'>
+								Acciones rápidas
 							</CardTitle>
 						</CardHeader>
-						<CardContent>
-							<Link href={'/host/dashboard/institutions/add'}>
-								<Button className='w-full text-lg py-6'>
-									Nueva institución
+						<CardContent className='flex flex-col gap-y-4'>
+							<Link href='/host/dashboard/event/create/step-one'>
+								<Button className='w-full bg-blue-600 hover:bg-blue-700 text-white'>
+									<PlusCircle className='mr-2 h-5 w-5' />
+									Crear nuevo evento
+								</Button>
+							</Link>
+							<Link href='/host/dashboard/institutions/add'>
+								<Button className='w-full bg-white border-1 border-blue-600 text-zinc-800 hover:bg-blue-50'>
+									<PlusCircle className='mr-2 h-5 w-5' />
+									Añadir institución
 								</Button>
 							</Link>
 						</CardContent>
 					</Card>
 				</div>
-			</section>
+
+				<section className='mt-12'>
+					<h2 className='text-3xl font-semibold text-gray-800 mb-6'>
+						Explora tu dashboard
+					</h2>
+					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+						{[
+							{
+								href: '/host/dashboard/events',
+								icon: CalendarDays,
+								text: 'Tus eventos',
+								description: 'Gestiona tus eventos creados',
+							},
+							{
+								href: '/host/dashboard/institutions',
+								icon: Users,
+								text: 'Instituciones',
+								description: 'Administra tus instituciones',
+							},
+							{
+								href: '/host/dashboard/analytics',
+								icon: BarChart3,
+								text: 'Analíticas',
+								description: 'Revisa el rendimiento de tus eventos',
+							},
+							{
+								href: '/host/dashboard/profile',
+								icon: UserCircle,
+								text: 'Tu perfil',
+								description: 'Actualiza tu información personal',
+							},
+						].map((item, index) => (
+							<Link key={index} href={item.href}>
+								<Card className='h-full hover:shadow-lg transition-shadow duration-300 group border border-gray-200'>
+									<CardContent className='flex flex-col items-center justify-center p-6 text-center'>
+										<item.icon className='mb-4 h-12 w-12 text-blue-600 group-hover:text-blue-700 transition-colors duration-300' />
+										<h3 className='text-xl font-semibold text-gray-800 mb-2'>
+											{item.text}
+										</h3>
+										<p className='text-sm text-gray-600 mb-4'>
+											{item.description}
+										</p>
+										<ArrowRight className='h-6 w-6 text-blue-600 group-hover:translate-x-2 transition-transform duration-300' />
+									</CardContent>
+								</Card>
+							</Link>
+						))}
+					</div>
+				</section>
+			</main>
 		</div>
 	)
 }
