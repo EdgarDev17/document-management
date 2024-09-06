@@ -25,6 +25,18 @@ import {
   DialogTrigger,
 } from "@/app/components/ui/dialog";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
+import {
   Form,
   FormControl,
   FormField,
@@ -101,12 +113,17 @@ export function DataContainer({
   currentUserId: number;
 }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [speakerAndJuryUsers, setSpeakerAndJuryUsers] = useState<User[]>([]);
 
+  // estados que manejan los usuarios.
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string>("all");
+
+  // validacion para saber si es un admin
   const isAdmin = currentUserId === eventData.userID;
 
-  console.log(users);
   const form = useForm<TalkData>({
     resolver: zodResolver(talkSchema),
     defaultValues: talkData,
@@ -153,15 +170,12 @@ export function DataContainer({
         (item: any) => item.topicsID === talkData.topicsID,
       );
 
-      console.log("zxdsfdfs", allUsersInEvent);
-
-      // De todos los usuarios obtenidos, solo filtramos los que sean ponentes o jurados.
-      setUsers(
+      setAllUsers(allUsersInEvent);
+      setSpeakerAndJuryUsers(
         allUsersInEvent.filter(
-          (user: any) => user.rolID === 2 || user.rolID === 3,
+          (user: User) => user.rolID === 2 || user.rolID === 3,
         ),
       );
-      return allUsersInEvent;
     } catch (error) {
       toast.error("Error al obtener los participantes");
     }
@@ -170,6 +184,16 @@ export function DataContainer({
   useEffect(() => {
     getParticipants();
   }, []);
+
+  useEffect(() => {
+    if (selectedRole === "all") {
+      setFilteredUsers(allUsers);
+    } else {
+      setFilteredUsers(
+        allUsers.filter((user) => user.roleName === selectedRole),
+      );
+    }
+  }, [selectedRole, allUsers]);
 
   const handleConvertToJury = async (userId: number) => {
     try {
@@ -212,6 +236,46 @@ export function DataContainer({
     }
   }
 
+  // traduce el role de usuario
+  function translateRole(role: any): string {
+    const translations = {
+      Jury: "Jurado",
+      Speaker: "Ponente",
+      Attendee: "Participante",
+      attendee: "Participante",
+    };
+    //@ts-ignore
+    return translations[role] || role;
+  }
+
+  const renderUserList = () => (
+    <ScrollArea className="h-[400px]">
+      {filteredUsers.map((user) => (
+        <div
+          key={user.userID}
+          className="flex items-center space-x-4 py-2 border-b last:border-b-0"
+        >
+          <Avatar>
+            <AvatarImage
+              src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name} ${user.lastname}`}
+            />
+            <AvatarFallback>
+              {user.name[0]}
+              {user.lastname[0]}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-grow">
+            <p className="font-medium">
+              {user.name} {user.lastname}
+            </p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          </div>
+          <Badge>{translateRole(user.roleName)}</Badge>
+        </div>
+      ))}
+    </ScrollArea>
+  );
+
   return (
     <div className="space-y-6 p-6 max-w-4xl mx-auto">
       <Card>
@@ -232,9 +296,10 @@ export function DataContainer({
       </Card>
 
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="details">Detalles</TabsTrigger>
           <TabsTrigger value="jury">Jurado</TabsTrigger>
+          <TabsTrigger value="participants">Participantes</TabsTrigger>
           <TabsTrigger value="actions">Acciones</TabsTrigger>
         </TabsList>
         <TabsContent value="details">
@@ -337,10 +402,10 @@ export function DataContainer({
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {users.length > 0 ? (
+              {speakerAndJuryUsers.length > 0 ? (
                 <ScrollArea className="h-[400px] pr-4">
                   <ul className="space-y-4">
-                    {users.map((user) => (
+                    {speakerAndJuryUsers.map((user) => (
                       <li
                         key={user.userID}
                         className="flex items-center justify-between p-4 bg-muted/30 border border-border/40 rounded-lg shadow-sm transition-all hover:shadow-md"
@@ -370,7 +435,7 @@ export function DataContainer({
                               }
                               className="mt-2 text-xs"
                             >
-                              {user.roleName}
+                              {translateRole(user.roleName)}
                             </Badge>
                           </div>
                         </div>
@@ -402,6 +467,27 @@ export function DataContainer({
                 </p>
               )}
             </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="participants">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>Participantes del Evento</span>
+                <Select onValueChange={setSelectedRole} defaultValue="all">
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filtrar por rol" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="Speaker">Ponentes</SelectItem>
+                    <SelectItem value="Jury">Jurados</SelectItem>
+                    <SelectItem value="attendee">Oyentes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>{renderUserList()}</CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="actions">
